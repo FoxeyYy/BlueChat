@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/textChat">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1">
+
+            <ImageButton
+                android:layout_height="match_parent"
+                app:srcCompat="@android:drawable/ic_menu_crop"
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content" />
+
+            <EditText
+                android:layout_height="match_parent"
+                android:inputType="textMultiLine"
+                android:ems="15"
+                android:id="@+id/editText3"
+                android:layout_width="wrap_content"
+                android:text="Escribe aquí"
+                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse"
+                android:layout_weight="0.71" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@android:drawable/ic_menu_send"
+                android:id="@+id/imageButton3" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
