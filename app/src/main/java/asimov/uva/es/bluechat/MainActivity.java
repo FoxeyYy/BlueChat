@@ -1,22 +1,24 @@
 package asimov.uva.es.bluechat;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * Tag para el logging
+     */
+    public static final String TAG = "Main tabbed";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -68,9 +70,17 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+
+            case (R.id.action_settings):
+                Intent intentAjustes= new Intent(this, SettingsActivity.class);
+                startActivity(intentAjustes);
+                break;
+
+            default:
+                Log.e(TAG, "Elemento de menu desconocido");
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -84,6 +94,15 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        /**
+         * Numero de tabs a mostrar
+         */
+        private static final int NUM_TABS = 2;
+
+        /**
+         * Crea un nuevo {@link SectionsPagerAdapter}
+         * @param fm el fragment manager
+         */
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -98,24 +117,23 @@ public class MainActivity extends AppCompatActivity {
                    Tab_chats tab2 = new Tab_chats();
                    return tab2;
                default:
-                   Log.d("ASIMOV","Error seleccionando tag");
+                   Log.d(TAG,"Error seleccionando tag");
                    return null;
            }
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 2;
+            return NUM_TABS;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Descubrir";
+                    return getString(R.string.tab_descubrir);
                 case 1:
-                    return "Chats";
+                    return getString(R.string.tab_chats);
             }
             return null;
         }
