@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".AjustesActivity" />
         <activity android:name=".ChatActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
