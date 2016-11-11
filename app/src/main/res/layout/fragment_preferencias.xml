@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,17 +17,22 @@
         android:singleLine="true"
         android:selectAllOnFocus="false"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        tools:layout_editor_absoluteY="48dp"
-        app:layout_constraintLeft_toRightOf="@+id/imageButton" />
+        android:layout_marginStart="24dp"
+        app:layout_constraintLeft_toRightOf="@+id/avatar_preferencias"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintTop_toTopOf="@+id/avatar_preferencias"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar_preferencias" />
 
     <ImageButton
         android:layout_width="51dp"
         android:layout_height="43dp"
         app:srcCompat="@android:drawable/ic_menu_edit"
-        tools:layout_editor_absoluteX="39dp"
         android:id="@+id/avatar_preferencias"
-        android:layout_marginTop="48dp"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="24dp" />
 
     <TextView
         android:text="Tu dirección:"
@@ -36,38 +40,33 @@
         android:layout_height="wrap_content"
         android:id="@+id/mac_preferencias"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-        android:layout_marginTop="96dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton"
-        app:layout_constraintLeft_toLeftOf="@+id/imageButton" />
-
-    <TextView
-        android:text="FF:FF:FF:FF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-        android:layout_marginStart="72dp"
-        app:layout_constraintLeft_toRightOf="@+id/textView4"
-        android:layout_marginLeft="72dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView4" />
+        app:layout_constraintLeft_toLeftOf="@+id/avatar_preferencias"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/avatar_preferencias" />
 
     <Button
         android:text="Ayuda"
         android:layout_width="324dp"
         android:layout_height="wrap_content"
         android:id="@+id/button2"
-        android:layout_marginTop="136dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="32dp" />
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
 
     <Button
         android:text="Acerca de"
         android:layout_width="324dp"
         android:layout_height="wrap_content"
         android:id="@+id/button3"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/button2"
         app:layout_constraintLeft_toLeftOf="@+id/button2" />
 </android.support.constraint.ConstraintLayout>
