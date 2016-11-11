@@ -2,12 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="asimov.uva.es.bluechat">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="true"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -19,6 +25,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="212eb7486f5871fcf75a882c11d7f8fb6c020e27" />
     </application>
 
 </manifest>

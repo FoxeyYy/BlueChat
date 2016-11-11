@@ -1,24 +1,68 @@
 package asimov.uva.es.bluechat;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
+
+import static asimov.uva.es.bluechat.R.id.container;
 
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * Tag para el logging
+     * Resultado de la solicitud del permiso de localizacion
      */
-    public static final String TAG = "Main tabbed";
+    private final int PERMISO_LOCALIZACION = 1;
+
+    /**
+     * Resultado de la solicitud de la activacion del bluetooth
+     */
+    private final int BLUETOOTH_ACTIVADO = 1;
+
+    /**
+     * Adaptador bluetooth del dispositivo
+     */
+    private BluetoothAdapter adaptadorBluetooth;
+
+    /**
+     * Receptor de informacion de los dispositivos descubiertos
+     */
+    private BroadcastReceiver receptorBluetooth;
+
+    /**
+     * El dispositivo es compatible con el bluetooth
+     */
+    private boolean esCompatibleBluetooth;
+
+    /**
+     * Tag para debug
+     */
+    public static final String TAG = "BLUETOOH";
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -38,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -47,12 +92,126 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        comprobarBluetooth();
+
+        if( esCompatibleBluetooth ) {
+            activarBluetooth();
+            comprobarPermisos();
+            buscarDispositivos();
+        }
+
+    }
+
+    /**
+     * Comprueba si la aplicacion posee los permisos necesarios para poder funcionar
+     * De no ser así le pide dichos permisos al usuario
+     */
+    private void comprobarPermisos() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                1);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISO_LOCALIZACION: {
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //El usuario nos proporciona permisos
+
+                } else {
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Comprueba si el disposivo dispone de bluetooth
+     */
+    private void comprobarBluetooth() {
+        adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
+        if (adaptadorBluetooth == null) {
+            Log.d(TAG, "BLUETOOTH NO DISPONIBLE");
+            esCompatibleBluetooth = false;
+            Toast.makeText(this, R.string.dispositivo_sin_bluetooth, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    /**
+     * Pide permiso al usuario para activar el Bluetooth del dispositivo
+     */
+    private void activarBluetooth(){
+        if (!adaptadorBluetooth.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BLUETOOTH_ACTIVADO) {
+            if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, R.string.info_bluetooth_desactivado, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * Busca los dispositivos que se encuentren en modo visible dentro del rango
+     */
+    private void buscarDispositivos() {
+        // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
+        receptorBluetooth = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+
+                String action = intent.getAction();
+                // Descubrimos un nuevo dispositivo
+                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    // Obtenemos el nuevo dispostivo encontrado
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                }else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
+                    Log.d(TAG,"EMPEZANDO A DESCUBRIR");
+                }else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
+                    Log.d(TAG,"TERMINANDO DESCUBRIMIENTO");
+                }
+
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(receptorBluetooth, filter);
+        adaptadorBluetooth.startDiscovery();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        //adaptadorBluetooth.cancelDiscovery();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //unregisterReceiver(receptorBluetooth);
     }
 
 
@@ -77,6 +236,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentAjustes);
                 break;
 
+            case (R.id.action_bluetooth):
+                Log.d(TAG,"Refrescar");
+                if(esCompatibleBluetooth) {
+                    activarBluetooth();
+                    buscarDispositivos();
+                }else
+                    Toast.makeText(this,
+                                    R.string.dispositivo_sin_bluetooth,
+                                    Toast.LENGTH_SHORT).show();
+                break;
+
             default:
                 Log.e(TAG, "Elemento de menu desconocido");
                 break;
@@ -85,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     /**
@@ -111,11 +280,9 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
            switch (position){
                case 0:
-                   Tab_descubrir tab1 = new Tab_descubrir();
-                   return tab1;
+                   return new Tab_descubrir();
                case 1:
-                   Tab_chats tab2 = new Tab_chats();
-                   return tab2;
+                   return new Tab_chats();
                default:
                    Log.d(TAG,"Error seleccionando tag");
                    return null;
