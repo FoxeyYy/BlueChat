@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
 
             case (R.id.action_settings):
-                Intent intentAjustes= new Intent(this, SettingsActivity.class);
+                Intent intentAjustes= new Intent(this, AjustesActivity.class);
                 startActivity(intentAjustes);
                 break;
 
