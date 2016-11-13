@@ -8,14 +8,14 @@ package asimov.uva.es.bluechat.Dominio;
 
 public class Mensaje {
 
-    private String idMensaje;
     private String mac;
+    private int idMensaje;
     private String contenido;
     private String emisor;
     private String receptor;
     private String fecha;
 
-    public Mensaje(String mac, String idMensaje, String contenido, String emisor,
+    public Mensaje(String mac, int idMensaje, String contenido, String emisor,
                    String receptor, String fecha) {
         this.mac = mac;
         this.idMensaje = idMensaje;

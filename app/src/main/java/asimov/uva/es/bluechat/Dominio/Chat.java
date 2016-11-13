@@ -24,9 +24,9 @@ public class Chat {
     public static List<Chat> getChats() {
         List<Chat> chats = new ArrayList<>();
 
-        chats.add(new Chat(new Contacto("Carlos","direccion")));
-        chats.add(new Chat(new Contacto("Ana", "direccion")));
-        chats.add(new Chat(new Contacto("Diego", "direccion")));
+        chats.add(new Chat(new Contacto("Carlos","direccion","mac")));
+        chats.add(new Chat(new Contacto("Ana", "direccion","mac")));
+        chats.add(new Chat(new Contacto("Diego", "direccion","mac")));
 
         return chats;
     }

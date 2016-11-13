@@ -7,16 +7,18 @@ package asimov.uva.es.bluechat.Dominio;
  */
 public class Contacto {
 
-    private String nombre;
     private String direccionMac;
+    private String nombre;
+    private String imagen;
 
     /**
      * Constructor por defecto
      * @param nombre del contacto
      */
-    public Contacto (String direccionMac, String nombre) {
+    public Contacto (String direccionMac, String nombre, String imagen) {
         this.direccionMac = direccionMac;
         this.nombre = nombre;
+        this.imagen = imagen;
     }
 
     public String getDireccionMac() {
