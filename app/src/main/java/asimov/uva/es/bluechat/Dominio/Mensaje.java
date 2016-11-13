@@ -1,7 +1,5 @@
 package asimov.uva.es.bluechat.Dominio;
 
-import java.util.Date;
-
 /**
  * Created by hector on 6/11/16.
  * Clase representativa de un mensaje enviado por la App,
@@ -10,11 +8,21 @@ import java.util.Date;
 
 public class Mensaje {
 
-    private String mensaje;
+    private String idMensaje;
+    private String mac;
+    private String contenido;
+    private String emisor;
+    private String receptor;
+    private String fecha;
 
-    /**
-     * Metadatos
-     */
-    private Date fecha;
-    private Contacto remitente;
+    public Mensaje(String mac, String idMensaje, String contenido, String emisor,
+                   String receptor, String fecha) {
+        this.mac = mac;
+        this.idMensaje = idMensaje;
+        this.contenido = contenido;
+        this.emisor = emisor;
+        this.receptor = receptor;
+        this.fecha = fecha;
+    }
+
 }

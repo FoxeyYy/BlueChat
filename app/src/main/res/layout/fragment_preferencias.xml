@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,17 +17,19 @@
         android:singleLine="true"
         android:selectAllOnFocus="false"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        tools:layout_editor_absoluteY="48dp"
-        app:layout_constraintLeft_toRightOf="@+id/imageButton" />
+        app:layout_constraintLeft_toRightOf="@+id/imageButton"
+        app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
     <ImageButton
         android:layout_width="51dp"
         android:layout_height="43dp"
         app:srcCompat="@android:drawable/ic_menu_edit"
-        tools:layout_editor_absoluteX="39dp"
         android:id="@+id/imageButton"
         android:layout_marginTop="48dp"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="40dp" />
 
     <TextView
         android:text="Tu dirección:"

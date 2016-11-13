@@ -8,17 +8,18 @@ package asimov.uva.es.bluechat.Dominio;
 public class Contacto {
 
     private String nombre;
-    private long direccionMac;
+    private String direccionMac;
 
     /**
      * Constructor por defecto
      * @param nombre del contacto
      */
-    public Contacto (String nombre) {
+    public Contacto (String direccionMac, String nombre) {
+        this.direccionMac = direccionMac;
         this.nombre = nombre;
     }
 
-    public long getDireccionMac() {
+    public String getDireccionMac() {
         return direccionMac;
     }
 
