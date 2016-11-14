@@ -12,8 +12,10 @@ public class Contacto {
     private String imagen;
 
     /**
-     * Constructor por defecto
-     * @param nombre del contacto
+     * Inicializa a los parámetros que se indican
+     * @param direccionMac La MAC del usuario
+     * @param nombre Nombre del usuario
+     * @param imagen Imagen del usuario
      */
     public Contacto (String direccionMac, String nombre, String imagen) {
         this.direccionMac = direccionMac;

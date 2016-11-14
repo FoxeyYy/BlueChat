@@ -9,6 +9,7 @@ import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 /**
+ * Define las operaciones necesarias de la base de datos
  * Created by DAVID on 13/11/2016.
  */
 
@@ -32,6 +33,10 @@ public class DBOperations {
         return instancia;
     }
 
+    /**
+     * Inserta un mensaje en la base de datos
+     * @param mensaje Mensaje que se va a insertar
+     */
     public void insertMessage(Mensaje mensaje){
         ContentValues values = new ContentValues();
         values.put(DBContract.Chat.COLUMN_NAME_ID, mensaje.getIdMensaje());
@@ -44,34 +49,64 @@ public class DBOperations {
         // Insert the new row
         getDb().insert(DBContract.Chat.TABLE_NAME, null, values);
     }
+
+    /**
+     * Inserta un contacto en la base de datos
+     * @param contacto Contacto que se va a insertar
+     */
     public void insertContact(Contacto contacto){
         ContentValues values = new ContentValues();
         values.put(DBContract.Contacto.COLUMN_NAME_MAC, contacto.getDireccionMac());
         values.put(DBContract.Contacto.COLUMN_NAME_NOMBRE, contacto.getNombre());
         values.put(DBContract.Contacto.COLUMN_NAME_IMAGE, contacto.getImagen());
-
+        //insert the new row
         getDb().insert(DBContract.Contacto.TABLE_NAME, null, values);
     }
+
+    /**
+     * Devuelve el último mensaje enviado de un chat
+     * @return cursor El cursor al último mensaje de un chat
+     */
     public Cursor getLastMessage(){
         Cursor cursor = getDb().rawQuery(SQL_READ_MESSAGE, null);
         return cursor;
     }
+
+    /**
+     * Devuelve el contacto asociado a una MAC concreta
+     * @param mac Mac del contacto
+     * @return cursor El cursor al contacto
+     */
     public Cursor getContact(String mac){
         String[] args = new String[] {mac};
         Cursor cursor = getDb().rawQuery(SQL_READ_CONTACT, args);
         return cursor;
     }
-    public Cursor readLastMessages(){
+
+    /**
+     * Devuelve los últimos mensajes de un chat
+     * @return cursor El cursor a los últimos mensajes
+     */
+    public Cursor getLastMessages(){
         Cursor cursor = getDb().rawQuery(SQL_READ_LAST_MESSAGES, null);
         cursor.moveToLast();
         return cursor;
     }
-    public Cursor readAllContacts(){
+
+    /**
+     * Devuelve todos los contactos
+     * @return cursor El cursor a los contactos
+     */
+    public Cursor getAllContacts(){
         Cursor cursor = getDb().rawQuery(SQL_READ_ALL_CONTACTS, null);
         cursor.moveToFirst();
         return cursor;
     }
 
+    /**
+     * Devuelve la base de datos en modo escritura
+     * @return baseDatos en modo escrituar
+     */
     private SQLiteDatabase getDb() {
         return baseDatos.getWritableDatabase();
     }

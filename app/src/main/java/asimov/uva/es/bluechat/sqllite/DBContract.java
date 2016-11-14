@@ -10,13 +10,19 @@ import android.provider.BaseColumns;
 public class DBContract {
     private DBContract(){}
 
+
+    /**
+     * Define la tabla Contacto con sus respectivos atributos
+     */
     public static class Contacto implements BaseColumns{
         public static final String TABLE_NAME = "Contacto";
         public static final String COLUMN_NAME_MAC = "mac";
         public static final String COLUMN_NAME_NOMBRE = "nombre";
         public static final String COLUMN_NAME_IMAGE = "image";
     }
-
+    /**
+     * Define la tabla Chat con sus respectivos atributos
+     */
     public static class Chat implements BaseColumns{
         public static final String TABLE_NAME = "Chat";
         public static final String COLUMN_NAME_ID = "idMensaje";

@@ -15,6 +15,15 @@ public class Mensaje {
     private String receptor;
     private String fecha;
 
+    /**
+     * Inicializa un Mensaje a los valores pasados por parámetro
+     * @param mac Mac del usuario
+     * @param idMensaje Identificador del mensaje
+     * @param contenido Contenido del mensaje
+     * @param emisor Emisor del mensaje
+     * @param receptor Receptor del mensaje
+     * @param fecha Fecha de envío del mensaje
+     */
     public Mensaje(String mac, int idMensaje, String contenido, String emisor,
                    String receptor, String fecha) {
         this.mac = mac;
