@@ -1,5 +1,6 @@
 package asimov.uva.es.bluechat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,7 +42,7 @@ public class Tab_chats extends Fragment implements View.OnClickListener {
         for(int i = 0; i < historial.size(); i++) {
             View v = inflater.inflate(R.layout.tarjeta_contacto, null);
             ((TextView)v.findViewById(R.id.nombre_contacto)).setText(historial.get(i).getPar().getNombre());
-            lista.addView(v, 0);
+            lista.addView(v);
             v.setOnClickListener(this);
         }
 
@@ -50,6 +51,8 @@ public class Tab_chats extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.e("rubia", "Vista " + lista.indexOfChild(v));
+        Intent intentChat = new Intent(getContext(), ChatActivity.class);
+        intentChat.putExtra("nombre_contacto", historial.get(lista.indexOfChild(v)).getPar().getNombre());
+        startActivity(intentChat);
     }
 }

@@ -3,6 +3,7 @@
     <string name="action_settings">Ajustes</string>
     <string name="tab_descubrir">Descubrir</string>
     <string name="tab_chats">Chats</string>
+    <string name="mac_personal">Tu dirección: %s</string>
     <string name="info_bluetooth_desactivado">Con bluetooth desactivado solamente podrá ver mensajes previos. Si desea enviar o recibir es necesario que lo active </string>
     <string name="permisos_denegados">Es necesario el uso de la hubicacion para poder descubrir dispositivos</string>
     <string name="dispositivo_sin_bluetooth">La aplicacion necesita bluetooth en el dispositivo</string>
