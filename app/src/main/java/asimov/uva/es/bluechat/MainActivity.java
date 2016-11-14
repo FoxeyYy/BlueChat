@@ -21,7 +21,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity{
      */
     private ViewPager mViewPager;
 
-    private LinearLayout lista;
     private Set<BluetoothDevice> conectados;
     private TabDescubrir tab_descubrir;
 
@@ -118,8 +116,7 @@ public class MainActivity extends AppCompatActivity{
             dispositivos = new ArrayList<BluetoothDevice>();
             comprobarPermisos();
             activarBluetooth();
-            buscarDispositivos();
-            new ServidorBluetooth().start();
+//            buscarDispositivos();
             conectados = adaptadorBluetooth.getBondedDevices();
 
         }
@@ -128,9 +125,12 @@ public class MainActivity extends AppCompatActivity{
 
     public void probarConexion(){
         for(BluetoothDevice device : conectados)
-            if(device.getAddress().equals( "24:DA:9B:OC:83:E5") || device.getAddress().equals( "30:A8:DB:49:19:97")) {
+            if(device.getAddress().equals( "24:DA:9B:0C:83:E4")) {
                 Log.d(TAG,"Enviando a dispositivo emparejado");
                 new ClienteBluetooth(device).start();
+            }else if(device.getAddress().equals( "DA:23:46:03:35:1E")){
+                Log.d(TAG,"Creando servidor");
+                new ServidorBluetooth().start();
             }
     }
 
@@ -188,10 +188,12 @@ public class MainActivity extends AppCompatActivity{
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
         }
-//        Intent discoverableIntent = new
-//                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-//        startActivityForResult(discoverableIntent,BLUETOOTH_VISIBLE);
+        if(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE != adaptadorBluetooth.getScanMode()) {
+        Intent discoverableIntent = new
+                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivityForResult(discoverableIntent,BLUETOOTH_VISIBLE);
+        }
     }
 
     @Override
@@ -213,8 +215,11 @@ public class MainActivity extends AppCompatActivity{
     private void buscarDispositivos() {
         Log.d(TAG,"Buscando..");
         dispositivos.clear();
+        tab_descubrir.eliminarTarjetas();
+
         // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
         receptorBluetooth = new BroadcastReceiver() {
+            @Override
             public void onReceive(Context context, Intent intent) {
 
                 String action = intent.getAction();
@@ -222,8 +227,10 @@ public class MainActivity extends AppCompatActivity{
                 if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                     // Obtenemos el nuevo dispostivo encontrado
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    tab_descubrir.anadirDispositivo(device);
-                    dispositivos.add(dispositivos.size(),device);
+                    if(!dispositivos.contains(device)) {
+                        tab_descubrir.anadirDispositivo(device);
+                        dispositivos.add(dispositivos.size(), device);
+                    }
 
                 }else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
                     Log.d(TAG,"EMPEZANDO A DESCUBRIR");

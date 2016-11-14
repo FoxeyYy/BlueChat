@@ -46,7 +46,7 @@ public class ClienteBluetooth extends Thread {
             cerrar();
         }
 
-        new Conexion(socket);
+        new Conexion(socket).start();
     }
 
     /**

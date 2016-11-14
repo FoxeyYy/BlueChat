@@ -16,7 +16,7 @@ public class ServidorBluetooth extends Thread {
     private BluetoothServerSocket mmServerSocket;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
     private final String NOMBRE = "BlueChat";
-    private final String ERROR = "PROBLEMA";
+    private final String CONEXION = "CONEXION";
     private final String TAG = "BLUETOOTH";
 
     /**
@@ -32,7 +32,7 @@ public class ServidorBluetooth extends Thread {
         try {
             tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
         } catch (IOException e) {
-            Log.d(ERROR, "Error creando el socket que va a escuchar");
+            Log.d(CONEXION, "Error creando el socket que va a escuchar");
         }
         mmServerSocket = tmp;
     }
@@ -52,8 +52,9 @@ public class ServidorBluetooth extends Thread {
             }
             //Conexion aceptada
             if (socket != null) {
+                Log.d(CONEXION, "Aceptada la conexion nueva en el servidor");
                 //Manejo de la conexion en otro hilo diferente
-                new Conexion(socket);
+                new Conexion(socket).start();
                 cancelar();
                 break;
             }
@@ -67,7 +68,7 @@ public class ServidorBluetooth extends Thread {
         try {
             mmServerSocket.close();
         } catch (IOException e) {
-            Log.d(ERROR,"El serverSocket no se ha cerrado de manera erronea");
+            Log.d(CONEXION,"El serverSocket no se ha cerrado de manera erronea");
         }
     }
 

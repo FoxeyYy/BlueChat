@@ -49,8 +49,9 @@ public class Conexion extends Thread {
         byte[] buffer = new byte[1024];
 
         try{
-            entrada.read(buffer);
-            Log.d(CONEXION, buffer.toString());
+            if(entrada.read(buffer)>0) {
+                Log.d(CONEXION, new String(buffer, "UTF-8"));
+            }
         }catch (IOException e){
             Log.d(ERROR, "Error recibiendo info");
 
