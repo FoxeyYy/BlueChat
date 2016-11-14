@@ -47,10 +47,12 @@ public class Conexion extends Thread {
     public void run(){
         Log.d(CONEXION, "Escuchando...");
         byte[] buffer = new byte[1024];
+        int bytes;
 
         try{
-            if(entrada.read(buffer)>0) {
-                Log.d(CONEXION, new String(buffer, "UTF-8"));
+            bytes = entrada.read(buffer);
+            if( bytes>0 ) {
+                Log.d(CONEXION, new String(buffer, "UTF-8").substring(0,bytes));
             }
         }catch (IOException e){
             Log.d(ERROR, "Error recibiendo info");
@@ -72,6 +74,7 @@ public class Conexion extends Thread {
 
         }
     }
+
 
 
 }

@@ -21,6 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -116,33 +118,24 @@ public class MainActivity extends AppCompatActivity{
             dispositivos = new ArrayList<BluetoothDevice>();
             comprobarPermisos();
             activarBluetooth();
-//            buscarDispositivos();
+            new ServidorBluetooth().start();
             conectados = adaptadorBluetooth.getBondedDevices();
 
         }
 
     }
 
-    public void probarConexion(){
-        for(BluetoothDevice device : conectados)
-            if(device.getAddress().equals( "24:DA:9B:0C:83:E4")) {
-                Log.d(TAG,"Enviando a dispositivo emparejado");
-                new ClienteBluetooth(device).start();
-            }else if(device.getAddress().equals( "DA:23:46:03:35:1E")){
-                Log.d(TAG,"Creando servidor");
-                new ServidorBluetooth().start();
-            }
-    }
+
 
     /**
      * Comprueba si la aplicacion posee los permisos necesarios para poder funcionar
      * De no ser así le pide dichos permisos al usuario
      */
     private void comprobarPermisos() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                1);
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
     }
 
 
@@ -184,6 +177,14 @@ public class MainActivity extends AppCompatActivity{
      * Pide permiso al usuario para activar el Bluetooth del dispositivo
      */
     private void activarBluetooth(){
+
+        if( BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE != adaptadorBluetooth.getScanMode()) {
+            Intent discoverableIntent = new
+                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivityForResult(discoverableIntent, BLUETOOTH_VISIBLE);
+        }
+
         if (!adaptadorBluetooth.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
@@ -217,6 +218,9 @@ public class MainActivity extends AppCompatActivity{
         dispositivos.clear();
         tab_descubrir.eliminarTarjetas();
 
+        ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
+        barraProgreso.setVisibility(View.VISIBLE);
+
         // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
         receptorBluetooth = new BroadcastReceiver() {
             @Override
@@ -224,22 +228,29 @@ public class MainActivity extends AppCompatActivity{
 
                 String action = intent.getAction();
                 // Descubrimos un nuevo dispositivo
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                    // Obtenemos el nuevo dispostivo encontrado
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if(!dispositivos.contains(device)) {
-                        tab_descubrir.anadirDispositivo(device);
-                        dispositivos.add(dispositivos.size(), device);
-                    }
-
-                }else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
-                    Log.d(TAG,"EMPEZANDO A DESCUBRIR");
-                }else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
-                    Log.d(TAG,"TERMINANDO DESCUBRIMIENTO");
+                switch (action) {
+                    case (BluetoothDevice.ACTION_FOUND):
+                        // Obtenemos el nuevo dispostivo encontrado
+                        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                        if (!dispositivos.contains(device)) {
+                            Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
+                            tab_descubrir.anadirDispositivo(device);
+                            dispositivos.add(device);
+                        }
+                        break;
+                    case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                        Log.d(TAG, "EMPEZANDO A DESCUBRIR");
+                        break;
+                    case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                        Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
+                        ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
+                        barraProgreso.setVisibility(View.INVISIBLE);
+                        unregisterReceiver(receptorBluetooth);
+                        break;
                 }
-
             }
         };
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -257,7 +268,6 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        unregisterReceiver(receptorBluetooth);
     }
 
 
@@ -280,7 +290,6 @@ public class MainActivity extends AppCompatActivity{
             case (R.id.action_settings):
                 Intent intentAjustes= new Intent(this, AjustesActivity.class);
                 startActivity(intentAjustes);
-                probarConexion();
                 break;
 
             case (R.id.action_bluetooth):
@@ -288,7 +297,6 @@ public class MainActivity extends AppCompatActivity{
                 if(esCompatibleBluetooth) {
                     activarBluetooth();
                     buscarDispositivos();
-                    unregisterReceiver(receptorBluetooth);
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,

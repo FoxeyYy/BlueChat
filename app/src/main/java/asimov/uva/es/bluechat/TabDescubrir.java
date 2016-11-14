@@ -60,8 +60,10 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         Intent intentChat = new Intent(getContext(), ChatActivity.class);
-        intentChat.putExtra("nombre_contacto", dispositvos.get(lista.indexOfChild(v)).getName());
+        BluetoothDevice dispositivo = dispositvos.get(lista.indexOfChild(v));
+        intentChat.putExtra("nombre_contacto", dispositivo.getName());
         startActivity(intentChat);
+        new ClienteBluetooth(dispositivo).start();
     }
 
     public void eliminarTarjetas(){
