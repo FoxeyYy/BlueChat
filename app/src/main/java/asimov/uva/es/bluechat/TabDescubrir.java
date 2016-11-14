@@ -5,7 +5,6 @@ package asimov.uva.es.bluechat;
  */
 
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;

@@ -17,5 +17,9 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_chat);
         Bundle params = getIntent().getExtras();
         ((TextView) findViewById(R.id.nombre_contacto)).setText(params.getString("nombre_contacto"));
+        enviarSaludo();
+    }
+
+    private void enviarSaludo() {
     }
 }
