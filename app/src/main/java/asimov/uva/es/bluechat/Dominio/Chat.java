@@ -31,6 +31,18 @@ public class Chat {
         return chats;
     }
 
+    public void setPar(Contacto par) {
+        this.par = par;
+    }
+
+    public void setHistorial(List<Mensaje> historial) {
+        this.historial = historial;
+    }
+
+    public List<Mensaje> getHistorial() {
+        return historial;
+    }
+
     public Contacto getPar() {
         return par;
     }

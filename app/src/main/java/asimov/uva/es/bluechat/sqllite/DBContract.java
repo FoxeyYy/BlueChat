@@ -3,7 +3,7 @@ package asimov.uva.es.bluechat.sqllite;
 import android.provider.BaseColumns;
 
 /**
- * Crea la estructura de las tablas para mejorar la mantenibilidad
+ * Define la estructura de las tablas de la base de datos
  * Created by DAVID on 11/11/2016.
  */
 

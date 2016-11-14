@@ -17,7 +17,8 @@ public class DBHelper extends SQLiteOpenHelper{
             , DBContract.Contacto.COLUMN_NAME_NOMBRE, DBContract.Contacto.COLUMN_NAME_IMAGE);
 
     public static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
-            ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT );", DBContract.Chat.COLUMN_NAME_ID,
+            ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(mac) REFERENCES " +
+            "Chat(mac));", DBContract.Chat.COLUMN_NAME_ID,
             DBContract.Chat.COLUMN_NAME_MAC, DBContract.Chat.COLUMN_NAME_CONTENT,
             DBContract.Chat.COLUMN_NAME_EMISOR, DBContract.Chat.COLUMN_NAME_RECEPTOR, DBContract.Chat.COLUMN_NAME_FECHA);
 

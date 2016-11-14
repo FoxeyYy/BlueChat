@@ -21,11 +21,25 @@ public class Contacto {
         this.imagen = imagen;
     }
 
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setDireccionMac(String direccionMac) {
+        this.direccionMac = direccionMac;
+    }
     public String getDireccionMac() {
         return direccionMac;
     }
 
     public String getNombre() {
         return nombre;
+    }
+    public String getImagen() {
+        return imagen;
     }
 }
