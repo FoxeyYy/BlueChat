@@ -21,17 +21,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static asimov.uva.es.bluechat.R.id.container;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     /**
      * Resultado de la solicitud del permiso de localizacion
@@ -42,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
      * Resultado de la solicitud de la activacion del bluetooth
      */
     private final int BLUETOOTH_ACTIVADO = 1;
+
+    /**
+     * Resultado de la solicitud de visibilidad del bluetooth
+     */
+    private final int BLUETOOTH_VISIBLE = 1;
 
     /**
      * Adaptador bluetooth del dispositivo
@@ -61,7 +65,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Tag para debug
      */
-    public static final String TAG = "BLUETOOH";
+    public static final String TAG = "BLUETOOTH";
+
+    /**
+     * Dispositivos descubiertos
+     */
+    private static List<BluetoothDevice> dispositivos;
 
 
     /**
@@ -79,10 +88,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private LinearLayout lista;
+    private Set<BluetoothDevice> conectados;
+    private TabDescubrir tab_descubrir;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "EMPEZANDO MAIN");
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -98,14 +111,27 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
         comprobarBluetooth();
 
         if( esCompatibleBluetooth ) {
-            activarBluetooth();
+            dispositivos = new ArrayList<BluetoothDevice>();
             comprobarPermisos();
+            activarBluetooth();
             buscarDispositivos();
+            new ServidorBluetooth().start();
+            conectados = adaptadorBluetooth.getBondedDevices();
+
         }
 
+    }
+
+    public void probarConexion(){
+        for(BluetoothDevice device : conectados)
+            if(device.getAddress().equals( "24:DA:9B:OC:83:E5") || device.getAddress().equals( "30:A8:DB:49:19:97")) {
+                Log.d(TAG,"Enviando a dispositivo emparejado");
+                new ClienteBluetooth(device).start();
+            }
     }
 
     /**
@@ -145,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void comprobarBluetooth() {
         adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
+        esCompatibleBluetooth = true;
         if (adaptadorBluetooth == null) {
             Log.d(TAG, "BLUETOOTH NO DISPONIBLE");
             esCompatibleBluetooth = false;
@@ -161,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
         }
+//        Intent discoverableIntent = new
+//                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+//        startActivityForResult(discoverableIntent,BLUETOOTH_VISIBLE);
     }
 
     @Override
@@ -170,12 +201,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.info_bluetooth_desactivado, Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == BLUETOOTH_VISIBLE){
+            if(resultCode == RESULT_CANCELED)
+                Toast.makeText(this, R.string.info_bluetooth_visible, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
      * Busca los dispositivos que se encuentren en modo visible dentro del rango
      */
     private void buscarDispositivos() {
+        Log.d(TAG,"Buscando..");
+        dispositivos.clear();
         // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
         receptorBluetooth = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -185,6 +222,8 @@ public class MainActivity extends AppCompatActivity {
                 if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                     // Obtenemos el nuevo dispostivo encontrado
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    tab_descubrir.anadirDispositivo(device);
+                    dispositivos.add(dispositivos.size(),device);
 
                 }else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
                     Log.d(TAG,"EMPEZANDO A DESCUBRIR");
@@ -205,13 +244,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
-        //adaptadorBluetooth.cancelDiscovery();
+        adaptadorBluetooth.cancelDiscovery();
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        //unregisterReceiver(receptorBluetooth);
+        unregisterReceiver(receptorBluetooth);
     }
 
 
@@ -234,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
             case (R.id.action_settings):
                 Intent intentAjustes= new Intent(this, AjustesActivity.class);
                 startActivity(intentAjustes);
+                probarConexion();
                 break;
 
             case (R.id.action_bluetooth):
@@ -241,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 if(esCompatibleBluetooth) {
                     activarBluetooth();
                     buscarDispositivos();
+                    unregisterReceiver(receptorBluetooth);
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,
@@ -280,7 +321,8 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
            switch (position){
                case 0:
-                   return new Tab_descubrir();
+                   tab_descubrir = new TabDescubrir();
+                   return tab_descubrir;
                case 1:
                    return new Tab_chats();
                default:
