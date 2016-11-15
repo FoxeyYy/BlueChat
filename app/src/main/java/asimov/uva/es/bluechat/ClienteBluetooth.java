@@ -14,6 +14,7 @@ public class ClienteBluetooth extends Thread {
 
     private final BluetoothSocket socket;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+    private final String MENSAJECLIENTE = "Saludos desde el cliente";
     private final String ERROR = "ERROR";
     private final String TAG = "BLUETOOTH";
 
@@ -46,7 +47,9 @@ public class ClienteBluetooth extends Thread {
             cerrar();
         }
 
-        new Conexion(socket).start();
+        Conexion nuevaConexion = new Conexion(socket);
+        nuevaConexion.start();
+        nuevaConexion.enviar(MENSAJECLIENTE.getBytes());
     }
 
     /**

@@ -20,7 +20,7 @@ public class Conexion extends Thread {
     private final String TAG = "BLUETOOTH";
 
     public Conexion(BluetoothSocket socket){
-        Log.d(TAG,"CONEXION BUENA");
+        Log.d(CONEXION,"CONEXION BUENA");
         this.socket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
@@ -35,9 +35,6 @@ public class Conexion extends Thread {
         entrada = tmpIn;
         salida = tmpOut;
 
-        //Probamos la conexion
-        String saludo = "Hola, estamos conectados";
-        enviar(saludo.getBytes());
     }
 
     /**
@@ -52,7 +49,9 @@ public class Conexion extends Thread {
         try{
             bytes = entrada.read(buffer);
             if( bytes>0 ) {
-                Log.d(CONEXION, new String(buffer, "UTF-8").substring(0,bytes));
+                String mensaje = new String(buffer, "UTF-8").substring(0,bytes);
+                MainActivity.getMainActivity().notificar(mensaje);
+                Log.d(CONEXION, mensaje);
             }
         }catch (IOException e){
             Log.d(ERROR, "Error recibiendo info");

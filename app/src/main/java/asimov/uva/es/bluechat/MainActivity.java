@@ -1,6 +1,9 @@
 package asimov.uva.es.bluechat;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -14,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +31,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static asimov.uva.es.bluechat.R.id.container;
 
@@ -89,8 +92,9 @@ public class MainActivity extends AppCompatActivity{
      */
     private ViewPager mViewPager;
 
-    private Set<BluetoothDevice> conectados;
+
     private TabDescubrir tab_descubrir;
+    private static MainActivity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,9 +123,32 @@ public class MainActivity extends AppCompatActivity{
             comprobarPermisos();
             activarBluetooth();
             new ServidorBluetooth().start();
-            conectados = adaptadorBluetooth.getBondedDevices();
-
         }
+
+        mainActivity = this;
+
+    }
+
+    public static MainActivity getMainActivity(){
+        return mainActivity;
+    }
+
+    public void notificar(String mensaje){
+        Intent intent = new Intent(this, NotificationCompat.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notificacion =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle("BlueChat")
+                        .setSmallIcon(R.drawable.noticacion_icon)
+                        .setCategory(Notification.CATEGORY_MESSAGE)
+                        .setAutoCancel(true)
+                        .setFullScreenIntent(pIntent,true)
+                        .setContentText(mensaje).build();
+
+        manager.notify(0,notificacion);
+
 
     }
 
@@ -188,12 +215,6 @@ public class MainActivity extends AppCompatActivity{
         if (!adaptadorBluetooth.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
-        }
-        if(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE != adaptadorBluetooth.getScanMode()) {
-        Intent discoverableIntent = new
-                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivityForResult(discoverableIntent,BLUETOOTH_VISIBLE);
         }
     }
 
@@ -264,12 +285,6 @@ public class MainActivity extends AppCompatActivity{
         super.onPause();
         adaptadorBluetooth.cancelDiscovery();
     }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
