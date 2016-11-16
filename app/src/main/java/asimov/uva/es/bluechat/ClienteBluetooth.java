@@ -24,7 +24,7 @@ public class ClienteBluetooth extends Thread {
     /**
      * Identificador unico y universal
      */
-    private static final UUID MY_UUID = UUID.fromString("asimov.info.uva.es.2016");
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     /**
      * Mensaje predefinido de saludo que envia el cliente una vez se conecta a un servidor
@@ -43,7 +43,7 @@ public class ClienteBluetooth extends Thread {
         BluetoothSocket tmpSocket = null;
         Log.d(TAG,"CREADO CLIENTE");
         try{
-            tmpSocket = dispositivo.createRfcommSocketToServiceRecord(MY_UUID);
+            tmpSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(MY_UUID);
         }catch (IOException e){
             Log.d(ERROR,"Error preparando el socket cliente");
         }

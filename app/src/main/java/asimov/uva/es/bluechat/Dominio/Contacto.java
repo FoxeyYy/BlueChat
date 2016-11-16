@@ -10,7 +10,14 @@ package asimov.uva.es.bluechat.Dominio;
  */
 public class Contacto {
 
+    /**
+     * Nombre del contacto
+     */
     private String nombre;
+
+    /**
+     * Direcion mac asociado al contacto
+     */
     private long direccionMac;
 
     /**
@@ -21,10 +28,18 @@ public class Contacto {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene la direccion mac del contacto
+     * @return direccion mac del contacto
+     */
     public long getDireccionMac() {
         return direccionMac;
     }
 
+    /**
+     * Obtiene el nombre del contacto
+     * @return nombre del contacto
+     */
     public String getNombre() {
         return nombre;
     }

@@ -13,6 +13,9 @@ import java.util.Date;
 
 public class Mensaje {
 
+    /**
+     * Mensaje
+     */
     private String mensaje;
 
     /**

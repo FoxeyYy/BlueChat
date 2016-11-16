@@ -25,12 +25,12 @@ public class ServidorBluetooth extends Thread {
     /**
      * Identificador unico y universal
      */
-    private static final UUID MY_UUID = UUID.fromString("asimov.info.uva.es.2016");
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     /**
      * Mensaje predefinido de saludo que envia el servidor una vez se conecta un cliente
      */
-    private final String MENSAJESERVIDOR = "Saludos desde el servdor";
+    private final String MENSAJESERVIDOR = "Saludos desde el servidor";
 
     /**
      * Nombre de la aplicación para ofrecer
@@ -56,7 +56,7 @@ public class ServidorBluetooth extends Thread {
         adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
 
         try {
-            tmp = adaptadorBluetooth.listenUsingRfcommWithServiceRecord(NOMBRE, MY_UUID);
+            tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
 
         } catch (IOException e) {
             Log.d(CONEXION, "Error creando el socket que va a escuchar");
@@ -68,11 +68,13 @@ public class ServidorBluetooth extends Thread {
     public void run() {
         BluetoothSocket socket = null;
 
+
         //Escuchamos esperando conexciones
         //Llamada bloqueante
         while (true) {
             try {
                 socket = socketServidor.accept();
+                Log.d(CONEXION,"Servidor Run" + socket.toString());
             } catch (IOException e) {
                 break;
             }

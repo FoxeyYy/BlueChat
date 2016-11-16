@@ -1,9 +1,5 @@
 package asimov.uva.es.bluechat;
 
-/**
- * Created by Guti on 31/10/2016.
- */
-
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,9 +34,10 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     private List<BluetoothDevice> dispositvos;
 
     /**
-     *
+     * Inflador para inicializar las tarjetas de contactos
      */
     private LayoutInflater inflater;
+
 
     private final String TAG = "BLUETOOTH";
 

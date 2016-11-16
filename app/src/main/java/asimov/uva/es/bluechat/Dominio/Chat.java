@@ -12,14 +12,24 @@ import java.util.List;
  */
 public class Chat {
 
+    /**
+     * {@link Contacto} con el que el que se establece el chat
+     */
     private Contacto par;
 
+    /**
+     * Historial de mensajes del chat
+     */
     private List<Mensaje> historial =  new ArrayList<>();
 
-
+    /**
+     * Inicializa el chat
+     * @param contacto con el cual se establece el chat
+     */
     public Chat(Contacto contacto) {
         par = contacto;
     }
+
     /**
      * Consigue todos los chats disponibles
      * @return la lista de chats
@@ -34,6 +44,10 @@ public class Chat {
         return chats;
     }
 
+    /**
+     * Obtiene el contacto con el que se ha establecido el chat
+     * @return {@link Contacto} con el que se ha establecido el chat
+     */
     public Contacto getPar() {
         return par;
     }

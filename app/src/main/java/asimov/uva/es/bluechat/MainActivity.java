@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity{
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -147,6 +148,10 @@ public class MainActivity extends AppCompatActivity{
         return mainActivity;
     }
 
+    /**
+     * Muestra una notificacion con el mensaje recibido como parametro
+     * @param mensaje que mostrar en la notificacion
+     */
     public void notificar(String mensaje){
         Intent intent = new Intent(this, NotificationCompat.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
@@ -249,10 +254,12 @@ public class MainActivity extends AppCompatActivity{
      * Busca los dispositivos que se encuentren en modo visible dentro del rango
      */
     private void buscarDispositivos() {
-        Log.d(TAG,"Buscando..");
+        //Elimina los dispositivos encontrados previamente
+        //asi como las tarjetas asociadas a los mismos en la vista
         dispositivos.clear();
         tab_descubrir.eliminarTarjetas();
 
+        //Muestra una barra de progreso al usuario
         ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
         barraProgreso.setVisibility(View.VISIBLE);
 
@@ -265,6 +272,7 @@ public class MainActivity extends AppCompatActivity{
                 // Descubrimos un nuevo dispositivo
                 switch (action) {
                     case (BluetoothDevice.ACTION_FOUND):
+
                         // Obtenemos el nuevo dispostivo encontrado
                         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                         if (!dispositivos.contains(device)) {
@@ -273,9 +281,13 @@ public class MainActivity extends AppCompatActivity{
                             dispositivos.add(device);
                         }
                         break;
+
+                    //
                     case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                         Log.d(TAG, "EMPEZANDO A DESCUBRIR");
                         break;
+
+                    //Finaliza el descubrimiento, oculta la barra de progreso
                     case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                         Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
                         ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
@@ -302,16 +314,13 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         switch (id) {

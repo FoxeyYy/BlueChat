@@ -16,13 +16,29 @@ import java.io.OutputStream;
  */
 public class ConexionBluetooth extends Thread {
 
+    /**
+     * Socket encargado de la conexion
+     */
     private final BluetoothSocket socket;
+
+    /**
+     * Stream de entrada del {@link BluetoothSocket}
+     */
     private final InputStream entrada;
+
+    /**
+     * Stream de salida del {@link BluetoothSocket}
+     */
     private final OutputStream salida;
+
     private final String ERROR = "ERROR";
     private final String CONEXION = "CONEXION";
-    private final String TAG = "BLUETOOTH";
 
+    /**
+     * Inicaliza los streams de la conexion bluetooth
+     * a partir del socket de la misma
+     * @param socket de la conexion
+     */
     public ConexionBluetooth(BluetoothSocket socket){
         Log.d(CONEXION,"CONEXION BUENA");
         this.socket = socket;
