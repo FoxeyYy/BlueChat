@@ -1,6 +1,8 @@
 package asimov.uva.es.bluechat;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
@@ -28,7 +30,28 @@ public class AjustesActivity extends AppCompatActivity {
 
         preferences = getPreferences(MODE_PRIVATE);
         mostrarPreferenciasGuardadas();
-        
+        mostrarAcercaDe();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    /**
+     * Muestra la informacion acerca de al usuario
+     */
+    private void mostrarAcercaDe() {
+        TextView acercaLabel = (TextView) findViewById(R.id.acerca_label);
+        String autores = getString(R.string.autores);
+        String version = "";
+        try {
+            PackageInfo pInfo = null;
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            version = getString(android.R.string.unknownName);
+        }
+        String mensajeAcerca = getString(R.string.acerca_de, autores, version);
+        acercaLabel.setText(mensajeAcerca);
     }
 
     @Override

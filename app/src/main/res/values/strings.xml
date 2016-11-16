@@ -1,7 +1,19 @@
 <resources>
+
     <string name="app_name">BlueChat</string>
     <string name="action_settings">Ajustes</string>
     <string name="tab_descubrir">Descubrir</string>
     <string name="tab_chats">Chats</string>
     <string name="mac_personal">Tu dirección: %s</string>
+    <string name="acerca_de">Cluster #1 \n
+        %1$s\n\n
+        Version %2$s
+    </string>
+    <string name="autores">
+        Silvia Arias Herguedas\n
+        Héctor Del Campo Pando\n
+        Alberto Gutiérrez Pérez\n
+        David Robles Gallardo
+    </string>
+    <string name="action_ajustes">Ayuda</string>
 </resources>
