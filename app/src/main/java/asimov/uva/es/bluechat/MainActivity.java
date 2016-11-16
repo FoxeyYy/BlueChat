@@ -34,6 +34,15 @@ import java.util.List;
 
 import static asimov.uva.es.bluechat.R.id.container;
 
+/**
+ * Actividad principal de la aplicacion
+ * Encargada de comprobar la disponibilidad del bluetooth,
+ * pedir los permisos pertinentes y activar el mismo.
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
+ */
 public class MainActivity extends AppCompatActivity{
 
     /**
@@ -92,8 +101,14 @@ public class MainActivity extends AppCompatActivity{
      */
     private ViewPager mViewPager;
 
-
+    /**
+     * Tab que muestra los dispositivos encontrados mediante bluetooth
+     */
     private TabDescubrir tab_descubrir;
+
+    /**
+     * Implementacion para el patron Singleton
+     */
     private static MainActivity mainActivity;
 
     @Override
@@ -122,7 +137,6 @@ public class MainActivity extends AppCompatActivity{
             dispositivos = new ArrayList<BluetoothDevice>();
             comprobarPermisos();
             activarBluetooth();
-            new ServidorBluetooth().start();
         }
 
         mainActivity = this;
@@ -312,6 +326,7 @@ public class MainActivity extends AppCompatActivity{
                 if(esCompatibleBluetooth) {
                     activarBluetooth();
                     buscarDispositivos();
+                    new ServidorBluetooth().start();
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,
@@ -354,7 +369,7 @@ public class MainActivity extends AppCompatActivity{
                    tab_descubrir = new TabDescubrir();
                    return tab_descubrir;
                case 1:
-                   return new Tab_chats();
+                   return new TabChats();
                default:
                    Log.d(TAG,"Error seleccionando tag");
                    return null;

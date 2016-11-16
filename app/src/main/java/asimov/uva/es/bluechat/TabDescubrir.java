@@ -18,6 +18,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Tab que muestra los dispositvos encontrados
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
+ */
 public class TabDescubrir extends Fragment implements View.OnClickListener{
 
     /**
@@ -30,8 +37,13 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      */
     private List<BluetoothDevice> dispositvos;
 
-    private final String TAG = "BLUETOOTH";
+    /**
+     *
+     */
     private LayoutInflater inflater;
+
+    private final String TAG = "BLUETOOTH";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,6 +57,10 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         return rootView;
     }
 
+    /**
+     * Añade dispositivos dentro de la vista
+     * @param dispositivo a añadir a la vista
+     */
     public void anadirDispositivo(BluetoothDevice dispositivo){
         dispositvos.add(dispositvos.size(), dispositivo);
         View tarjeta = inflater.inflate(R.layout.tarjeta_contacto,null);
@@ -66,6 +82,9 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         new ClienteBluetooth(dispositivo).start();
     }
 
+    /**
+     * Elimina todas las tarjetas de los dispositivos que se encuentran en la vista
+     */
     public void eliminarTarjetas(){
         lista.removeAllViews();
     }

@@ -1,9 +1,12 @@
 package asimov.uva.es.bluechat.Dominio;
 
 /**
- * Created by hector on 6/11/16.
- * Clase representativa de un contacto de la App,
+ * Contacto de la App,
  * contiene datos identificativos para una persona
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
 public class Contacto {
 

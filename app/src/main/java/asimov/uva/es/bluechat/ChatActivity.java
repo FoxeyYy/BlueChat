@@ -6,7 +6,10 @@ import android.widget.TextView;
 
 /**
  * Actividad para los chats interactivos
- * @author hector
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
 public class ChatActivity extends AppCompatActivity {
 

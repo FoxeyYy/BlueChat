@@ -3,7 +3,6 @@ package asimov.uva.es.bluechat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,14 @@ import java.util.List;
 import asimov.uva.es.bluechat.Dominio.Chat;
 
 /**
- * Created by Guti on 31/10/2016.
+ * Tab que muestra los chats con los que se ha establecido
+ * una conversacion previa
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
-
-public class Tab_chats extends Fragment implements View.OnClickListener {
+public class TabChats extends Fragment implements View.OnClickListener {
 
     /**
      * Lista donde añadir tarjetas de personas

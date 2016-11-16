@@ -8,9 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Hilo encargado de la transmision de los mensajes
+ * Hilo encargado de la transmision de los mensajes una vez se ha establecido la conexion
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
-public class Conexion extends Thread {
+public class ConexionBluetooth extends Thread {
 
     private final BluetoothSocket socket;
     private final InputStream entrada;
@@ -19,7 +23,7 @@ public class Conexion extends Thread {
     private final String CONEXION = "CONEXION";
     private final String TAG = "BLUETOOTH";
 
-    public Conexion(BluetoothSocket socket){
+    public ConexionBluetooth(BluetoothSocket socket){
         Log.d(CONEXION,"CONEXION BUENA");
         this.socket = socket;
         InputStream tmpIn = null;
@@ -49,7 +53,11 @@ public class Conexion extends Thread {
         try{
             bytes = entrada.read(buffer);
             if( bytes>0 ) {
+
+                //Obtenemos el String a partir de los bytes obtenidos en el buffer de lectura
                 String mensaje = new String(buffer, "UTF-8").substring(0,bytes);
+
+                //Notificamos el mensaje a la actividad para que muestre una notificacion por pantalla
                 MainActivity.getMainActivity().notificar(mensaje);
                 Log.d(CONEXION, mensaje);
             }
