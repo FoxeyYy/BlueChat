@@ -71,6 +71,11 @@ public class MainActivity extends AppCompatActivity{
     private BroadcastReceiver receptorBluetooth;
 
     /**
+     * Estado del dispositivo bluetooth, buscando o no
+     */
+    private boolean buscando = false;
+
+    /**
      * El dispositivo es compatible con el bluetooth
      */
     private boolean esCompatibleBluetooth;
@@ -285,11 +290,13 @@ public class MainActivity extends AppCompatActivity{
                     //
                     case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                         Log.d(TAG, "EMPEZANDO A DESCUBRIR");
+                        buscando = true;
                         break;
 
                     //Finaliza el descubrimiento, oculta la barra de progreso
                     case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                         Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
+                        buscando = false;
                         ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
                         barraProgreso.setVisibility(View.INVISIBLE);
                         unregisterReceiver(receptorBluetooth);
@@ -334,8 +341,10 @@ public class MainActivity extends AppCompatActivity{
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
                     activarBluetooth();
-                    buscarDispositivos();
-                    new ServidorBluetooth().start();
+                    if (!buscando) {
+                        buscarDispositivos();
+                        new ServidorBluetooth().start();
+                    }
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,
