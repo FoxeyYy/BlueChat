@@ -39,7 +39,7 @@ import io.fabric.sdk.android.Fabric;
 import static asimov.uva.es.bluechat.R.id.container;
 
 /**
- * Actividad principal de la aplicacion
+ * Actividad principal de la aplicación
  * Encargada de comprobar la disponibilidad del bluetooth,
  * pedir los permisos pertinentes y activar el mismo.
  * @author David Robles Gallardo
@@ -50,12 +50,12 @@ import static asimov.uva.es.bluechat.R.id.container;
 public class MainActivity extends AppCompatActivity{
 
     /**
-     * Resultado de la solicitud del permiso de localizacion
+     * Resultado de la solicitud del permiso de localización
      */
     private final int PERMISO_LOCALIZACION = 1;
 
     /**
-     * Resultado de la solicitud de la activacion del bluetooth
+     * Resultado de la solicitud de la activación del bluetooth
      */
     private final int BLUETOOTH_ACTIVADO = 1;
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity{
     private BluetoothAdapter adaptadorBluetooth;
 
     /**
-     * Receptor de informacion de los dispositivos descubiertos
+     * Receptor de información de los dispositivos descubiertos
      */
     private BroadcastReceiver receptorBluetooth;
 
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity{
     private TabDescubrir tab_descubrir;
 
     /**
-     * Implementacion para el patron Singleton
+     * Implementación para el patron Singleton
      */
     private static MainActivity mainActivity;
 
@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
-     * Muestra una notificacion con el mensaje recibido como parametro
-     * @param mensaje que mostrar en la notificacion
+     * Muestra una notificación con el mensaje recibido como parámetro
+     * @param mensaje El mensaje a mostrar en la notificación
      */
     public void notificar(String mensaje){
         Intent intent = new Intent(this, NotificationCompat.class);
@@ -181,10 +181,8 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-
-
     /**
-     * Comprueba si la aplicacion posee los permisos necesarios para poder funcionar
+     * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
      * De no ser así le pide dichos permisos al usuario
      */
     private void comprobarPermisos() {
@@ -193,7 +191,6 @@ public class MainActivity extends AppCompatActivity{
             ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -325,9 +322,14 @@ public class MainActivity extends AppCompatActivity{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receptorBluetooth, filter);
+
+        /*Comienza a descubrir dispositivos*/
         adaptadorBluetooth.startDiscovery();
     }
 
+    /**
+     *
+     */
     @Override
     protected void onPause(){
         super.onPause();

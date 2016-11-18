@@ -24,7 +24,7 @@ public class Chat {
 
     /**
      * Inicializa el chat
-     * @param contacto con el cual se establece el chat
+     * @param contacto El contacto con el cual se establece el chat
      */
     public Chat(Contacto contacto) {
         par = contacto;
@@ -32,7 +32,7 @@ public class Chat {
 
     /**
      * Consigue todos los chats disponibles
-     * @return la lista de chats
+     * @return chats La lista de chats
      */
     public static List<Chat> getChats() {
         List<Chat> chats = new ArrayList<>();
@@ -44,14 +44,24 @@ public class Chat {
         return chats;
     }
 
+    /**
+     * Establece el valor para el contacto con el que se establece el chat
+     */
     public void setPar(Contacto par) {
         this.par = par;
     }
 
+    /**
+     * Establece el valor por defecto para el historial de mensajes
+     */
     public void setHistorial(List<Mensaje> historial) {
         this.historial = historial;
     }
 
+    /**
+     * Devuelve el historial de mensajes para el chat
+     * @return historial El historial de mensajes
+     */
     public List<Mensaje> getHistorial() {
         return historial;
     }

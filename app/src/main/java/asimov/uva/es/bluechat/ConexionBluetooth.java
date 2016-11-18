@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Hilo encargado de la transmision de los mensajes una vez se ha establecido la conexion
+ * Hilo encargado de la transmisión de los mensajes una vez se ha establecido la conexión
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -17,7 +17,7 @@ import java.io.OutputStream;
 public class ConexionBluetooth extends Thread {
 
     /**
-     * Socket encargado de la conexion
+     * Socket encargado de la conexión
      */
     private final BluetoothSocket socket;
 
@@ -35,9 +35,9 @@ public class ConexionBluetooth extends Thread {
     private final String CONEXION = "CONEXION";
 
     /**
-     * Inicaliza los streams de la conexion bluetooth
+     * Inicaliza los streams de la conexión bluetooth
      * a partir del socket de la misma
-     * @param socket de la conexion
+     * @param socket El socket de la conexión
      */
     public ConexionBluetooth(BluetoothSocket socket){
         Log.d(CONEXION,"CONEXION BUENA");
@@ -84,8 +84,8 @@ public class ConexionBluetooth extends Thread {
     }
 
     /**
-     * Envia el mensaje
-     * @param mensaje a enviar
+     * Envía el mensaje
+     * @param mensaje El mensaje a enviar
      */
     public void enviar(byte[] mensaje){
         try {

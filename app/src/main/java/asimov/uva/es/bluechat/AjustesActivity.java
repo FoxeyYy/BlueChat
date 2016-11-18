@@ -43,7 +43,7 @@ public class AjustesActivity extends AppCompatActivity {
     }
 
     /**
-     * Muestra la informacion acerca de al usuario
+     * Muestra la información acerca de al usuario
      */
     private void mostrarAcercaDe() {
         TextView acercaLabel = (TextView) findViewById(R.id.acerca_label);
@@ -106,6 +106,10 @@ public class AjustesActivity extends AppCompatActivity {
         return preferences.getString(AVATAR, "");
     }
 
+    /**
+     * Devuelve la dirección MAC del dispositivo
+     * @return la direcció MAC del dispositivo
+     */
     private String getMacBluetooth() {
         return android.provider.Settings.Secure.getString(
                 getBaseContext().getContentResolver(),

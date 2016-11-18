@@ -5,17 +5,25 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Crea la base de datos a partir de las sentencias correspondientes para su creación
- * Created by DAVID on 11/11/2016.
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
 public class DBHelper extends SQLiteOpenHelper{
+
+    /*Versión de la base de datos. Con cada nuevo cambio, el número se incrementa*/
     public static final int DATABASE_VERSION = 1;
 
+    /*Nombre de la base de datos*/
     public static final String DATABASE_NAME = "Bluechat.db";
 
+    /*Sentencia de creación de la tabla Contacto*/
     public static final String SQL_CREATE_TABLE_CONTACTO = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
             ",%s TEXT, %s TEXT );", DBContract.Contacto.TABLE_NAME, DBContract.Contacto.COLUMN_NAME_MAC
             , DBContract.Contacto.COLUMN_NAME_NOMBRE, DBContract.Contacto.COLUMN_NAME_IMAGE);
 
+    /*Sentencia de creación de la tabla Chat*/
     public static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
             ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(mac) REFERENCES " +
             "Chat(mac));", DBContract.Chat.COLUMN_NAME_ID,
@@ -46,6 +54,7 @@ public class DBHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Contacto.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Chat.TABLE_NAME);
+        db.setVersion(newVersion);
         onCreate(db);
     }
 }

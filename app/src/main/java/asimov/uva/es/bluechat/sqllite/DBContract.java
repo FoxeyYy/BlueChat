@@ -4,12 +4,15 @@ import android.provider.BaseColumns;
 
 /**
  * Define la estructura de las tablas de la base de datos
- * Created by DAVID on 11/11/2016.
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
 
 public class DBContract {
-    private DBContract(){}
 
+    private DBContract(){}
 
     /**
      * Define la tabla Contacto con sus respectivos atributos

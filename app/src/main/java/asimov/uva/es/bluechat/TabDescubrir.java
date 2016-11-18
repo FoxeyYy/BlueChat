@@ -98,7 +98,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Cambia la visivilidad de la barra de progreso,
      * si no existe dicha barra la llamada quedara sin efecto
-     * @param visibilidad a poner
+     * @param visibilidad La visibilidad a establecer
      */
     public void setEstadoBarraProgreso(int visibilidad) {
 

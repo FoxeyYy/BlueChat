@@ -15,8 +15,8 @@
         David Robles Gallardo
     </string>
     <string name="action_ajustes">Ayuda</string>
-    <string name="info_bluetooth_desactivado">Con bluetooth desactivado solamente podrá ver mensajes previos. Si desea enviar o recibir es necesario que lo active </string>
-    <string name="info_bluetooth_visible">Es necesario que permita que el dispositivo sea visible para poder realizar la conexionBluetooth</string>
-    <string name="permisos_denegados">Es necesario el uso de la hubicacion para poder descubrir dispositivos</string>
-    <string name="dispositivo_sin_bluetooth">La aplicacion necesita bluetooth en el dispositivo</string>
+    <string name="info_bluetooth_desactivado">Con Bluetooth desactivado solamente podrá ver mensajes previos. Si desea enviar o recibir es necesario que lo active </string>
+    <string name="info_bluetooth_visible">Es necesario que permita que el dispositivo sea visible para poder realizar la conexión Bluetooth</string>
+    <string name="permisos_denegados">Es necesario el uso de la ubicación para poder descubrir dispositivos</string>
+    <string name="dispositivo_sin_bluetooth">La aplicación necesita Bluetooth en el dispositivo</string>
 </resources>

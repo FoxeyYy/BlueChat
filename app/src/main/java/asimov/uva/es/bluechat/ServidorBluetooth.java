@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * Hilo encargado de la establecer el socket Servidor y escuchar peticiones de conexion
+ * Hilo encargado de la establecer el socket Servidor y escuchar peticiones de conexión
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -23,12 +23,12 @@ public class ServidorBluetooth extends Thread {
     private BluetoothServerSocket socketServidor;
 
     /**
-     * Identificador unico y universal
+     * Identificador único y universal
      */
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     /**
-     * Mensaje predefinido de saludo que envia el servidor una vez se conecta un cliente
+     * Mensaje predefinido de saludo que envía el servidor una vez se conecta un cliente
      */
     private final String MENSAJESERVIDOR = "Saludos desde el servidor";
 

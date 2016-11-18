@@ -18,12 +18,12 @@ import java.util.UUID;
 public class ClienteBluetooth extends Thread {
 
     /**
-     * Socket cliente que realia la conexion con el servidor
+     * Socket cliente que realiza la conexión con el servidor
      */
     private final BluetoothSocket socket;
 
     /**
-     * Identificador unico y universal
+     * Identificador único y universal
      */
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
@@ -38,7 +38,7 @@ public class ClienteBluetooth extends Thread {
 
     /**
      * Busca el socket del servidor
-     * @param mac
+     * @param mac La dirección MAC del servidor
      */
     public ClienteBluetooth(String mac){
         BluetoothDevice dispositivo = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
@@ -74,7 +74,7 @@ public class ClienteBluetooth extends Thread {
     }
 
     /**
-     * Cierra el socket asociado a la conexion
+     * Cierra el socket asociado a la conexión
      */
     public void cerrar(){
         try{
