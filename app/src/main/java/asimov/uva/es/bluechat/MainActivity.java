@@ -224,6 +224,18 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "TabDescubrir", tab_descubrir);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        tab_descubrir = (TabDescubrir) getSupportFragmentManager().getFragment(savedInstanceState, "TabDescubrir");
+    }
+
     /**
      * Pide permiso al usuario para activar el Bluetooth del dispositivo
      */
