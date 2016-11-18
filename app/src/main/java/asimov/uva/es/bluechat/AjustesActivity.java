@@ -8,6 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+/**
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
+ */
 public class AjustesActivity extends AppCompatActivity {
 
     /**
@@ -68,6 +74,9 @@ public class AjustesActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Muetra las preferencias previamente guardadas
+     */
     private void mostrarPreferenciasGuardadas() {
         TextView nombre = (TextView)findViewById(R.id.nombre_preferencias);
         nombre.setText(getNombreGuardado());

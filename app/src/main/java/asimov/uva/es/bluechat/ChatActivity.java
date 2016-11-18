@@ -7,7 +7,10 @@ import android.widget.TextView;
 
 /**
  * Actividad para los chats interactivos
- * @author hector
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
 public class ChatActivity extends AppCompatActivity {
 
@@ -25,4 +28,6 @@ public class ChatActivity extends AppCompatActivity {
         Bundle params = getIntent().getExtras();
         ((TextView) findViewById(R.id.nombre_contacto)).setText(params.getString("nombre_contacto"));
     }
+
+
 }

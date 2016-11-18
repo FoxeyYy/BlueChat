@@ -3,13 +3,19 @@ package asimov.uva.es.bluechat.Dominio;
 import java.util.Date;
 
 /**
- * Created by hector on 6/11/16.
- * Clase representativa de un mensaje enviado por la App,
+ * Mensaje enviado por la App,
  * contiene tanto el mensaje como los metadatos.
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
  */
 
 public class Mensaje {
 
+    /**
+     * Mensaje
+     */
     private String mensaje;
 
     /**
