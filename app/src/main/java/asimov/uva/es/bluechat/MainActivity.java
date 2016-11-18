@@ -28,10 +28,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Contacto;
+import io.fabric.sdk.android.Fabric;
 
 import static asimov.uva.es.bluechat.R.id.container;
 
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "EMPEZANDO MAIN");
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
