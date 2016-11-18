@@ -16,17 +16,17 @@ public class Contacto implements Parcelable{
     /**
      * Nombre del contacto
      */
-    private String nombre;
+    private final String nombre;
 
     /**
      * Direcion mac asociado al contacto
      */
-    private String direccionMac;
+    private final String direccionMac;
 
     /**
      * Ruta de la imagen asociada al contacto
     */
-    private String imagen;
+    private final String imagen;
 
     /**
      * Inicializa a los parámetros que se indican

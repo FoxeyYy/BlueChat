@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Tag para debug
      */
-    public static final String TAG = "BLUETOOTH";
+    private static final String TAG = "BLUETOOTH";
 
     /**
      * Dispositivos descubiertos
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity{
         comprobarBluetooth();
 
         if( esCompatibleBluetooth ) {
-            dispositivos = new ArrayList<BluetoothDevice>();
+            dispositivos = new ArrayList<>();
             comprobarPermisos();
             activarBluetooth();
         }
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity{
         Notification notificacion =
                 new NotificationCompat.Builder(this)
                         .setContentTitle("BlueChat")
-                        .setSmallIcon(R.drawable.noticacion_icon)
+                        .setSmallIcon(R.drawable.notificacion_icon)
                         .setCategory(Notification.CATEGORY_MESSAGE)
                         .setAutoCancel(true)
                         .setFullScreenIntent(pIntent,true)
@@ -194,7 +195,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISO_LOCALIZACION: {
 

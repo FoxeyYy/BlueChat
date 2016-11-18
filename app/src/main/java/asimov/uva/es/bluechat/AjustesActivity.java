@@ -48,9 +48,9 @@ public class AjustesActivity extends AppCompatActivity {
     private void mostrarAcercaDe() {
         TextView acercaLabel = (TextView) findViewById(R.id.acerca_label);
         String autores = getString(R.string.autores);
-        String version = "";
+        String version;
         try {
-            PackageInfo pInfo = null;
+            PackageInfo pInfo;
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {

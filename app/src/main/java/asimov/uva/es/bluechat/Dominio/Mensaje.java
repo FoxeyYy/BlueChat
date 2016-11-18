@@ -111,7 +111,6 @@ public class Mensaje {
 
     /**
      * Establece el valor del nombre del receptor del mensaje
-     * @return receptor El nombre del receptor
      */
     public void setReceptor(String receptor) {
         this.receptor = receptor;

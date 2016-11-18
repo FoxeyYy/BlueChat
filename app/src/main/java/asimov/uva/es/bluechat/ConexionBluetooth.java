@@ -17,11 +17,6 @@ import java.io.OutputStream;
 public class ConexionBluetooth extends Thread {
 
     /**
-     * Socket encargado de la conexión
-     */
-    private final BluetoothSocket socket;
-
-    /**
      * Stream de entrada del {@link BluetoothSocket}
      */
     private final InputStream entrada;
@@ -41,7 +36,7 @@ public class ConexionBluetooth extends Thread {
      */
     public ConexionBluetooth(BluetoothSocket socket){
         Log.d(CONEXION,"CONEXION BUENA");
-        this.socket = socket;
+
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
 

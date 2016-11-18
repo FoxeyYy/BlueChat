@@ -39,7 +39,6 @@ public class ServidorBluetooth extends Thread {
 
     private final String CONEXION = "CONEXION";
     private final String ERROR = "ERROR";
-    private final String TAG = "BLUETOOTH";
 
     /**
      * Adaptador bluetooth del dispositivo
@@ -66,7 +65,7 @@ public class ServidorBluetooth extends Thread {
 
     @Override
     public void run() {
-        BluetoothSocket socket = null;
+        BluetoothSocket socket;
 
 
         //Escuchamos esperando conexciones
@@ -79,19 +78,17 @@ public class ServidorBluetooth extends Thread {
                 break;
             }
             //ConexionBluetooth aceptada
-            if (socket != null) {
-                Log.d(CONEXION, "Aceptada la conexionBluetooth nueva en el servidor");
+            Log.d(CONEXION, "Aceptada la conexionBluetooth nueva en el servidor");
 
-                //Manejo de la conexionBluetooth en otro hilo diferente
-                ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket);
-                conexionBluetooth.start();
+            //Manejo de la conexionBluetooth en otro hilo diferente
+            ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket);
+            conexionBluetooth.start();
 
-                //Probamos la conexionBluetooth enviando un mensaje predefinido
-                conexionBluetooth.enviar(MENSAJESERVIDOR.getBytes());
+            //Probamos la conexionBluetooth enviando un mensaje predefinido
+            conexionBluetooth.enviar(MENSAJESERVIDOR.getBytes());
 
-                cancelar();
-                break;
-            }
+            cancelar();
+            break;
         }
     }
 

@@ -12,16 +12,16 @@
         android:inputType="textPersonName"
         android:ems="12"
         android:id="@+id/nombre_preferencias"
-        android:text="Nombre a mostrar"
+        android:text="@string/nombre_a_mostrar"
         style="@android:style/Widget.EditText"
-        android:singleLine="true"
         android:selectAllOnFocus="false"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_marginStart="24dp"
         app:layout_constraintLeft_toRightOf="@+id/avatar_preferencias"
         android:layout_marginLeft="24dp"
         app:layout_constraintTop_toTopOf="@+id/avatar_preferencias"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar_preferencias" />
+        app:layout_constraintBottom_toBottomOf="@+id/avatar_preferencias"
+        android:maxLines="1" />
 
     <ImageButton
         android:layout_width="51dp"
@@ -35,7 +35,7 @@
         android:layout_marginLeft="24dp" />
 
     <TextView
-        android:text="Tu dirección:"
+        android:text="@string/tu_direccion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mac_preferencias"

@@ -52,7 +52,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         this.inflater = inflater;
         View rootView = inflater.inflate(R.layout.fragment_descubrir, container, false);
 
-        dispositivos = new ArrayList<Contacto>();
+        dispositivos = new ArrayList<>();
         lista = (LinearLayout) rootView.findViewById(R.id.lista_descubrir);
 
         return rootView;

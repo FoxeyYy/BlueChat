@@ -30,10 +30,6 @@
         android:layout_height="match_parent"
         android:layout_weight="0.7">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
     </ScrollView>
 
     <LinearLayout
@@ -60,7 +56,7 @@
                 android:id="@+id/editText3"
                 android:layout_width="wrap_content"
                 android:layout_weight="0.7"
-                android:text="Escribe aquí"/>
+                android:text="@string/escribe_aqui"/>
 
             <ImageButton
                 android:layout_width="wrap_content"
