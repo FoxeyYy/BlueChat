@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity{
                         if (!dispositivos.contains(device)) {
                             Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
                             tab_descubrir.anadirDispositivo(new Contacto(device.getName(),
-                                    device.getAddress()), false);
+                                    device.getAddress(), ""), false);
                             
                             dispositivos.add(device);
                         }

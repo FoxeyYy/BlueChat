@@ -16,7 +16,6 @@ public class Contacto implements Parcelable{
     /**
      * Nombre del contacto
      */
-    private String direccionMac;
     private String nombre;
 
     /**
@@ -31,11 +30,9 @@ public class Contacto implements Parcelable{
      * @param nombre Nombre del usuario
      * @param imagen Imagen del usuario
      */
-    public Contacto (String nombre, String direccionMac) {
-    public Contacto (String direccionMac, String nombre, String imagen) {
+    public Contacto (String nombre, String direccionMac, String imagen) {
         this.direccionMac = direccionMac;
         this.nombre = nombre;
-        this.direccionMac = direccionMac;
         this.imagen = imagen;
     }
 
@@ -43,18 +40,6 @@ public class Contacto implements Parcelable{
      * Obtiene la direccion mac del contacto
      * @return direccion mac del contacto
      */
-    public String getDireccionMac() {
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setDireccionMac(String direccionMac) {
-        this.direccionMac = direccionMac;
-    }
     public String getDireccionMac() {
         return direccionMac;
     }
@@ -67,6 +52,10 @@ public class Contacto implements Parcelable{
         return nombre;
     }
 
+    public String getImagen() {
+        return imagen;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -76,8 +65,7 @@ public class Contacto implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);
         dest.writeString(direccionMac);
+        dest.writeString(imagen);
     }
-    public String getImagen() {
-        return imagen;
-    }
+
 }

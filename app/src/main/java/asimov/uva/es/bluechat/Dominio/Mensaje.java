@@ -1,7 +1,5 @@
 package asimov.uva.es.bluechat.Dominio;
 
-import java.util.Date;
-
 /**
  * Mensaje enviado por la App,
  * contiene tanto el mensaje como los metadatos.
