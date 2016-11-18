@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -92,6 +93,24 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      */
     public void eliminarTarjetas(){
         lista.removeAllViews();
+    }
+
+    /**
+     * Cambia la visivilidad de la barra de progreso,
+     * si no existe dicha barra la llamada quedara sin efecto
+     * @param visibilidad a poner
+     */
+    public void setEstadoBarraProgreso(int visibilidad) {
+
+        if (null == getActivity()) {
+            return;
+        }
+
+        ProgressBar barraProgreso = (ProgressBar) getActivity().findViewById(R.id.bar_descubrir);
+
+        if (null != barraProgreso){
+            barraProgreso.setVisibility(visibilidad);
+        }
     }
 
     @Override

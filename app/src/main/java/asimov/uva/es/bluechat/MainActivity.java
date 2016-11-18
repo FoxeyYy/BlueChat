@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -278,10 +277,6 @@ public class MainActivity extends AppCompatActivity{
         dispositivos.clear();
         tab_descubrir.eliminarTarjetas();
 
-        //Muestra una barra de progreso al usuario
-        ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
-        barraProgreso.setVisibility(View.VISIBLE);
-
         // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
         receptorBluetooth = new BroadcastReceiver() {
             @Override
@@ -306,6 +301,7 @@ public class MainActivity extends AppCompatActivity{
                     //
                     case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                         Log.d(TAG, "EMPEZANDO A DESCUBRIR");
+                        tab_descubrir.setEstadoBarraProgreso(View.VISIBLE);
                         buscando = true;
                         break;
 
@@ -313,8 +309,7 @@ public class MainActivity extends AppCompatActivity{
                     case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                         Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
                         buscando = false;
-                        ProgressBar barraProgreso = (ProgressBar) findViewById(R.id.bar_descubrir);
-                        barraProgreso.setVisibility(View.INVISIBLE);
+                        tab_descubrir.setEstadoBarraProgreso(View.INVISIBLE);
                         unregisterReceiver(receptorBluetooth);
                         break;
                 }
