@@ -37,9 +37,9 @@ public class Chat {
     public static List<Chat> getChats() {
         List<Chat> chats = new ArrayList<>();
 
-        chats.add(new Chat(new Contacto("Carlos")));
-        chats.add(new Chat(new Contacto("Ana")));
-        chats.add(new Chat(new Contacto("Diego")));
+        chats.add(new Chat(new Contacto("Carlos", "AA:BB:CC:DD:EE")));
+        chats.add(new Chat(new Contacto("Ana","AA:BB:CC:DD:EE")));
+        chats.add(new Chat(new Contacto("Diego","AA:BB:CC:DD:EE")));
 
         return chats;
     }

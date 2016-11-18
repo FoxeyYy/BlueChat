@@ -1,8 +1,9 @@
 package asimov.uva.es.bluechat;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +15,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import asimov.uva.es.bluechat.Dominio.Contacto;
+
 /**
- * Tab que muestra los dispositvos encontrados
+ * Tab que muestra los dispositivos encontrados
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -31,7 +34,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Dispositvos cercanos descubiertos
      */
-    private List<BluetoothDevice> dispositvos;
+    private List<Contacto> dispositivos;
 
     /**
      * Inflador para inicializar las tarjetas de contactos
@@ -48,7 +51,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         this.inflater = inflater;
         View rootView = inflater.inflate(R.layout.fragment_descubrir, container, false);
 
-        dispositvos = new ArrayList<BluetoothDevice>();
+        dispositivos = new ArrayList<Contacto>();
         lista = (LinearLayout) rootView.findViewById(R.id.lista_descubrir);
 
         return rootView;
@@ -58,25 +61,30 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * Añade dispositivos dentro de la vista
      * @param dispositivo a añadir a la vista
      */
-    public void anadirDispositivo(BluetoothDevice dispositivo){
-        dispositvos.add(dispositvos.size(), dispositivo);
+    public void anadirDispositivo(Contacto dispositivo, boolean restaurando){
+        if (!restaurando) {
+            dispositivos.add(dispositivo);
+        }
         View tarjeta = inflater.inflate(R.layout.tarjeta_contacto,null);
+
         TextView nombre = (TextView) tarjeta.findViewById(R.id.nombre_contacto);
-        nombre.setText(dispositivo.getName());
+        nombre.setText(dispositivo.getNombre());
+
         TextView mac = (TextView) tarjeta.findViewById(R.id.ultimo_mensaje);
-        mac.setText(dispositivo.getAddress());
+        mac.setText(String.valueOf(dispositivo.getDireccionMac()));
+
         lista.addView(tarjeta);
         tarjeta.setOnClickListener(this);
-        Log.d(TAG,"Añandiendo el nombre: " + dispositivo.getName()+" con mac: " + dispositivo.getAddress());
+        Log.d(TAG,"Añandiendo el nombre: " + dispositivo.getNombre()+" con mac: " + String.valueOf(dispositivo.getDireccionMac()));
     }
 
     @Override
     public void onClick(View v) {
         Intent intentChat = new Intent(getContext(), ChatActivity.class);
-        BluetoothDevice dispositivo = dispositvos.get(lista.indexOfChild(v));
-        intentChat.putExtra("nombre_contacto", dispositivo.getName());
+        Contacto dispositivo = dispositivos.get(lista.indexOfChild(v));
+        intentChat.putExtra("nombre_contacto", dispositivo.getNombre());
         startActivity(intentChat);
-        new ClienteBluetooth(dispositivo).start();
+        new ClienteBluetooth(dispositivo.getDireccionMac()).start();
     }
 
     /**
@@ -85,5 +93,29 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     public void eliminarTarjetas(){
         lista.removeAllViews();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("Dispositivos", (ArrayList<? extends Parcelable>) dispositivos);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (null == savedInstanceState) {
+            return;
+        }
+
+        dispositivos = savedInstanceState.getParcelableArrayList("Dispositivos");
+        Log.e("asdasd", "cargado");
+
+
+        for(Contacto dispositivo: dispositivos) {
+            anadirDispositivo(dispositivo, true);
+        }
+    }
+
 
 }

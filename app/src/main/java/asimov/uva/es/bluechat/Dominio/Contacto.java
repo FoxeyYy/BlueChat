@@ -1,5 +1,8 @@
 package asimov.uva.es.bluechat.Dominio;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Contacto de la App,
  * contiene datos identificativos para una persona
@@ -8,7 +11,7 @@ package asimov.uva.es.bluechat.Dominio;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class Contacto {
+public class Contacto implements Parcelable{
 
     /**
      * Nombre del contacto
@@ -18,21 +21,22 @@ public class Contacto {
     /**
      * Direcion mac asociado al contacto
      */
-    private long direccionMac;
+    private String direccionMac;
 
     /**
      * Constructor por defecto
      * @param nombre del contacto
      */
-    public Contacto (String nombre) {
+    public Contacto (String nombre, String direccionMac) {
         this.nombre = nombre;
+        this.direccionMac = direccionMac;
     }
 
     /**
      * Obtiene la direccion mac del contacto
      * @return direccion mac del contacto
      */
-    public long getDireccionMac() {
+    public String getDireccionMac() {
         return direccionMac;
     }
 
@@ -42,5 +46,16 @@ public class Contacto {
      */
     public String getNombre() {
         return nombre;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nombre);
+        dest.writeString(direccionMac);
     }
 }

@@ -1,5 +1,6 @@
 package asimov.uva.es.bluechat;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
@@ -37,9 +38,10 @@ public class ClienteBluetooth extends Thread {
 
     /**
      * Busca el socket del servidor
-     * @param dispositivo
+     * @param mac
      */
-    public ClienteBluetooth(BluetoothDevice dispositivo){
+    public ClienteBluetooth(String mac){
+        BluetoothDevice dispositivo = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
         BluetoothSocket tmpSocket = null;
         Log.d(TAG,"CREADO CLIENTE");
         try{

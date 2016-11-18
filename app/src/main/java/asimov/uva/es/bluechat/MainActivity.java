@@ -32,6 +32,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import asimov.uva.es.bluechat.Dominio.Contacto;
+
 import static asimov.uva.es.bluechat.R.id.container;
 
 /**
@@ -294,7 +296,9 @@ public class MainActivity extends AppCompatActivity{
                         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                         if (!dispositivos.contains(device)) {
                             Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
-                            tab_descubrir.anadirDispositivo(device);
+                            tab_descubrir.anadirDispositivo(new Contacto(device.getName(),
+                                    device.getAddress()), false);
+                            
                             dispositivos.add(device);
                         }
                         break;
