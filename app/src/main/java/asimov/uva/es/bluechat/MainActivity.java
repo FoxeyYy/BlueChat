@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity{
 
         if( esCompatibleBluetooth ) {
             dispositivos = new ArrayList<>();
+            startService(new Intent(this, ServidorBluetooth.class));
             comprobarPermisos();
             activarBluetooth();
         }
@@ -178,7 +179,6 @@ public class MainActivity extends AppCompatActivity{
                         .setContentText(mensaje).build();
 
         manager.notify(0,notificacion);
-
 
     }
 
@@ -361,7 +361,6 @@ public class MainActivity extends AppCompatActivity{
                     activarBluetooth();
                     if (!buscando) {
                         buscarDispositivos();
-                        new ServidorBluetooth().start();
                     }
                 }else
                     Toast.makeText(this,

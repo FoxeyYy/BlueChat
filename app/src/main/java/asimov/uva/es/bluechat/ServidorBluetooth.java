@@ -1,8 +1,12 @@
 package asimov.uva.es.bluechat;
 
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
@@ -15,7 +19,12 @@ import java.util.UUID;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class ServidorBluetooth extends Thread {
+public class ServidorBluetooth extends Service implements Runnable {
+
+    /**
+     * Subproceso de ejecucion
+     */
+    private Thread hilo;
 
     /**
      * Socket del servidor
@@ -49,28 +58,36 @@ public class ServidorBluetooth extends Thread {
      * Inicializa el servidor, creando un socketServidor en modo escucha pasiva
      */
     public ServidorBluetooth() {
+
         Log.d(CONEXION,"Creado Servidor");
+
         BluetoothServerSocket tmp = null;
 
         adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
 
         try {
+            Log.d(CONEXION, "tmp");
             tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
-
         } catch (IOException e) {
             Log.d(CONEXION, "Error creando el socket que va a escuchar");
         }
         socketServidor = tmp;
+
+        hilo = new Thread(this);
+        hilo.start();
+
     }
 
     @Override
     public void run() {
-        BluetoothSocket socket;
 
+        BluetoothSocket socket;
 
         //Escuchamos esperando conexciones
         //Llamada bloqueante
         while (true) {
+            Log.d(CONEXION, "Servicio en ejecucion");
+
             try {
                 socket = socketServidor.accept();
                 Log.d(CONEXION,"Servidor Run" + socket.toString());
@@ -80,7 +97,7 @@ public class ServidorBluetooth extends Thread {
             //ConexionBluetooth aceptada
             Log.d(CONEXION, "Aceptada la conexionBluetooth nueva en el servidor");
 
-            //Manejo de la conexionBluetooth en otro hilo diferente
+            //Manejo de la conexion Bluetooth en otro hilo diferente
             ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket);
             conexionBluetooth.start();
 
@@ -103,6 +120,16 @@ public class ServidorBluetooth extends Thread {
         }
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        stopSelf();
+        super.onTaskRemoved(rootIntent);
+    }
 
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 }
 
