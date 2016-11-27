@@ -103,9 +103,6 @@ public class ServidorBluetooth extends Service implements Runnable {
 
             //Probamos la conexionBluetooth enviando un mensaje predefinido
             conexionBluetooth.enviar(MENSAJESERVIDOR.getBytes());
-
-            cancelar();
-            break;
         }
     }
 
@@ -113,6 +110,7 @@ public class ServidorBluetooth extends Service implements Runnable {
      * Cierra el socket que se encuentra esperando conexiones
      */
     private void cancelar() {
+        hilo.interrupt();
         try {
             socketServidor.close();
         } catch (IOException e) {
@@ -122,6 +120,7 @@ public class ServidorBluetooth extends Service implements Runnable {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        cancelar();
         stopSelf();
         super.onTaskRemoved(rootIntent);
     }

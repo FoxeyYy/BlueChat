@@ -73,6 +73,7 @@ public class ConexionBluetooth extends Thread {
                 Log.d(CONEXION, mensaje);
             }
         }catch (IOException e){
+            Log.d(ERROR, e.toString());
             Log.d(ERROR, "Error recibiendo info");
 
         }
