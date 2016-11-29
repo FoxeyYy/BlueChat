@@ -41,6 +41,31 @@ public class Contacto implements Parcelable{
     }
 
     /**
+     * Constructor parceable
+     * @param in datos del parceable
+     */
+    private Contacto(Parcel in) {
+        nombre = in.readString();
+        direccionMac = in.readString();
+        imagen = in.readString();
+    }
+
+    /**
+     * Constructor parceable
+     */
+    public static final Creator<Contacto> CREATOR = new Creator<Contacto>() {
+        @Override
+        public Contacto createFromParcel(Parcel in) {
+            return new Contacto(in);
+        }
+
+        @Override
+        public Contacto[] newArray(int size) {
+            return new Contacto[size];
+        }
+    };
+
+    /**
      * Obtiene la dirección MAC del contacto
      * @return direccionMac La dirección MAC del contacto
      */
