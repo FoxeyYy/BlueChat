@@ -26,7 +26,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -303,7 +302,7 @@ public class MainActivity extends AppCompatActivity{
                     //
                     case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                         Log.d(TAG, "EMPEZANDO A DESCUBRIR");
-                        tab_descubrir.setEstadoBarraProgreso(View.VISIBLE);
+                        tab_descubrir.setEstadoBarraProgreso(true);
                         buscando = true;
                         break;
 
@@ -311,7 +310,7 @@ public class MainActivity extends AppCompatActivity{
                     case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                         Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
                         buscando = false;
-                        tab_descubrir.setEstadoBarraProgreso(View.INVISIBLE);
+                        tab_descubrir.setEstadoBarraProgreso(false);
                         unregisterReceiver(receptorBluetooth);
                         break;
                 }

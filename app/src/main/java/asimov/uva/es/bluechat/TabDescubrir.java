@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -54,6 +54,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
         dispositivos = new ArrayList<>();
         lista = (LinearLayout) rootView.findViewById(R.id.lista_descubrir);
+
+        setEstadoBarraProgreso(false);
 
         return rootView;
     }
@@ -100,16 +102,17 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * si no existe dicha barra la llamada quedara sin efecto
      * @param visibilidad La visibilidad a establecer
      */
-    public void setEstadoBarraProgreso(int visibilidad) {
+    public void setEstadoBarraProgreso(boolean visibilidad) {
 
         if (null == getActivity()) {
             return;
         }
 
-        ProgressBar barraProgreso = (ProgressBar) getActivity().findViewById(R.id.bar_descubrir);
+        SwipeRefreshLayout barraProgreso = (SwipeRefreshLayout) getActivity().findViewById(R.id.layout_swipe);
 
         if (null != barraProgreso){
-            barraProgreso.setVisibility(visibilidad);
+            barraProgreso.setRefreshing(visibilidad);
+            barraProgreso.setEnabled(visibilidad);
         }
     }
 
