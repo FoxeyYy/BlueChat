@@ -28,8 +28,15 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.7">
+        android:layout_weight="0.7"
+        android:background="@android:color/darker_gray">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:id="@+id/lista_mensajes"></LinearLayout>
     </ScrollView>
 
     <LinearLayout
@@ -41,19 +48,21 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@android:color/background_light">
 
             <ImageButton
                 android:layout_height="match_parent"
                 app:srcCompat="@android:drawable/ic_menu_crop"
-                android:id="@+id/imageButton2"
-                android:layout_width="wrap_content" />
+                android:id="@+id/boton_emojis"
+                android:layout_width="wrap_content"
+                android:background="@android:color/transparent" />
 
             <EditText
                 android:layout_height="match_parent"
                 android:inputType="textMultiLine"
                 android:ems="15"
-                android:id="@+id/editText3"
+                android:id="@+id/texto"
                 android:layout_width="wrap_content"
                 android:layout_weight="0.7"
                 android:text="@string/escribe_aqui"/>
@@ -62,7 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 app:srcCompat="@android:drawable/ic_menu_send"
-                android:id="@+id/imageButton3" />
+                android:id="@+id/boton_enviar"
+                android:background="@android:color/transparent" />
 
         </LinearLayout>
     </LinearLayout>
