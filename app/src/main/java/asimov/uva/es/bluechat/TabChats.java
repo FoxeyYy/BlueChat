@@ -55,7 +55,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Intent intentChat = new Intent(getContext(), ChatActivity.class);
-        intentChat.putExtra("nombre_contacto", historial.get(lista.indexOfChild(v)).getPar().getNombre());
+        intentChat.putExtra("chat", historial.get(lista.indexOfChild(v)));
         startActivity(intentChat);
     }
 }
