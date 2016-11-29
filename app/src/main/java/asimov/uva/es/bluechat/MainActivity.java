@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Dispositivos descubiertos
      */
-    private static List<BluetoothDevice> dispositivos;
+    private static List<BluetoothDevice> dispositivos = new ArrayList();
 
 
     /**
@@ -145,10 +145,7 @@ public class MainActivity extends AppCompatActivity{
         comprobarBluetooth();
 
         if( esCompatibleBluetooth ) {
-            dispositivos = new ArrayList<>();
             startService(new Intent(this, ServidorBluetooth.class));
-            comprobarPermisos();
-            activarBluetooth();
         }
 
         mainActivity = this;
@@ -357,6 +354,7 @@ public class MainActivity extends AppCompatActivity{
             case (R.id.action_bluetooth):
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
+                    comprobarPermisos();
                     activarBluetooth();
                     if (!buscando) {
                         buscarDispositivos();
