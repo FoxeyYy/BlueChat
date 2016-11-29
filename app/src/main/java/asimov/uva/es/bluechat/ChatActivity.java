@@ -62,6 +62,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.boton_enviar:
                 String texto = String.valueOf(campo_texto.getText());
                 mostrarMensajeEnviado(texto);
+                campo_texto.setText("");
         }
     }
 

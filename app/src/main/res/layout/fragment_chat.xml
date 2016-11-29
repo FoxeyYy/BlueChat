@@ -65,7 +65,7 @@
                 android:id="@+id/texto"
                 android:layout_width="wrap_content"
                 android:layout_weight="0.7"
-                android:text="@string/escribe_aqui"/>
+                android:hint="@string/escribe_aqui" />
 
             <ImageButton
                 android:layout_width="wrap_content"
