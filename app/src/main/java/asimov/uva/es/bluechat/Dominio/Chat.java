@@ -1,5 +1,8 @@
 package asimov.uva.es.bluechat.Dominio;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class Chat {
+public class Chat implements Parcelable{
 
     /**
      * {@link Contacto} con el que el que se establece el chat
@@ -30,6 +33,23 @@ public class Chat {
         par = contacto;
     }
 
+    protected Chat(Parcel in) {
+        par = in.readParcelable(Contacto.class.getClassLoader());
+        in.readList(historial, Mensaje.class.getClassLoader());
+    }
+
+    public static final Creator<Chat> CREATOR = new Creator<Chat>() {
+        @Override
+        public Chat createFromParcel(Parcel in) {
+            return new Chat(in);
+        }
+
+        @Override
+        public Chat[] newArray(int size) {
+            return new Chat[size];
+        }
+    };
+
     /**
      * Consigue todos los chats disponibles
      * @return chats La lista de chats
@@ -42,6 +62,17 @@ public class Chat {
         chats.add(new Chat(new Contacto("Diego","AA:BB:CC:DD:EE", "")));
 
         return chats;
+    }
+
+    public static Chat getChat(Contacto contacto) {
+        //TODO David, silvia, borrad esto y que devuelva la informacion correspondiente de la BBDD
+        Chat chat = new Chat(contacto);
+        List<Mensaje> historial = new ArrayList<>();
+        historial.add(new Mensaje("Hola!"));
+        historial.add(new Mensaje("¿Que tal?"));
+        historial.add(new Mensaje("Genial, gracias!"));
+        chat.setHistorial(historial);
+        return chat;
     }
 
     /**
@@ -72,5 +103,16 @@ public class Chat {
      */
     public Contacto getPar() {
         return par;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(par, 0);
+        dest.writeList(historial);
     }
 }

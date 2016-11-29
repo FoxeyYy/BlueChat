@@ -1,5 +1,8 @@
 package asimov.uva.es.bluechat.Dominio;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Mensaje enviado por la App,
  * contiene tanto el mensaje como los metadatos.
@@ -9,7 +12,7 @@ package asimov.uva.es.bluechat.Dominio;
  * @author Alberto Gutierrez Perez
  */
 
-public class Mensaje {
+public class Mensaje implements Parcelable{
 
     private String mac;
     private int idMensaje;
@@ -36,6 +39,32 @@ public class Mensaje {
         this.receptor = receptor;
         this.fecha = fecha;
     }
+
+    //TODO borrar
+    public Mensaje(String msg) {
+        this.contenido = msg;
+    }
+
+    protected Mensaje(Parcel in) {
+        mac = in.readString();
+        idMensaje = in.readInt();
+        contenido = in.readString();
+        emisor = in.readString();
+        receptor = in.readString();
+        fecha = in.readString();
+    }
+
+    public static final Creator<Mensaje> CREATOR = new Creator<Mensaje>() {
+        @Override
+        public Mensaje createFromParcel(Parcel in) {
+            return new Mensaje(in);
+        }
+
+        @Override
+        public Mensaje[] newArray(int size) {
+            return new Mensaje[size];
+        }
+    };
 
     /**
      * Obtiene la dirección MAC del emisor del mensaje
@@ -130,5 +159,20 @@ public class Mensaje {
      */
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mac);
+        dest.writeInt(idMensaje);
+        dest.writeString(contenido);
+        dest.writeString(emisor);
+        dest.writeString(receptor);
+        dest.writeString(fecha);
     }
 }

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 
 /**
@@ -84,10 +85,10 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         Intent intentChat = new Intent(getContext(), ChatActivity.class);
-        Contacto dispositivo = dispositivos.get(lista.indexOfChild(v));
-        intentChat.putExtra("contacto", dispositivo);
+        Contacto contacto = dispositivos.get(lista.indexOfChild(v));
+        intentChat.putExtra("chat", Chat.getChat(contacto));
         startActivity(intentChat);
-        new ClienteBluetooth(dispositivo.getDireccionMac()).start();
+        new ClienteBluetooth(contacto.getDireccionMac()).start();
     }
 
     /**

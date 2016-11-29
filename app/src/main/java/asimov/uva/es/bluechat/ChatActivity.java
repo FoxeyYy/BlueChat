@@ -7,7 +7,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import asimov.uva.es.bluechat.Dominio.Contacto;
+import java.util.List;
+
+import asimov.uva.es.bluechat.Dominio.Chat;
+import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 /**
  * Actividad para los chats interactivos
@@ -19,9 +22,9 @@ import asimov.uva.es.bluechat.Dominio.Contacto;
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
-     * Contacto del chat
+     * Chat a mostrar
      */
-    private Contacto contacto;
+    private Chat chat;
 
     private TextView campo_texto;
     private LinearLayout lista_mensajes;
@@ -38,15 +41,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
-        contacto = params.getParcelable("contacto");
+        chat = params.getParcelable("chat");
 
-        ((TextView) findViewById(R.id.nombre_contacto)).setText(contacto.getNombre());
+        ((TextView) findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
         findViewById(R.id.boton_enviar).setOnClickListener(this);
         lista_mensajes = (LinearLayout) findViewById(R.id.lista_mensajes);
         campo_texto = (TextView) findViewById(R.id.texto);
 
-        // TODO Silvia y David, conseguir los mensajes, por ahora todos los que se puedan
-        // Utilizar el mostrarMensajeRecibido para ponerlos
+        List<Mensaje> historial = chat.getHistorial();
+
+        for(Mensaje msg: historial) {
+            mostrarMensajeRecibido(msg.getContenido());
+        }
     }
 
 
@@ -61,7 +67,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private void mostrarMensajeRecibido(String texto) {
         View mensaje = getLayoutInflater().inflate(R.layout.mensaje, null);
-        ((TextView) mensaje.findViewById(R.id.mensaje)).setText(contacto.getNombre() + ": " + texto);
+        ((TextView) mensaje.findViewById(R.id.mensaje)).setText(chat.getPar().getNombre() + ": " + texto);
         lista_mensajes.addView(mensaje, lista_mensajes.getChildCount());
     }
 
