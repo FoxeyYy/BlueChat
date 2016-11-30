@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 /**
  * Hilo encargado de conectarse con el servidor
@@ -15,7 +16,7 @@ import java.util.UUID;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class ClienteBluetooth extends Thread {
+public class ClienteBluetooth implements Callable{
 
     /**
      * Socket cliente que realiza la conexión con el servidor
@@ -31,6 +32,11 @@ public class ClienteBluetooth extends Thread {
      * Mensaje predefinido de saludo que envia el cliente una vez se conecta a un servidor
      */
     private final String MENSAJECLIENTE = "Saludos desde el cliente";
+
+    /**
+     * Conexion encargada del envio de mensajes
+     */
+    private ConexionBluetooth conexion;
 
 
     private final String ERROR = "ERROR";
@@ -50,13 +56,15 @@ public class ClienteBluetooth extends Thread {
             Log.d(ERROR,"Error preparando el socket cliente");
         }
         socket = tmpSocket;
+
+        conectar();
+
     }
 
     /**
      * Conecta con el servidor
      */
-    @Override
-    public void run(){
+    public void conectar(){
        //TODO cancelar la conexion dado que hace que los envios vayan lentos
 
         try {
@@ -66,12 +74,12 @@ public class ClienteBluetooth extends Thread {
             cerrar();
         }
 
-        ConexionBluetooth nuevaConexionBluetooth = new ConexionBluetooth(socket);
-        nuevaConexionBluetooth.start();
+        conexion = new ConexionBluetooth(socket);
+        conexion.start();
 
-        //Enviamos un mensaje predefinido para comprobar que la conexion funciona
-        nuevaConexionBluetooth.enviar(MENSAJECLIENTE.getBytes());
     }
+
+
 
     /**
      * Cierra el socket asociado a la conexión
@@ -82,5 +90,10 @@ public class ClienteBluetooth extends Thread {
         }catch (IOException e){
             Log.d(ERROR, "Error cerrando el socket cliente");
         }
+    }
+
+    @Override
+    public BluetoothSocket call(){
+        return socket;
     }
 }

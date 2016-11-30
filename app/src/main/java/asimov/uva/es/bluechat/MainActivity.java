@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity{
 
         if( esCompatibleBluetooth ) {
             startService(new Intent(this, ServidorBluetooth.class));
+            startService(new Intent(this, EnvioMensajesPendientes.class));
         }
 
         mainActivity = this;
@@ -324,13 +325,17 @@ public class MainActivity extends AppCompatActivity{
         adaptadorBluetooth.startDiscovery();
     }
 
-    /**
-     *
-     */
+
     @Override
     protected void onPause(){
         super.onPause();
         adaptadorBluetooth.cancelDiscovery();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent("asimov.uva.es.bluechat.EnvioMensajesPendientes"));
+        super.onDestroy();
     }
 
     @Override
@@ -354,6 +359,7 @@ public class MainActivity extends AppCompatActivity{
             case (R.id.action_bluetooth):
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
+                    stopService(new Intent("asimov.uva.es.bluechat.EnvioMensajesPendientes"));
                     comprobarPermisos();
                     activarBluetooth();
                     if (!buscando) {

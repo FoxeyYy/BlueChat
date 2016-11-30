@@ -25,6 +25,11 @@
             android:label="ServidorBlueChat" >
         </service>
 
+        <service
+            android:name=".EnvioMensajesPendientes"
+            android:label="EnvioMensajesPendientes">
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

@@ -77,6 +77,7 @@ public class ConexionBluetooth extends Thread {
             Log.d(ERROR, "Error recibiendo info");
 
         }
+
     }
 
     /**
@@ -86,7 +87,6 @@ public class ConexionBluetooth extends Thread {
     public void enviar(byte[] mensaje){
         try {
             salida.write(mensaje);
-
         }catch (IOException e){
             Log.d(ERROR,"Error durante la escritura");
             e.printStackTrace();

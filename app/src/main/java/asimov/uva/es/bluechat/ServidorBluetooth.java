@@ -101,8 +101,6 @@ public class ServidorBluetooth extends Service implements Runnable {
             ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket);
             conexionBluetooth.start();
 
-            //Probamos la conexionBluetooth enviando un mensaje predefinido
-            conexionBluetooth.enviar(MENSAJESERVIDOR.getBytes());
         }
     }
 
