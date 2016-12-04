@@ -49,12 +49,9 @@ public class DBOperations {
      */
     public void insertMessage(Mensaje mensaje){
         ContentValues values = new ContentValues();
-        values.put(DBContract.Chat.COLUMN_NAME_ID, mensaje.getIdMensaje());
-        values.put(DBContract.Chat.COLUMN_NAME_MAC, mensaje.getMac());
         values.put(DBContract.Chat.COLUMN_NAME_CONTENT, mensaje.getContenido());
-        values.put(DBContract.Chat.COLUMN_NAME_EMISOR, mensaje.getEmisor());
-        values.put(DBContract.Chat.COLUMN_NAME_RECEPTOR, mensaje.getReceptor());
-        values.put(DBContract.Chat.COLUMN_NAME_FECHA, mensaje.getFecha());
+        values.put(DBContract.Chat.COLUMN_NAME_EMISOR, mensaje.getEmisor().getDireccionMac());
+        values.put(DBContract.Chat.COLUMN_NAME_FECHA, mensaje.getFecha().toString());
 
         /*Inserta la nueva fila*/
         getDb().insert(DBContract.Chat.TABLE_NAME, null, values);

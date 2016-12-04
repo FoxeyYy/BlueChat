@@ -72,7 +72,43 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Receptor de información de los dispositivos descubiertos
      */
-    private BroadcastReceiver receptorBluetooth;
+    private BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            // Descubrimos un nuevo dispositivo
+            switch (action) {
+                case (BluetoothDevice.ACTION_FOUND):
+
+                    // Obtenemos el nuevo dispostivo encontrado
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    if (!dispositivos.contains(device)) {
+                        Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
+                        tab_descubrir.anadirDispositivo(new Contacto(device.getName(),
+                                device.getAddress(), ""), false);
+
+                        dispositivos.add(device);
+                    }
+                    break;
+
+                //
+                case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                    Log.d(TAG, "EMPEZANDO A DESCUBRIR");
+                    tab_descubrir.setEstadoBarraProgreso(true);
+                    buscando = true;
+                    break;
+
+                //Finaliza el descubrimiento, oculta la barra de progreso
+                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                    Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
+                    buscando = false;
+                    tab_descubrir.setEstadoBarraProgreso(false);
+                    startService(new Intent(getMainActivity(), EnvioMensajesPendientes.class));
+                    break;
+            }
+        }
+    };
 
     /**
      * Estado del dispositivo bluetooth, buscando o no
@@ -120,6 +156,8 @@ public class MainActivity extends AppCompatActivity{
      */
     private static MainActivity mainActivity;
 
+    private Intent servicio;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "EMPEZANDO MAIN");
@@ -145,8 +183,15 @@ public class MainActivity extends AppCompatActivity{
         comprobarBluetooth();
 
         if( esCompatibleBluetooth ) {
-            startService(new Intent(this, ServidorBluetooth.class));
-            startService(new Intent(this, EnvioMensajesPendientes.class));
+            servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);
+            startService(new Intent(MainActivity.this, ServidorBluetooth.class));
+            startService(servicio);
+
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            registerReceiver(receptorBluetooth, filter);
         }
 
         mainActivity = this;
@@ -277,49 +322,15 @@ public class MainActivity extends AppCompatActivity{
         tab_descubrir.eliminarTarjetas();
 
         // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
-        receptorBluetooth = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
 
-                String action = intent.getAction();
-                // Descubrimos un nuevo dispositivo
-                switch (action) {
-                    case (BluetoothDevice.ACTION_FOUND):
 
-                        // Obtenemos el nuevo dispostivo encontrado
-                        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                        if (!dispositivos.contains(device)) {
-                            Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
-                            tab_descubrir.anadirDispositivo(new Contacto(device.getName(),
-                                    device.getAddress(), ""), false);
-                            
-                            dispositivos.add(device);
-                        }
-                        break;
+        Log.e(TAG, "Registrando");
 
-                    //
-                    case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
-                        Log.d(TAG, "EMPEZANDO A DESCUBRIR");
-                        tab_descubrir.setEstadoBarraProgreso(true);
-                        buscando = true;
-                        break;
+        if (adaptadorBluetooth.isDiscovering()) {
+            Log.e(TAG, "descubriendo already");
+        }
 
-                    //Finaliza el descubrimiento, oculta la barra de progreso
-                    case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                        Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
-                        buscando = false;
-                        tab_descubrir.setEstadoBarraProgreso(false);
-                        unregisterReceiver(receptorBluetooth);
-                        break;
-                }
-            }
-        };
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(receptorBluetooth, filter);
 
         /*Comienza a descubrir dispositivos*/
         adaptadorBluetooth.startDiscovery();
@@ -334,7 +345,10 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent("asimov.uva.es.bluechat.EnvioMensajesPendientes"));
+        stopService(servicio);
+        if (buscando) {
+            unregisterReceiver(receptorBluetooth);
+        }
         super.onDestroy();
     }
 
@@ -359,7 +373,7 @@ public class MainActivity extends AppCompatActivity{
             case (R.id.action_bluetooth):
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
-                    stopService(new Intent("asimov.uva.es.bluechat.EnvioMensajesPendientes"));
+                    stopService(servicio);
                     comprobarPermisos();
                     activarBluetooth();
                     if (!buscando) {
