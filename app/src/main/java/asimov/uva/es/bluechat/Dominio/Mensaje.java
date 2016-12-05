@@ -31,11 +31,6 @@ public class Mensaje implements Parcelable{
         this.fecha = new Date();
     }
 
-    //TODO borrar
-    public Mensaje(String msg) {
-        this.contenido = msg;
-    }
-
     protected Mensaje(Parcel in) {
         contenido = in.readString();
         emisor = in.readParcelable(Contacto.class.getClassLoader());

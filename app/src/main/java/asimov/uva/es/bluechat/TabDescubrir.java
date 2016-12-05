@@ -88,7 +88,6 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         Contacto contacto = dispositivos.get(lista.indexOfChild(v));
         intentChat.putExtra("chat", Chat.getChat(contacto));
         startActivity(intentChat);
-        new ClienteBluetooth(contacto.getDireccionMac());
     }
 
     /**

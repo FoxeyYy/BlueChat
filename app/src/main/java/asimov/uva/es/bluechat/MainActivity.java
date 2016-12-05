@@ -321,17 +321,6 @@ public class MainActivity extends AppCompatActivity{
         dispositivos.clear();
         tab_descubrir.eliminarTarjetas();
 
-        // Creamos el objeto que va a recibir la notificacion cuando descubramos un nuevo dispositivo
-
-
-        Log.e(TAG, "Registrando");
-
-        if (adaptadorBluetooth.isDiscovering()) {
-            Log.e(TAG, "descubriendo already");
-        }
-
-
-
         /*Comienza a descubrir dispositivos*/
         adaptadorBluetooth.startDiscovery();
     }
@@ -346,9 +335,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         stopService(servicio);
-        if (buscando) {
-            unregisterReceiver(receptorBluetooth);
-        }
+        unregisterReceiver(receptorBluetooth);
         super.onDestroy();
     }
 

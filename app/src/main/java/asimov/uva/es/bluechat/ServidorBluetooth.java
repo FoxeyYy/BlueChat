@@ -95,7 +95,7 @@ public class ServidorBluetooth extends Service implements Runnable {
                 break;
             }
             //ConexionBluetooth aceptada
-            Log.d(CONEXION, "Aceptada la conexionBluetooth nueva en el servidor");
+            Log.d(CONEXION, "Aceptada la conexion bluetooth nueva en el servidor");
 
             //Manejo de la conexion Bluetooth en otro hilo diferente
             ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket);

@@ -3,6 +3,8 @@ package asimov.uva.es.bluechat.Dominio;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Contacto de la App,
  * contiene datos identificativos para una persona
@@ -11,7 +13,7 @@ import android.os.Parcelable;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class Contacto implements Parcelable{
+public class Contacto implements Parcelable, Serializable{
 
     /**
      * Nombre del contacto

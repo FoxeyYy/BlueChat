@@ -68,9 +68,9 @@ public class Chat implements Parcelable{
         //TODO David, silvia, borrad esto y que devuelva la informacion correspondiente de la BBDD
         Chat chat = new Chat(contacto);
         List<Mensaje> historial = new ArrayList<>();
-        historial.add(new Mensaje("Hola!"));
-        historial.add(new Mensaje("¿Que tal?"));
-        historial.add(new Mensaje("Genial, gracias!"));
+        historial.add(new Mensaje("Hola!", contacto));
+        historial.add(new Mensaje("¿Que tal?", contacto));
+        historial.add(new Mensaje("Genial, gracias!", contacto));
         chat.setHistorial(historial);
         return chat;
     }
