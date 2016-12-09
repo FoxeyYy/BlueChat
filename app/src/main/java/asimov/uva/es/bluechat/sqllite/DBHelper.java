@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper{
             , DBContract.Contacto.COLUMN_NAME_NOMBRE, DBContract.Contacto.COLUMN_NAME_IMAGE);
 
     /* Sentencia de creación de la tabla Chat */
-    private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" + ", %s TEXT, %s TEXT);",
+    private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" + ", %s TEXT PRIMARY KEY, %s TEXT);",
             DBContract.Chat.TABLE_NAME, DBContract.Chat.COLUMN_NAME_ID_CHAT, DBContract.Chat.COLUMN_NAME_ID_CONTACTO, DBContract.Chat.COLUMN_NAME_NOMBRE);
 
 
