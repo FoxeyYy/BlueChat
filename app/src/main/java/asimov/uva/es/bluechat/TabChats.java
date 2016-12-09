@@ -57,6 +57,8 @@ public class TabChats extends Fragment implements View.OnClickListener {
             con.guardar(getContext());
             ch.guardar(getContext());
             his.get(0).guardar(getContext(), ch);
+            Chat.cargarChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
+            historial = Chat.getChats();
         }
 
         for(int i = 0; i < historial.size(); i++) {
