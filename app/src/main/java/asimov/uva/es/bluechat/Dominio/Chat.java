@@ -1,10 +1,15 @@
 package asimov.uva.es.bluechat.Dominio;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import asimov.uva.es.bluechat.sqllite.DBContract;
+import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
  * Clase representativa de un chat
@@ -24,6 +29,12 @@ public class Chat implements Parcelable{
      * Identifica al chat
      */
     private String idChat;
+
+    /**
+     * Nombre del chat
+     */
+    private String nombre;
+
     /**
      * Historial de mensajes del chat
      */
@@ -32,7 +43,7 @@ public class Chat implements Parcelable{
     /**
      * Historial de chats
      */
-    private List<Chat> chats = new ArrayList<>();
+    private static List<Chat> chats = new ArrayList<>();
 
     /**
      * Inicializa el chat
@@ -60,10 +71,45 @@ public class Chat implements Parcelable{
     };
 
     /**
+     * Construye un chat
+     * @param id del chat
+     * @param nombre del chat
+     * @param historial de mensajes del chat
+     * @param contacto del chat
+     */
+    public Chat(String id, String nombre, List<Mensaje> historial, Contacto contacto) {
+        this.idChat = id;
+        this.nombre = nombre;
+        this.historial = historial;
+        this.par = contacto;
+    }
+
+    /**
+     * Carga todos los chats disponibles
+     */
+    public static void cargarChats(Context context) {
+        Cursor cursor = DBOperations.obtenerInstancia(context).getAllChats();
+
+        chats.clear();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
+            Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
+            List<Mensaje> historial = Mensaje.getMensajes(context, idChat);
+
+
+            chats.add(new Chat(idChat, nombre, historial, contacto));
+        }
+
+        cursor.close();
+    }
+
+    /**
      * Consigue todos los chats disponibles
      * @return chats La lista de chats
      */
-    public List<Chat> getChats() {
+    public static List<Chat> getChats() {
         return chats;
     }
 
@@ -72,7 +118,7 @@ public class Chat implements Parcelable{
      * @param contacto el contacto del que buscar el chat
      * @return
      */
-    public Chat getChat(Contacto contacto) {
+    public static Chat getChat(Contacto contacto) {
         Chat chat = null;
         for(int i = 0; i< getChats().size();i++) {
             chat = getChats().get(i);
@@ -120,6 +166,12 @@ public class Chat implements Parcelable{
     public String getIdChat() {
         return idChat;
     }
+
+    /**
+     * Devuelve el nombre del chat
+     * @return el nombre
+     */
+    public String getNombre() { return nombre; }
 
     /**
      * Establece el valor para el identificador del chat

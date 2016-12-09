@@ -24,7 +24,7 @@ public class DBOperations {
 
     /*Consultas a realizar por el gestor de bases de datos*/
     private static final String SQL_READ_MESSAGE = "SELECT * FROM Mensaje WHERE idMensaje = (SELECT MAX(idMensaje) FROM Mensaje);";
-    private static final String SQL_READ_LAST_MESSAGES = "SELECT * FROM Mensaje ORDER BY idMensaje;";
+    private static final String SQL_READ_MESSAGES = "SELECT * FROM Mensaje ORDER BY idMensaje;";
     private static final String SQL_READ_CONTACT = "SELECT * FROM Contacto WHERE mac = ?;";
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
@@ -109,9 +109,8 @@ public class DBOperations {
      * Devuelve los últimos mensajes de un chat
      * @return cursor El cursor a los últimos mensajes
      */
-    public Cursor getLastMessages(){
-        Cursor cursor = getDb().rawQuery(SQL_READ_LAST_MESSAGES, null);
-        cursor.moveToLast();
+    public Cursor getAllMessages(){
+        Cursor cursor = getDb().rawQuery(SQL_READ_MESSAGES, null);
         return cursor;
     }
 
@@ -121,7 +120,6 @@ public class DBOperations {
      */
     public Cursor getAllContacts(){
         Cursor cursor = getDb().rawQuery(SQL_READ_ALL_CONTACTS, null);
-        cursor.moveToFirst();
         return cursor;
     }
 
@@ -142,7 +140,7 @@ public class DBOperations {
      */
     public Cursor getAllChats (){
         Cursor cursor = getDb().rawQuery(SQL_READ_ALL_CHATS, null);
-        cursor.moveToLast();
+        cursor.moveToFirst();
         return cursor;
     }
     /**

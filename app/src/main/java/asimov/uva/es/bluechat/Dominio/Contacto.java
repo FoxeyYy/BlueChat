@@ -1,9 +1,14 @@
 package asimov.uva.es.bluechat.Dominio;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+
+import asimov.uva.es.bluechat.sqllite.DBContract;
+import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
  * Contacto de la App,
@@ -29,6 +34,32 @@ public class Contacto implements Parcelable, Serializable{
      * Ruta de la imagen asociada al contacto
     */
     private final String imagen;
+
+    /**
+     * Encuentra un contacto
+     * @param context
+     * @param mac
+     * @return el contacto o null si no existe
+     */
+    public static Contacto getContacto(Context context, String mac) {
+        Cursor cursor = DBOperations.obtenerInstancia(context).getContact(mac);
+
+        if (cursor.getCount() == 0) {
+            cursor.close();
+            return null;
+        }
+
+        cursor.moveToFirst();
+
+        String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_NOMBRE));
+        String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_IMAGE));
+
+        Contacto contacto = new Contacto(nombre, mac, imagen);
+
+        cursor.close();
+        return contacto;
+
+    }
 
     /**
      * Inicializa a los parámetros que se indican

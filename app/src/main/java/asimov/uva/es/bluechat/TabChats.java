@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
+import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
  * Tab que muestra los chats con los que se ha establecido
@@ -39,6 +40,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         lista = (LinearLayout) rootView.findViewById(R.id.lista_chats);
+        Chat.cargarChats(getContext());
         historial = Chat.getChats();
 
         //TODO Stub
