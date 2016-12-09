@@ -1,5 +1,6 @@
 package asimov.uva.es.bluechat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
  * Actividad para los chats interactivos
@@ -37,7 +39,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
@@ -61,6 +62,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.boton_enviar:
                 String texto = String.valueOf(campo_texto.getText());
+                Context contexto = this;
+                Mensaje mensaje = new Mensaje(texto,chat.getPar());
+                DBOperations.obtenerInstancia(contexto).insertMessage(mensaje,chat);
                 mostrarMensajeEnviado(texto);
                 campo_texto.setText("");
         }
