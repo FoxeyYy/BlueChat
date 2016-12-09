@@ -26,6 +26,11 @@ public class Chat implements Parcelable{
     private List<Mensaje> historial =  new ArrayList<>();
 
     /**
+     * Historial de chats
+     */
+    private List<Chat> chats = new ArrayList<>();
+
+    /**
      * Inicializa el chat
      * @param contacto El contacto con el cual se establece el chat
      */
@@ -54,24 +59,23 @@ public class Chat implements Parcelable{
      * Consigue todos los chats disponibles
      * @return chats La lista de chats
      */
-    public static List<Chat> getChats() {
-        List<Chat> chats = new ArrayList<>();
-
-        chats.add(new Chat(new Contacto("Carlos", "AA:BB:CC:DD:EE", "")));
-        chats.add(new Chat(new Contacto("Ana","AA:BB:CC:DD:EE", "")));
-        chats.add(new Chat(new Contacto("Diego","AA:BB:CC:DD:EE", "")));
-
+    public List<Chat> getChats() {
         return chats;
     }
 
-    public static Chat getChat(Contacto contacto) {
-        //TODO David, silvia, borrad esto y que devuelva la informacion correspondiente de la BBDD
-        Chat chat = new Chat(contacto);
-        List<Mensaje> historial = new ArrayList<>();
-        historial.add(new Mensaje("Hola!", contacto));
-        historial.add(new Mensaje("¿Que tal?", contacto));
-        historial.add(new Mensaje("Genial, gracias!", contacto));
-        chat.setHistorial(historial);
+    /**
+     * Devuelve este chat
+     * @param contacto el contacto del que buscar el chat
+     * @return
+     */
+    public Chat getChat(Contacto contacto) {
+        Chat chat = null;
+        for(int i = 0; i< getChats().size();i++) {
+            chat = getChats().get(i);
+            if(chat.getPar().equals(contacto)){
+                break;
+            }
+        }
         return chat;
     }
 

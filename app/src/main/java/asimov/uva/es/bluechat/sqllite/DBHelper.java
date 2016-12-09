@@ -28,7 +28,8 @@ public class DBHelper extends SQLiteOpenHelper{
             ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(mac) REFERENCES " +
             "Chat(mac));", DBContract.Chat.COLUMN_NAME_ID,
             DBContract.Chat.COLUMN_NAME_MAC, DBContract.Chat.COLUMN_NAME_CONTENT,
-            DBContract.Chat.COLUMN_NAME_EMISOR, DBContract.Chat.COLUMN_NAME_RECEPTOR, DBContract.Chat.COLUMN_NAME_FECHA);
+            DBContract.Chat.COLUMN_NAME_EMISOR, DBContract.Chat.COLUMN_NAME_FECHA,
+            DBContract.Chat.COLUMN_NAME_STATUS);
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -34,6 +34,7 @@ public class DBContract {
         public static final String COLUMN_NAME_EMISOR = "emisor";
         public static final String COLUMN_NAME_RECEPTOR = "receptor";
         public static final String COLUMN_NAME_FECHA = "fecha";
+        public static final String COLUMN_NAME_STATUS = "estado";
 
     }
 

@@ -19,6 +19,7 @@ public class Mensaje implements Parcelable{
     private String contenido;
     private Contacto emisor;
     private Date fecha;
+    private int estado;
 
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
@@ -29,6 +30,7 @@ public class Mensaje implements Parcelable{
         this.contenido = contenido;
         this.emisor = emisor;
         this.fecha = new Date();
+        this.estado = 0;
     }
 
     protected Mensaje(Parcel in) {
@@ -71,6 +73,22 @@ public class Mensaje implements Parcelable{
      */
     public Date getFecha() {
         return fecha;
+    }
+
+    /**
+     * Obtiene el estado del mensaje
+     * @return estado El estado del mensaje
+     */
+    public int getEstado() {
+        return estado;
+    }
+
+    /**
+     * Modifica el valor del estado del mensaje
+     * @param estado El estado del mensaje
+     */
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
     @Override
