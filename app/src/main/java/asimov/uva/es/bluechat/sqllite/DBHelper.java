@@ -23,13 +23,19 @@ public class DBHelper extends SQLiteOpenHelper{
             ",%s TEXT, %s TEXT );", DBContract.Contacto.TABLE_NAME, DBContract.Contacto.COLUMN_NAME_MAC
             , DBContract.Contacto.COLUMN_NAME_NOMBRE, DBContract.Contacto.COLUMN_NAME_IMAGE);
 
-    /*Sentencia de creación de la tabla Chat*/
-    private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
+    /* Sentencia de creación de la tabla Chat */
+    private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" + ", %s TEXT, %s TEXT);",
+            DBContract.Chat.TABLE_NAME, DBContract.Chat.COLUMN_NAME_ID_CHAT, DBContract.Chat.COLUMN_NAME_ID_CONTACTO, DBContract.Chat.COLUMN_NAME_NOMBRE);
+
+
+
+    /*Sentencia de creación de la tabla Mensaje*/
+    private static final String SQL_CREATE_TABLE_MENSAJE = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
             ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(mac) REFERENCES " +
-            "Chat(mac));", DBContract.Chat.COLUMN_NAME_ID,
-            DBContract.Chat.COLUMN_NAME_MAC, DBContract.Chat.COLUMN_NAME_CONTENT,
-            DBContract.Chat.COLUMN_NAME_EMISOR, DBContract.Chat.COLUMN_NAME_FECHA,
-            DBContract.Chat.COLUMN_NAME_STATUS);
+            "Chat(mac));", DBContract.Mensaje.COLUMN_NAME_ID,
+            DBContract.Mensaje.COLUMN_NAME_ID_CHAT, DBContract.Mensaje.COLUMN_NAME_CONTENT,
+            DBContract.Mensaje.COLUMN_NAME_EMISOR, DBContract.Mensaje.COLUMN_NAME_FECHA,
+            DBContract.Mensaje.COLUMN_NAME_STATUS);
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,6 +49,7 @@ public class DBHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_TABLE_CONTACTO);
         db.execSQL(SQL_CREATE_TABLE_CHAT);
+        db.execSQL(SQL_CREATE_TABLE_MENSAJE);
     }
 
     /**
@@ -54,7 +61,8 @@ public class DBHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Contacto.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + DBContract.Chat.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS" + DBContract.Chat.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DBContract.Mensaje.TABLE_NAME);
         db.setVersion(newVersion);
         onCreate(db);
     }

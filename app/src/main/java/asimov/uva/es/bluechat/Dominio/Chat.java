@@ -21,6 +21,10 @@ public class Chat implements Parcelable{
     private Contacto par;
 
     /**
+     * Identifica al chat
+     */
+    private String idChat;
+    /**
      * Historial de mensajes del chat
      */
     private List<Mensaje> historial =  new ArrayList<>();
@@ -107,6 +111,22 @@ public class Chat implements Parcelable{
      */
     public Contacto getPar() {
         return par;
+    }
+
+    /**
+     * Devuelve el identificador del chat
+     * @return idChat El identificador del chat
+     */
+    public String getIdChat() {
+        return idChat;
+    }
+
+    /**
+     * Establece el valor para el identificador del chat
+     * @param idChat El valor proporcionado
+     */
+    public void setIdChat(String idChat) {
+        this.idChat = idChat;
     }
 
     @Override
