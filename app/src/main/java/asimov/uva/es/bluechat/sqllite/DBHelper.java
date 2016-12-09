@@ -2,6 +2,7 @@ package asimov.uva.es.bluechat.sqllite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Crea la base de datos a partir de las sentencias correspondientes para su creación
@@ -24,18 +25,22 @@ public class DBHelper extends SQLiteOpenHelper{
             , DBContract.Contacto.COLUMN_NAME_NOMBRE, DBContract.Contacto.COLUMN_NAME_IMAGE);
 
     /* Sentencia de creación de la tabla Chat */
-    private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" + ", %s TEXT PRIMARY KEY, %s TEXT);",
+    private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" + ", %s , %s TEXT);",
             DBContract.Chat.TABLE_NAME, DBContract.Chat.COLUMN_NAME_ID_CHAT, DBContract.Chat.COLUMN_NAME_ID_CONTACTO, DBContract.Chat.COLUMN_NAME_NOMBRE);
-
-
 
     /*Sentencia de creación de la tabla Mensaje*/
     private static final String SQL_CREATE_TABLE_MENSAJE = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
-            ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(mac) REFERENCES " +
-            "Chat(mac));", DBContract.Mensaje.COLUMN_NAME_ID,
-            DBContract.Mensaje.COLUMN_NAME_ID_CHAT, DBContract.Mensaje.COLUMN_NAME_CONTENT,
-            DBContract.Mensaje.COLUMN_NAME_EMISOR, DBContract.Mensaje.COLUMN_NAME_FECHA,
-            DBContract.Mensaje.COLUMN_NAME_STATUS);
+            ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(%s) REFERENCES " +
+            "Chat(%s));",
+            DBContract.Mensaje.TABLE_NAME,
+            DBContract.Mensaje.COLUMN_NAME_ID,
+            DBContract.Mensaje.COLUMN_NAME_ID_CHAT,
+            DBContract.Mensaje.COLUMN_NAME_CONTENT,
+            DBContract.Mensaje.COLUMN_NAME_EMISOR,
+            DBContract.Mensaje.COLUMN_NAME_FECHA,
+            DBContract.Mensaje.COLUMN_NAME_STATUS,
+            DBContract.Mensaje.COLUMN_NAME_ID_CHAT,
+            DBContract.Chat.COLUMN_NAME_ID_CHAT);
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,6 +52,7 @@ public class DBHelper extends SQLiteOpenHelper{
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.e("helper", "llego");
         db.execSQL(SQL_CREATE_TABLE_CONTACTO);
         db.execSQL(SQL_CREATE_TABLE_CHAT);
         db.execSQL(SQL_CREATE_TABLE_MENSAJE);

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
@@ -20,7 +21,7 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
 public class DBOperations {
 
     /*Representación de la base de datos*/
-    private static DBHelper baseDatos;
+    private static DBHelper baseDatos = null;
 
     /*Consultas a realizar por el gestor de bases de datos*/
     private static final String SQL_READ_MESSAGE = "SELECT * FROM Mensaje WHERE idMensaje = (SELECT MAX(idMensaje) FROM Mensaje);";
@@ -40,7 +41,12 @@ public class DBOperations {
      */
     public static DBOperations obtenerInstancia(Context contexto) {
         if (baseDatos == null) {
-            baseDatos = new DBHelper(contexto);
+
+            try {
+                baseDatos = new DBHelper(contexto);
+            } catch (ExceptionInInitializerError e) {
+                Log.e("excepcion", e.getCause().toString());
+            }
         }
         return instancia;
     }
