@@ -51,13 +51,6 @@
             android:layout_height="match_parent"
             android:background="@android:color/background_light">
 
-            <ImageButton
-                android:layout_height="match_parent"
-                app:srcCompat="@android:drawable/ic_menu_crop"
-                android:id="@+id/boton_emojis"
-                android:layout_width="wrap_content"
-                android:background="@android:color/transparent" />
-
             <EditText
                 android:layout_height="match_parent"
                 android:inputType="textMultiLine"
