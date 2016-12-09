@@ -75,6 +75,19 @@ public class DBOperations {
     }
 
     /**
+     * Inserta un contacto en la base de datos
+     * @param chat El chat que se va a insertar
+     */
+    public void insertChat(Chat chat){
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, chat.getIdChat());
+        values.put(DBContract.Chat.COLUMN_NAME_ID_CONTACTO, chat.getPar().getDireccionMac());
+        values.put(DBContract.Chat.COLUMN_NAME_NOMBRE, chat.getNombre());
+        /*Inserta una nueva fila*/
+        getDb().insert(DBContract.Chat.TABLE_NAME, null, values);
+    }
+
+    /**
      * Devuelve el último mensaje enviado de un chat
      * @return cursor El cursor al último mensaje de un chat
      */
