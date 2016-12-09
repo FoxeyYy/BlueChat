@@ -98,7 +98,6 @@ public class Chat implements Parcelable{
             Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
             List<Mensaje> historial = Mensaje.getMensajes(context, idChat);
 
-
             chats.add(new Chat(idChat, nombre, historial, contacto));
         }
 
@@ -127,6 +126,14 @@ public class Chat implements Parcelable{
             }
         }
         return chat;
+    }
+
+    /**
+     * Guarda el chat
+     * @param context de la actividad
+     */
+    public void guardar(Context context) {
+        DBOperations.obtenerInstancia(context).insertChat(this);
     }
 
     /**

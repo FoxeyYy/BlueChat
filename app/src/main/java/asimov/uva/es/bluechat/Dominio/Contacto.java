@@ -62,6 +62,14 @@ public class Contacto implements Parcelable, Serializable{
     }
 
     /**
+     * Guarda el contacto
+     * @param context de la actividad
+     */
+    public void guardar(Context context)  {
+        DBOperations.obtenerInstancia(context).insertContact(this);
+    }
+
+    /**
      * Inicializa a los parámetros que se indican
      * @param direccionMac La MAC del usuario
      * @param nombre Nombre del usuario

@@ -52,7 +52,6 @@ public class DBHelper extends SQLiteOpenHelper{
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.e("helper", "llego");
         db.execSQL(SQL_CREATE_TABLE_CONTACTO);
         db.execSQL(SQL_CREATE_TABLE_CHAT);
         db.execSQL(SQL_CREATE_TABLE_MENSAJE);

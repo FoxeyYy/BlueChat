@@ -46,6 +46,15 @@ public class Mensaje implements Parcelable{
     }
 
     /**
+     * Guarda el mensaje
+     * @param context de la actividad
+     * @param chat del mensaje
+     */
+    public void guardar(Context context, Chat chat)  {
+        DBOperations.obtenerInstancia(context).insertMessage(this, chat);
+    }
+
+    /**
      * Inicializa un Mensaje a los valores pasados por parámetro
      * @param contenido Contenido del mensaje
      * @param emisor Emisor del mensaje

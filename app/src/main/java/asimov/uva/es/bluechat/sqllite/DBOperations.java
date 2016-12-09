@@ -41,7 +41,6 @@ public class DBOperations {
      */
     public static DBOperations obtenerInstancia(Context contexto) {
         if (baseDatos == null) {
-
             try {
                 baseDatos = new DBHelper(contexto);
             } catch (ExceptionInInitializerError e) {
@@ -64,7 +63,7 @@ public class DBOperations {
         values.put(DBContract.Mensaje.COLUMN_NAME_ID_CHAT,chat.getIdChat());
 
         /*Inserta la nueva fila*/
-        getDb().insert(DBContract.Chat.TABLE_NAME, null, values);
+        getDb().insert(DBContract.Mensaje.TABLE_NAME, null, values);
     }
 
     /**
