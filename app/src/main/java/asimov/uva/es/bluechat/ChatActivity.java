@@ -34,10 +34,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_chat);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
