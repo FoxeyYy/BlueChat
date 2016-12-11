@@ -10,11 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.UUID;
 
-import asimov.uva.es.bluechat.Dominio.Contacto;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 /**
  * Servicio encargado de eniviar los mensajes pendientes
@@ -87,7 +83,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
     }
 
     private void conectar() {
-        String dispositivo = "7C:91:22:3D:6B:69";
+        String dispositivo = "C0:EE:FB:4B:D9:F6";
         String mensaje = "Este es un mensaje pendiente";
 
         // Obtenemos el nuevo dispostivo encontrado

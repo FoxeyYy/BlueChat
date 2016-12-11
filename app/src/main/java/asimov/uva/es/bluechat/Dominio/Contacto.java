@@ -1,12 +1,15 @@
 package asimov.uva.es.bluechat.Dominio;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
 
+import asimov.uva.es.bluechat.AjustesActivity;
+import asimov.uva.es.bluechat.MainActivity;
 import asimov.uva.es.bluechat.sqllite.DBContract;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 

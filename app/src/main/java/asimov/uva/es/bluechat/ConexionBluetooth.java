@@ -1,14 +1,24 @@
 package asimov.uva.es.bluechat;
 
 import android.bluetooth.BluetoothSocket;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
@@ -45,6 +55,8 @@ public class ConexionBluetooth extends Thread {
 
     private final BluetoothSocket socket;
     private Mensaje mensaje = null;
+
+    private final String IMAGEN = "Imagen";
 
     /**
      * Modo de ejecucion
@@ -186,15 +198,29 @@ public class ConexionBluetooth extends Thread {
 
     private void enviarDescubrimiento () {
         Contacto yo = Contacto.getSelf();
+        //TODO la imagen se coge del objeto yo
+        byte[] imagen = getBytesImagen();
         enviar(yo);
+        if(imagen != null) {
+            enviar(imagen);
+            Log.d(IMAGEN, "Enviando bytes de la imagen: " + yo.getImagen());
+        }
     }
 
     private void recibirDescubrimiento () {
         try {
             Contacto contacto = (Contacto) entrada.readObject();
-            MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre()); //TODO guardar base de datos y demas
+            Bitmap imagen = recibirImagen((byte[]) entrada.readObject());
+            if(imagen != null) {
+                Log.e("FUNCIONA", "Ha llegado algo parecido a una imagen");
+                MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
+            }else {
+                //TODO Guardar imagen y su uri dentro del contacto
+                MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre()); //TODO guardar base de datos y demas
+                Log.e("FUNCIONA", "Lo has Intentado no llega na");
+            }
         } catch (IOException e) {
-            Log.e(ERROR, "No se puede recibir la respuesta");
+            Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");
         } catch (ClassNotFoundException e) {
             Log.e(ERROR, "No se puede encontrar la clase respuesta");
         }
@@ -205,7 +231,7 @@ public class ConexionBluetooth extends Thread {
             RespuestaPeticion respuesta = (RespuestaPeticion) entrada.readObject();
             return respuesta.getTipo().equals(RespuestaPeticion.TipoRespuesta.ACEPTAR);
         } catch (IOException e) {
-            Log.e(ERROR, "No se puede recibir la respuesta");
+            Log.e(ERROR, "No se puede recibir la respuesta de aceptacion");
         } catch (ClassNotFoundException e) {
             Log.e(ERROR, "No se puede encontrar la clase respuesta");
         }
@@ -253,5 +279,45 @@ public class ConexionBluetooth extends Thread {
 
         enviar(respuesta);
     }
+
+    private byte[] getBytesImagen(){
+        try {
+            //Obtenemos el bitmap de la imagen de perfil
+            Uri uriManual = Uri.parse("content://com.android.providers.downloads.documents/document/1911");
+
+            ParcelFileDescriptor parcelFileDescriptor = MainActivity.getMainActivity().getContentResolver().openFileDescriptor(uriManual,"r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap imagen = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            parcelFileDescriptor.close();
+
+
+            int bytes = imagen.getByteCount();
+            ByteBuffer buffer= ByteBuffer.allocate(bytes);
+            imagen.copyPixelsToBuffer(buffer);
+            byte[] bs = buffer.array();
+            return bs;
+
+
+            } catch (FileNotFoundException e) {
+                Log.e(IMAGEN, "El archivo a abrir no existe");
+            } catch (IOException e) {
+                Log.e(IMAGEN, "Error al obtener la imagen");
+            }
+
+
+
+
+            return null;
+    }
+
+    private Bitmap recibirImagen(byte[] imagen){
+        return BitmapFactory.decodeByteArray(imagen, 0, imagen.length);
+
+    }
+
+
+
+
+
 
 }

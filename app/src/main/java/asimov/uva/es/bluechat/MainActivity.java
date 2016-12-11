@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -53,6 +54,12 @@ public class MainActivity extends AppCompatActivity{
      * Resultado de la solicitud del permiso de localización
      */
     private final int PERMISO_LOCALIZACION = 1;
+
+    /**
+     * Resultado de la solicitud del permiso de localización
+     */
+    private final int PERMISO_ACCESO_DATOS = 2;
+
 
     /**
      * Resultado de la solicitud de la activación del bluetooth
@@ -225,6 +232,31 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
+     * Muestra una notificación con el mensaje recibido como parámetro
+     * @param mensaje El mensaje a mostrar en la notificación
+     */
+    public void notificar(String mensaje, Bitmap imagen){
+        Intent intent = new Intent(this, NotificationCompat.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notificacion =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle("BlueChat")
+                        .setLargeIcon(imagen)
+                        .setCategory(Notification.CATEGORY_MESSAGE)
+                        .setAutoCancel(true)
+                        .setFullScreenIntent(pIntent,true)
+                        .setContentText(mensaje).build();
+
+        manager.notify(0,notificacion);
+
+    }
+
+
+
+
+    /**
      * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
      * De no ser así le pide dichos permisos al usuario
      */
@@ -233,6 +265,10 @@ public class MainActivity extends AppCompatActivity{
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
@@ -251,7 +287,18 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
                 }
             }
+            case PERMISO_ACCESO_DATOS: {
 
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //El usuario nos proporciona permisos
+
+                } else {
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
