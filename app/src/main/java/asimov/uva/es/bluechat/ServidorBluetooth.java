@@ -34,7 +34,7 @@ public class ServidorBluetooth extends Service implements Runnable {
     /**
      * Identificador único y universal
      */
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+    public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     /**
      * Mensaje predefinido de saludo que envía el servidor una vez se conecta un cliente
@@ -66,7 +66,6 @@ public class ServidorBluetooth extends Service implements Runnable {
         adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
 
         try {
-            Log.d(CONEXION, "tmp");
             tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
         } catch (IOException e) {
             Log.d(CONEXION, "Error creando el socket que va a escuchar");
@@ -83,14 +82,14 @@ public class ServidorBluetooth extends Service implements Runnable {
 
         BluetoothSocket socket;
 
-        //Escuchamos esperando conexciones
+        //Escuchamos esperando conexiones
         //Llamada bloqueante
         while (true) {
             Log.d(CONEXION, "Servicio en ejecucion");
 
             try {
                 socket = socketServidor.accept();
-                Log.d(CONEXION,"Servidor Run" + socket.toString());
+                Log.d(CONEXION,"Servidor Run " + socket.toString());
             } catch (IOException e) {
                 break;
             }
@@ -98,7 +97,7 @@ public class ServidorBluetooth extends Service implements Runnable {
             Log.d(CONEXION, "Aceptada la conexion bluetooth nueva en el servidor");
 
             //Manejo de la conexion Bluetooth en otro hilo diferente
-            ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket);
+            ConexionBluetooth conexionBluetooth = new ConexionBluetooth(socket, ConexionBluetooth.Modo.SERVIDOR);
             conexionBluetooth.start();
 
         }

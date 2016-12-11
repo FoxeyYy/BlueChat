@@ -32,11 +32,6 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
     BluetoothAdapter adaptadorBluetooth;
 
-    /**
-     * Identificador único y universal
-     */
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-
     private final String SERVICIO = "SERVICIO";
 
     @Override
@@ -98,11 +93,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
         Log.d(SERVICIO, "Conectando con: " + device.getAddress());
         BluetoothSocket socket;
         try {
-            socket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+            socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
             socket.connect();
-            ConexionBluetooth conexion = new ConexionBluetooth(socket);
-            //conexion.start();
-            conexion.enviar(new Contacto( "Hector",BluetoothAdapter.getDefaultAdapter().getAddress(), ""));
+            ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE);
+            conexion.start();
+            //conexion.enviar(new Contacto( "Hector",BluetoothAdapter.getDefaultAdapter().getAddress(), ""));
         } catch (IOException e) {
             Log.d(SERVICIO,"Error preparando el socket cliente");
             e.printStackTrace();

@@ -10,7 +10,6 @@ import java.io.Serializable;
  */
 public class PaqueteMensaje implements Serializable {
 
-    private final byte TIPO = PaqueteBluetooth.MENSAJE;
     private String mensaje;
 
     public PaqueteMensaje(String mensaje) {
