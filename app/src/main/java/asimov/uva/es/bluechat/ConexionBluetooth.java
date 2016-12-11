@@ -8,11 +8,10 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Date;
+import java.io.Serializable;
 
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
-import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.PaqueteDescubrimiento;
 import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.Peticion;
 import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.RespuestaPeticion;
 
@@ -27,7 +26,8 @@ public class ConexionBluetooth extends Thread {
 
     public enum Modo {
         SERVIDOR,
-        CLIENTE;
+        CLIENTE_DESCUBRIMIENTO,
+        CLIENTE_MENSAJES;
     }
 
     /**
@@ -44,6 +44,7 @@ public class ConexionBluetooth extends Thread {
     private final String CONEXION = "CONEXION";
 
     private final BluetoothSocket socket;
+    private Mensaje mensaje = null;
 
     /**
      * Modo de ejecucion
@@ -78,6 +79,18 @@ public class ConexionBluetooth extends Thread {
     }
 
     /**
+     * Inicaliza los streams de la conexión bluetooth
+     * a partir del socket de la misma
+     * @param socket El socket de la conexión
+     * @param modo de ejecucion
+     * @param mensaje a enviar
+     */
+    public ConexionBluetooth(BluetoothSocket socket, Modo modo, Mensaje mensaje){
+        this(socket, modo);
+        this.mensaje = mensaje;
+    }
+
+    /**
      * Recibe el mensaje
      */
     @Override
@@ -86,8 +99,11 @@ public class ConexionBluetooth extends Thread {
         Log.d(CONEXION, "Ejecutando...");
 
         switch (modo) {
-            case CLIENTE:
-                cliente();
+            case CLIENTE_DESCUBRIMIENTO:
+                descubrir();
+                break;
+            case CLIENTE_MENSAJES:
+                enviarMensajes();
                 break;
             case SERVIDOR:
                 servidor();
@@ -107,9 +123,23 @@ public class ConexionBluetooth extends Thread {
     }
 
     /**
-     * Envia solicitudes a un servidor
+     * Envia mensajes a un servidor
      */
-    private void cliente() {
+    private void enviarMensajes () {
+        Log.d(CONEXION, "Enviando mensajes...");
+
+        solicitarEnvioMensajes();
+        if (solicitudAceptada()) {
+            enviar(mensaje);
+        } else {
+            Log.e(ERROR, "Solicitud rechadaza");
+        }
+    }
+
+    /**
+     * Envia solicitudes de descubrimiento a un servidor
+     */
+    private void descubrir() {
         Log.d(CONEXION, "Enviando...");
 
         solicitarDescubrimiento();
@@ -131,16 +161,16 @@ public class ConexionBluetooth extends Thread {
             Peticion peticion = (Peticion) entrada.readObject();
             switch (peticion.getTipoPeticion()) {
                 case DESCUBRIMIENTO:
-                    ResponderPeticion(true);
-                    EnviarDescubrimiento();
+                    responderPeticion(true);
+                    enviarDescubrimiento();
                     break;
                 case MENSAJE:
-                    ResponderPeticion(true);
-                    RecibirMensaje();
+                    responderPeticion(true);
+                    recibirMensaje();
                     break;
                 default:
                     Log.e(ERROR, "Peticion invalida");
-                    ResponderPeticion(false);
+                    responderPeticion(false);
                     break;
             }
 
@@ -152,6 +182,11 @@ public class ConexionBluetooth extends Thread {
             Log.d(ERROR, "No se puede encontrar la clase peticion");
         }
 
+    }
+
+    private void enviarDescubrimiento () {
+        Contacto yo = Contacto.getSelf();
+        enviar(yo);
     }
 
     private void recibirDescubrimiento () {
@@ -178,36 +213,28 @@ public class ConexionBluetooth extends Thread {
         return false;
     }
 
+    private void solicitarEnvioMensajes () {
+        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJE);
+        enviar(peticion);
+    }
+
     private void solicitarDescubrimiento () {
+        Peticion peticion = new Peticion(Peticion.TipoPeticion.DESCUBRIMIENTO);
+        enviar(peticion);
+    }
+
+    private void enviar(Serializable objeto) {
         try {
-            Peticion peticion = new Peticion(Peticion.TipoPeticion.DESCUBRIMIENTO);
-            salida.writeObject(peticion);
+            salida.writeObject(objeto);
         } catch (IOException e) {
-            Log.e(ERROR, "No se puede enviar el contacto");
+            Log.e(ERROR, "No se puede enviar el objeto");
         }
     }
 
-    private void enviarMensaje (Mensaje mensaje) {
-        try {
-            salida.writeObject(mensaje);
-        } catch (IOException e) {
-            Log.e(ERROR, "No se puede enviar el contacto");
-        }
-    }
-
-    private void EnviarDescubrimiento () {
-        try {
-            Contacto yo = new Contacto("Hector", "AA:DD:CC:BB", "sin imagen");
-            salida.writeObject(yo);
-        } catch (IOException e) {
-            Log.e(ERROR, "No se puede enviar el contacto");
-        }
-    }
-
-    private void RecibirMensaje () {
+    private void recibirMensaje () {
         try {
             Mensaje mensaje = (Mensaje) entrada.readObject();
-            MainActivity.getMainActivity().notificar(mensaje.getContenido()); //TODO guardar base de datos y demas
+            MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " +mensaje.getContenido()); //TODO guardar base de datos y demas
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir el mensaje");
         } catch (ClassNotFoundException e) {
@@ -215,7 +242,7 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-    private void ResponderPeticion(boolean aceptada) {
+    private void responderPeticion(boolean aceptada) {
         RespuestaPeticion respuesta;
 
         if (aceptada) {
@@ -224,13 +251,7 @@ public class ConexionBluetooth extends Thread {
             respuesta = new RespuestaPeticion(RespuestaPeticion.TipoRespuesta.RECHAZAR);
         }
 
-        try {
-            salida.writeObject(respuesta);
-            Log.d(CONEXION, "Enviada respuesta a peticion");
-        } catch (IOException e) {
-            Log.e(ERROR, "No se puede enviar la respuesta a la peticion");
-        }
-
+        enviar(respuesta);
     }
 
 }

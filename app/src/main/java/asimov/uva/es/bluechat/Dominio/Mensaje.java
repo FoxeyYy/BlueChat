@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ import asimov.uva.es.bluechat.sqllite.DBOperations;
  * @author Alberto Gutierrez Perez
  */
 
-public class Mensaje implements Parcelable{
+public class Mensaje implements Parcelable, Serializable {
 
     private String contenido;
     private Contacto emisor;

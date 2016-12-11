@@ -35,6 +35,10 @@ public class Contacto implements Parcelable, Serializable{
     */
     private final String imagen;
 
+    public static Contacto getSelf() {
+        return new Contacto ("yo", "AA:BB:CC", "Sin imagen"); //TODO leer datos reales
+    }
+
     /**
      * Encuentra un contacto
      * @param context
