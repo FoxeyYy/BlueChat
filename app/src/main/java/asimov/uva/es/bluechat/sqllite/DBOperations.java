@@ -24,13 +24,12 @@ public class DBOperations {
     private static DBHelper baseDatos = null;
 
     /*Consultas a realizar por el gestor de bases de datos*/
-    private static final String SQL_READ_MESSAGE = "SELECT * FROM Mensaje WHERE idMensaje = (SELECT MAX(idMensaje) FROM Mensaje);";
     private static final String SQL_READ_MESSAGES = "SELECT * FROM Mensaje WHERE idChat = ? ORDER BY idMensaje;";
     private static final String SQL_READ_CONTACT = "SELECT * FROM Contacto WHERE mac = ?;";
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
     private static final String SQL_READ_ALL_CHATS = "SELECT * FROM Chat;";
-    private static final String SQL_READ_ALL_STATUS_MESSAGE = "SELECT * FROM Mensaje JOIN Chat USING(idChat)";
+    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Mensaje JOIN Chat USING(idChat) GROUP BY idChat";
     private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM Mensaje where idChat = ? and estado = 0";
     private static final String SQL_UPDATE_MSG_SENT = "UPDATE Mensaje SET estado = 1 where idMensaje = ?";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
@@ -123,14 +122,6 @@ public class DBOperations {
     }
 
     /**
-     * Devuelve el último mensaje enviado de un chat
-     * @return cursor El cursor al último mensaje de un chat
-     */
-    public Cursor getLastMessage(){
-        return getDb().rawQuery(SQL_READ_MESSAGE, null);
-    }
-
-    /**
      * Devuelve el contacto asociado a una MAC concreta
      * @param mac Mac del contacto
      * @return cursor El cursor al contacto
@@ -187,7 +178,7 @@ public class DBOperations {
     }
 
     public Cursor getChatsPendientes(){
-        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_STATUS_MESSAGE, null);
+        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_CHATS, null);
         cursor.moveToFirst();
         return cursor;
     }

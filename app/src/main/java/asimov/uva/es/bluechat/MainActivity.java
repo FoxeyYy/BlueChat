@@ -194,9 +194,9 @@ public class MainActivity extends AppCompatActivity{
         comprobarPermisos();
 
         if( esCompatibleBluetooth ) {
-            //servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);
+            servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);
             startService(new Intent(MainActivity.this, ServidorBluetooth.class));
-            //startService(servicio);
+            startService(servicio);
 
             IntentFilter filter = new IntentFilter();
             filter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -412,7 +412,7 @@ public class MainActivity extends AppCompatActivity{
             case (R.id.action_bluetooth):
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
-                    //stopService(servicio);
+                    stopService(servicio);
                     comprobarPermisos();
                     activarBluetooth();
                     servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);

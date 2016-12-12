@@ -31,7 +31,6 @@ public class Mensaje implements Parcelable, Serializable {
     private Contacto emisor;
     private Date fecha;
     private int estado;
-    private boolean esPersistente;
 
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
