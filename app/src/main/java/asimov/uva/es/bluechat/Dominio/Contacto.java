@@ -1,10 +1,12 @@
 package asimov.uva.es.bluechat.Dominio;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.Serializable;
 
@@ -39,7 +41,10 @@ public class Contacto implements Parcelable, Serializable{
     private final String imagen;
 
     public static Contacto getSelf() {
-        return new Contacto ("yo", "AA:BB:CC", "Sin imagen"); //TODO leer datos reales
+        String nombre = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.NOMBRE, "");
+        String avatar = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.AVATAR, "");
+        String mac = android.provider.Settings.Secure.getString(MainActivity.getMainActivity().getContentResolver(),"bluetooth_address");
+        return new Contacto (nombre, mac, avatar);
     }
 
     /**

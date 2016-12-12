@@ -3,6 +3,7 @@ package asimov.uva.es.bluechat;
 import android.bluetooth.BluetoothSocket;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.LocaleDisplayNames;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -199,7 +200,7 @@ public class ConexionBluetooth extends Thread {
     private void enviarDescubrimiento () {
         Contacto yo = Contacto.getSelf();
         //TODO la imagen se coge del objeto yo
-        byte[] imagen = getBytesImagen();
+        byte[] imagen = getBytesImagen(yo.getImagen());
         enviar(yo);
         if(imagen != null) {
             enviar(imagen);
@@ -221,6 +222,7 @@ public class ConexionBluetooth extends Thread {
             }
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             Log.e(ERROR, "No se puede encontrar la clase respuesta");
         }
@@ -254,6 +256,7 @@ public class ConexionBluetooth extends Thread {
             salida.writeObject(objeto);
         } catch (IOException e) {
             Log.e(ERROR, "No se puede enviar el objeto");
+            e.printStackTrace();
         }
     }
 
@@ -280,10 +283,11 @@ public class ConexionBluetooth extends Thread {
         enviar(respuesta);
     }
 
-    private byte[] getBytesImagen(){
+    private byte[] getBytesImagen(String uri){
         try {
             //Obtenemos el bitmap de la imagen de perfil
-            Uri uriManual = Uri.parse("content://com.android.providers.downloads.documents/document/1911");
+            Uri uriManual = Uri.parse(uri);
+            Log.d(IMAGEN, "La uri es:" + uri);
 
             ParcelFileDescriptor parcelFileDescriptor = MainActivity.getMainActivity().getContentResolver().openFileDescriptor(uriManual,"r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
@@ -291,12 +295,16 @@ public class ConexionBluetooth extends Thread {
             parcelFileDescriptor.close();
 
 
-            int bytes = imagen.getByteCount();
+            /*int bytes = imagen.getByteCount();
             ByteBuffer buffer= ByteBuffer.allocate(bytes);
             imagen.copyPixelsToBuffer(buffer);
             byte[] bs = buffer.array();
-            return bs;
+            return bs;*/
 
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imagen.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] bytes = stream.toByteArray();
+            return  bytes;
 
             } catch (FileNotFoundException e) {
                 Log.e(IMAGEN, "El archivo a abrir no existe");

@@ -27,8 +27,9 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     /**
      * Constantes para los ajustes
      */
-    private static final String NOMBRE = "Nombre";
-    private static final String AVATAR = "Avatar";
+    public static final String NOMBRE = "Nombre";
+    public static final String AVATAR = "Avatar";
+    public static final String PREFERENCIAS = "Preferencias";
 
     /**
      * Resultado de la solicitud de acceso a imagenes
@@ -57,7 +58,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         Button boton = (Button) findViewById(R.id.boton_anadir_imagen);
         boton.setOnClickListener(this);
 
-        preferences = getPreferences(MODE_PRIVATE);
+        preferences = getSharedPreferences(PREFERENCIAS, Activity.MODE_PRIVATE);
         mostrarPreferenciasGuardadas();
         mostrarAcercaDe();
 

@@ -11,6 +11,8 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import asimov.uva.es.bluechat.Dominio.Contacto;
+
 
 /**
  * Servicio encargado de eniviar los mensajes pendientes
@@ -83,8 +85,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
     }
 
     private void conectar() {
+        // david        String dispositivo = "DA:23:46:03:35:1E";
+      // hector String dispositivo = "84:8E:DF:DA:A2:DE";
         String dispositivo = "C0:EE:FB:4B:D9:F6";
         String mensaje = "Este es un mensaje pendiente";
+        Contacto.getSelf();
 
         // Obtenemos el nuevo dispostivo encontrado
         BluetoothDevice device = adaptadorBluetooth.getRemoteDevice(dispositivo);

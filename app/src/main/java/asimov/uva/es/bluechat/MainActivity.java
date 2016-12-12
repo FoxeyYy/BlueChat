@@ -186,8 +186,10 @@ public class MainActivity extends AppCompatActivity{
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        mainActivity = this;
 
         comprobarBluetooth();
+        comprobarPermisos();
 
         if( esCompatibleBluetooth ) {
             servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);
@@ -201,7 +203,7 @@ public class MainActivity extends AppCompatActivity{
             registerReceiver(receptorBluetooth, filter);
         }
 
-        mainActivity = this;
+
 
     }
 
@@ -244,6 +246,7 @@ public class MainActivity extends AppCompatActivity{
                 new NotificationCompat.Builder(this)
                         .setContentTitle("BlueChat")
                         .setLargeIcon(imagen)
+                        .setSmallIcon(R.drawable.notificacion_icon)
                         .setCategory(Notification.CATEGORY_MESSAGE)
                         .setAutoCancel(true)
                         .setFullScreenIntent(pIntent,true)
