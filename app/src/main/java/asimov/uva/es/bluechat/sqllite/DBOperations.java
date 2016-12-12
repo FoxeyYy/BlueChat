@@ -35,6 +35,7 @@ public class DBOperations {
     private static final String SQL_UPDATE_MSG_SENT = "UPDATE Mensaje SET estado = 1 where idMensaje = ?";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
+    private static final String SQL_GET_NUM_MSG_CHAT = "SELECT COUNT(*) FROM Mensaje";
 
     private static final DBOperations instancia = new DBOperations();
 
@@ -60,7 +61,13 @@ public class DBOperations {
      * @param mensaje Mensaje que se va a insertar
      */
     public void insertMessage(Mensaje mensaje, Chat chat){
+        int num =0;
+        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_MSG_CHAT, null);
+        if(null != cursor && cursor.moveToFirst()){
+            num = cursor.getInt(0);
+        }
         ContentValues values = new ContentValues();
+        values.put(DBContract.Mensaje.COLUMN_NAME_ID, num +1);
         values.put(DBContract.Mensaje.COLUMN_NAME_CONTENT, mensaje.getContenido());
         values.put(DBContract.Mensaje.COLUMN_NAME_EMISOR, mensaje.getEmisor().getDireccionMac());
         values.put(DBContract.Mensaje.COLUMN_NAME_FECHA, mensaje.getFecha().toString());
@@ -89,12 +96,13 @@ public class DBOperations {
      * @param chat El chat que se va a insertar
      */
     public void insertChat(Chat chat){
-        ContentValues values = new ContentValues();
         int num =0;
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_CHATS,null);
         if(null != cursor && cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
+        chat.setIdChat(String.valueOf(num + 1));
+        ContentValues values = new ContentValues();
         values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, num + 1);
         values.put(DBContract.Chat.COLUMN_NAME_ID_CONTACTO, chat.getPar().getDireccionMac());
         values.put(DBContract.Chat.COLUMN_NAME_NOMBRE, chat.getNombre());

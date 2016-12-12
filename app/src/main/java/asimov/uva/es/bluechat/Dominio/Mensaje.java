@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -92,14 +93,11 @@ public class Mensaje implements Parcelable, Serializable {
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
      * @param contenido Contenido del mensaje
-     * @param emisor Emisor del mensaje
      */
-    public Mensaje(String contenido, Contacto emisor) {
-        this.contenido = contenido;
-        this.emisor = emisor;
-        this.fecha = new Date();
-        this.estado = 0;
+    public Mensaje(String contenido) {
+        this(contenido, Contacto.getSelf(), new Date());
     }
+
 
     protected Mensaje(Parcel in) {
         contenido = in.readString();

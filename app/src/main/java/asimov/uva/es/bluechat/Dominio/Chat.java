@@ -51,6 +51,7 @@ public class Chat implements Parcelable{
      */
     public Chat(Contacto contacto) {
         par = contacto;
+        nombre = contacto.getNombre();
     }
 
     protected Chat(Parcel in) {

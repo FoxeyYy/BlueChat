@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,6 +16,7 @@ import java.util.List;
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 
 /**
@@ -91,8 +93,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
     private void conectar() {
 
         List<Chat> chats = Chat.getChatsPendientes(MainActivity.getMainActivity());
+        Cursor cursor = DBOperations.obtenerInstancia(MainActivity.getMainActivity()).getAllChats();
+        Contacto contacto = Contacto.getContacto(MainActivity.getMainActivity(), "DA:23:46:03:35:1E");
+
         BluetoothSocket socket;
-        Log.e(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
+        Log.e(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size() + cursor.getCount());
         for(Chat chat : chats) {
             List<Mensaje> mensajes = Mensaje.getMensajesPendientes(MainActivity.getMainActivity(), chat.getIdChat());
 
