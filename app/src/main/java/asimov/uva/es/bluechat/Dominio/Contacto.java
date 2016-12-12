@@ -35,10 +35,12 @@ public class Contacto implements Parcelable, Serializable{
      */
     private final String direccionMac;
 
+
+
     /**
      * Ruta de la imagen asociada al contacto
     */
-    private final String imagen;
+    private String imagen;
 
     public static Contacto getSelf() {
         String nombre = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.NOMBRE, "");
@@ -140,6 +142,14 @@ public class Contacto implements Parcelable, Serializable{
      */
     public String getImagen() {
         return imagen;
+    }
+
+    /**
+     *
+     * @param imagen
+     */
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     /**

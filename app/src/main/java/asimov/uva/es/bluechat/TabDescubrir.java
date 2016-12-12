@@ -1,6 +1,7 @@
 package asimov.uva.es.bluechat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -76,6 +78,10 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
         TextView mac = (TextView) tarjeta.findViewById(R.id.ultimo_mensaje);
         mac.setText(String.valueOf(dispositivo.getDireccionMac()));
+
+        ImageView imagen = (ImageView) tarjeta.findViewById(R.id.foto_contacto);
+        if(!dispositivo.getImagen().isEmpty())
+            imagen.setImageURI(Uri.parse(dispositivo.getImagen()));
 
         lista.addView(tarjeta);
         tarjeta.setOnClickListener(this);

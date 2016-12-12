@@ -92,8 +92,14 @@ public class MainActivity extends AppCompatActivity{
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (!dispositivos.contains(device)) {
                         Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
-                        tab_descubrir.anadirDispositivo(new Contacto(device.getName(),
-                                device.getAddress(), ""), false);
+
+                        Contacto contacto = Contacto.getContacto(getBaseContext(), device.getAddress());
+
+                        if (null == contacto) {
+                            contacto = new Contacto(device.getName(), device.getAddress(), "");
+                        }
+
+                        tab_descubrir.anadirDispositivo(contacto, false);
 
                         dispositivos.add(device);
                     }

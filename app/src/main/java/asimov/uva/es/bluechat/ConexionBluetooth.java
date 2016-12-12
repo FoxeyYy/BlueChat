@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -67,11 +68,12 @@ public class ConexionBluetooth extends Thread {
     /**
      * Inicaliza los streams de la conexión bluetooth
      * a partir del socket de la misma
+     *
      * @param socket El socket de la conexión
-     * @param modo de ejecucion
+     * @param modo   de ejecucion
      */
-    public ConexionBluetooth(BluetoothSocket socket, Modo modo){
-        Log.d(CONEXION,"CONEXION BUENA");
+    public ConexionBluetooth(BluetoothSocket socket, Modo modo) {
+        Log.d(CONEXION, "CONEXION BUENA");
         this.socket = socket;
         this.modo = modo;
 
@@ -85,8 +87,8 @@ public class ConexionBluetooth extends Thread {
             InputStream tmpIn = this.socket.getInputStream();
             entrada = new ObjectInputStream(tmpIn);
 
-        } catch (IOException e){
-            Log.e(ERROR,"Thread de conexion no puede obtener los streams");
+        } catch (IOException e) {
+            Log.e(ERROR, "Thread de conexion no puede obtener los streams");
         }
 
     }
@@ -94,11 +96,12 @@ public class ConexionBluetooth extends Thread {
     /**
      * Inicaliza los streams de la conexión bluetooth
      * a partir del socket de la misma
-     * @param socket El socket de la conexión
-     * @param modo de ejecucion
+     *
+     * @param socket  El socket de la conexión
+     * @param modo    de ejecucion
      * @param mensaje a enviar
      */
-    public ConexionBluetooth(BluetoothSocket socket, Modo modo, Mensaje mensaje){
+    public ConexionBluetooth(BluetoothSocket socket, Modo modo, Mensaje mensaje) {
         this(socket, modo);
         this.mensaje = mensaje;
     }
@@ -107,7 +110,7 @@ public class ConexionBluetooth extends Thread {
      * Recibe el mensaje
      */
     @Override
-    public void run(){
+    public void run() {
 
         Log.d(CONEXION, "Ejecutando...");
 
@@ -138,7 +141,7 @@ public class ConexionBluetooth extends Thread {
     /**
      * Envia mensajes a un servidor
      */
-    private void enviarMensajes () {
+    private void enviarMensajes() {
         Log.d(CONEXION, "Enviando mensajes...");
 
         solicitarEnvioMensajes();
@@ -170,7 +173,7 @@ public class ConexionBluetooth extends Thread {
 
         Log.d(CONEXION, "Escuchando...");
 
-        try{
+        try {
             Peticion peticion = (Peticion) entrada.readObject();
             switch (peticion.getTipoPeticion()) {
                 case DESCUBRIMIENTO:
@@ -187,7 +190,7 @@ public class ConexionBluetooth extends Thread {
                     break;
             }
 
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.d(ERROR, e.toString());
             Log.d(ERROR, "Error recibiendo info");
 
@@ -197,26 +200,28 @@ public class ConexionBluetooth extends Thread {
 
     }
 
-    private void enviarDescubrimiento () {
+    private void enviarDescubrimiento() {
         Contacto yo = Contacto.getSelf();
         //TODO la imagen se coge del objeto yo
         byte[] imagen = getBytesImagen(yo.getImagen());
         enviar(yo);
-        if(imagen != null) {
+        if (imagen != null) {
             enviar(imagen);
             Log.d(IMAGEN, "Enviando bytes de la imagen: " + yo.getImagen());
         }
     }
 
-    private void recibirDescubrimiento () {
+    private void recibirDescubrimiento() {
         try {
             Contacto contacto = (Contacto) entrada.readObject();
             Bitmap imagen = recibirImagen((byte[]) entrada.readObject());
-            if(imagen != null) {
+            if (imagen != null) {
                 Log.e("FUNCIONA", "Ha llegado algo parecido a una imagen");
                 MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
-            }else {
-                //TODO Guardar imagen y su uri dentro del contacto
+                String path = guardaImagen(contacto, imagen);
+                contacto.setImagen(path);
+                contacto.guardar(MainActivity.getMainActivity());
+            } else {
                 MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre()); //TODO guardar base de datos y demas
                 Log.e("FUNCIONA", "Lo has Intentado no llega na");
             }
@@ -228,7 +233,7 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-    private boolean solicitudAceptada () {
+    private boolean solicitudAceptada() {
         try {
             RespuestaPeticion respuesta = (RespuestaPeticion) entrada.readObject();
             return respuesta.getTipo().equals(RespuestaPeticion.TipoRespuesta.ACEPTAR);
@@ -241,12 +246,12 @@ public class ConexionBluetooth extends Thread {
         return false;
     }
 
-    private void solicitarEnvioMensajes () {
+    private void solicitarEnvioMensajes() {
         Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJE);
         enviar(peticion);
     }
 
-    private void solicitarDescubrimiento () {
+    private void solicitarDescubrimiento() {
         Peticion peticion = new Peticion(Peticion.TipoPeticion.DESCUBRIMIENTO);
         enviar(peticion);
     }
@@ -260,10 +265,10 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-    private void recibirMensaje () {
+    private void recibirMensaje() {
         try {
             Mensaje mensaje = (Mensaje) entrada.readObject();
-            MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " +mensaje.getContenido()); //TODO guardar base de datos y demas
+            MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido()); //TODO guardar base de datos y demas
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir el mensaje");
         } catch (ClassNotFoundException e) {
@@ -283,49 +288,53 @@ public class ConexionBluetooth extends Thread {
         enviar(respuesta);
     }
 
-    private byte[] getBytesImagen(String uri){
+    private byte[] getBytesImagen(String uri) {
         try {
             //Obtenemos el bitmap de la imagen de perfil
             Uri uriManual = Uri.parse(uri);
             Log.d(IMAGEN, "La uri es:" + uri);
 
-            ParcelFileDescriptor parcelFileDescriptor = MainActivity.getMainActivity().getContentResolver().openFileDescriptor(uriManual,"r");
+            ParcelFileDescriptor parcelFileDescriptor = MainActivity.getMainActivity().getContentResolver().openFileDescriptor(uriManual, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             Bitmap imagen = BitmapFactory.decodeFileDescriptor(fileDescriptor);
             parcelFileDescriptor.close();
 
+            return getBytesImagen(imagen);
+        } catch (FileNotFoundException e) {
+            Log.e(IMAGEN, "El archivo a abrir no existe");
+        } catch (IOException e) {
+            Log.e(IMAGEN, "Error al obtener la imagen");
+        }
 
-            /*int bytes = imagen.getByteCount();
-            ByteBuffer buffer= ByteBuffer.allocate(bytes);
-            imagen.copyPixelsToBuffer(buffer);
-            byte[] bs = buffer.array();
-            return bs;*/
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imagen.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] bytes = stream.toByteArray();
-            return  bytes;
-
-            } catch (FileNotFoundException e) {
-                Log.e(IMAGEN, "El archivo a abrir no existe");
-            } catch (IOException e) {
-                Log.e(IMAGEN, "Error al obtener la imagen");
-            }
-
-
-
-
-            return null;
+        return null;
     }
 
-    private Bitmap recibirImagen(byte[] imagen){
+    private byte[] getBytesImagen(Bitmap imagen){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        imagen.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+        return bytes;
+
+    }
+
+    private Bitmap recibirImagen(byte[] imagen) {
         return BitmapFactory.decodeByteArray(imagen, 0, imagen.length);
 
     }
 
-
-
-
-
-
+    private String guardaImagen(Contacto contacto, Bitmap imagen) {
+        FileOutputStream outputStream;
+        try {
+            File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
+            outputStream = new FileOutputStream(file);
+            outputStream.write(this.getBytesImagen(imagen));
+            outputStream.close();
+            Log.d(IMAGEN, "He guardado en: " + file.getAbsolutePath());
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
+
