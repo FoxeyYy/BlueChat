@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import asimov.uva.es.bluechat.sqllite.DBContract;
@@ -41,9 +42,26 @@ public class Chat implements Parcelable{
     private List<Mensaje> historial =  new ArrayList<>();
 
     /**
-     * Historial de chats
+     * Indicador de persistencia en BBDD
      */
-    private static List<Chat> chats = new ArrayList<>();
+    private boolean esPersistente;
+
+    public List<Mensaje> getMensajesPendientes(Context context) {
+        Cursor cursor = DBOperations.obtenerInstancia(context).getMensajesPendientes(idChat);
+        List<Mensaje> mensajes = new ArrayList();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
+            Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
+            String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
+
+            mensajes.add(new Mensaje(contenido, emisor, new Date())); //TODO Fecha de la bbdd
+        }
+
+        cursor.close();
+
+        return mensajes;
+    }
 
     /**
      * Inicializa el chat
@@ -75,49 +93,52 @@ public class Chat implements Parcelable{
      * Construye un chat
      * @param id del chat
      * @param nombre del chat
-     * @param historial de mensajes del chat
      * @param contacto del chat
      */
-    public Chat(String id, String nombre, List<Mensaje> historial, Contacto contacto) {
+    private Chat(String id, String nombre, Contacto contacto, boolean persistente) {
         this.idChat = id;
         this.nombre = nombre;
-        this.historial = historial;
         this.par = contacto;
+        esPersistente = persistente;
     }
 
     /**
-     * Carga todos los chats disponibles
+     * Devuelve todos los chats disponibles
      */
-    public static void cargarChats(Context context) {
+    public static List<Chat> getChats(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getAllChats();
-
-        chats.clear();
+        List<Chat> chats = new ArrayList();
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
             String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
             Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
-            List<Mensaje> historial = Mensaje.getMensajes(context, idChat);
 
-            chats.add(new Chat(idChat, nombre, historial, contacto));
+            Chat chat = new Chat(idChat, nombre, contacto, true);
+            List<Mensaje> historial = chat.getMensajes(context);
+            chat.setHistorial(historial);
+
+            chats.add(chat);
         }
 
         cursor.close();
+        return chats;
     }
 
     public static List<Chat> getChatsPendientes(Context context){
         Cursor cursor = DBOperations.obtenerInstancia(context).getChatsPendientes();
-
         List<Chat> chats = new ArrayList<>();
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
-
             String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
             Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
-            List<Mensaje> historial = Mensaje.getMensajesPendientes(context, idChat);
+            Chat chat = new Chat(idChat, nombre, contacto, true);
 
-            chats.add(new Chat(idChat, nombre, historial, contacto));
+            List<Mensaje> historial = chat.getMensajesPendientes(context);
+            chat.setHistorial(historial);
+
+            chats.add(chat);
         }
 
         cursor.close();
@@ -125,28 +146,22 @@ public class Chat implements Parcelable{
         return chats;
     }
 
-    /**
-     * Consigue todos los chats disponibles
-     * @return chats La lista de chats
-     */
-    public static List<Chat> getChats() {
-        return chats;
-    }
+    public List<Mensaje> getMensajes(Context context) {
+        Cursor cursor = DBOperations.obtenerInstancia(context).getMensajes(this);
+        List<Mensaje> mensajes = new ArrayList();
 
-    /**
-     * Devuelve este chat
-     * @param contacto el contacto del que buscar el chat
-     * @return
-     */
-    public static Chat getChat(Contacto contacto) {
-        Chat chat = null;
-        for(int i = 0; i< getChats().size();i++) {
-            chat = getChats().get(i);
-            if(chat.getPar().equals(contacto)){
-                break;
-            }
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
+            Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
+            String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
+
+            Mensaje mensaje = new Mensaje(contenido, emisor, new Date());
+            mensajes.add(mensaje); //TODO Fecha de la bbdd
         }
-        return chat;
+
+        cursor.close();
+
+        return mensajes;
     }
 
     /**
@@ -155,6 +170,11 @@ public class Chat implements Parcelable{
      */
     public void guardar(Context context) {
         DBOperations.obtenerInstancia(context).insertChat(this);
+        esPersistente = true;
+    }
+
+    public boolean esPersistente () {
+        return esPersistente;
     }
 
     /**
