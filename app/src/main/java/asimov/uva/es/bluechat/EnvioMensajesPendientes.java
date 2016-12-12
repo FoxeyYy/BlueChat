@@ -97,7 +97,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
         BluetoothSocket socket;
         Log.e(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
         for(Chat chat : chats) {
-            List<Mensaje> mensajes = chat.getMensajesPendientes(MainActivity.getMainActivity());
+            List<Mensaje> mensajes = chat.getHistorial();
 
             // Obtenemos el nuevo dispostivo encontrado
             BluetoothDevice device = adaptadorBluetooth.getRemoteDevice(chat.getPar().getDireccionMac());

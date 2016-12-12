@@ -46,7 +46,7 @@ public class Chat implements Parcelable{
      */
     private boolean esPersistente;
 
-    public List<Mensaje> getMensajesPendientes(Context context) {
+    private List<Mensaje> getMensajesPendientes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajesPendientes(idChat);
         List<Mensaje> mensajes = new ArrayList();
 
