@@ -30,6 +30,11 @@ public class DBOperations {
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
     private static final String SQL_READ_ALL_CHATS = "SELECT * FROM Chat;";
+    private static final String SQL_READ_ALL_STATUS_MESSAGE = "SELECT * FROM Mensaje JOIN Chat USING(idChat)";
+    private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM Mensaje where idChat = ? and estado = 0";
+    private static final String SQL_UPDATE_MSG_SENT = "UPDATE Mensaje SET estado = 1 where idMensaje = ?";
+    private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
+    private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
 
     private static final DBOperations instancia = new DBOperations();
 
@@ -85,7 +90,12 @@ public class DBOperations {
      */
     public void insertChat(Chat chat){
         ContentValues values = new ContentValues();
-        values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, chat.getIdChat());
+        int num =0;
+        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_CHATS,null);
+        if(null != cursor && cursor.moveToFirst()){
+            num = cursor.getInt(0);
+        }
+        values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, num + 1);
         values.put(DBContract.Chat.COLUMN_NAME_ID_CONTACTO, chat.getPar().getDireccionMac());
         values.put(DBContract.Chat.COLUMN_NAME_NOMBRE, chat.getNombre());
         /*Inserta una nueva fila*/
@@ -139,6 +149,12 @@ public class DBOperations {
         return cursor;
     }
 
+    public Cursor getChatPorMac(String mac){
+        String[] args = new String[] {mac};
+        Cursor cursor = getDb().rawQuery(SQL_GET_CHAT_BY_MAC, args);
+        return cursor;
+    }
+
     /**
      * Devuelve todos los chats
      * @return cursor El cursor a los chats.
@@ -148,11 +164,29 @@ public class DBOperations {
         cursor.moveToFirst();
         return cursor;
     }
+
+    public Cursor getChatsPendientes(){
+        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_STATUS_MESSAGE, null);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
+    public Cursor getMensajesPendientes(String idChat){
+        String[] args = new String[] {idChat};
+        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_MESSAGES_CHAT, args);
+        return cursor;
+    }
+
     /**
      * Devuelve la base de datos en modo escritura
      * @return baseDatos La base de datos en modo escritura
      */
     private SQLiteDatabase getDb() {
         return baseDatos.getWritableDatabase();
+    }
+
+    public void marcarEnviado(String id) {
+        String[] args = new String[] {id};
+        getDb().rawQuery(SQL_UPDATE_MSG_SENT, args);
     }
 }

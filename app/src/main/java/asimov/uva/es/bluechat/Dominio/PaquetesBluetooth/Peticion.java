@@ -19,10 +19,24 @@ public class Peticion implements Serializable {
         MENSAJE
     }
 
+    /**
+     * Numero de mensajes a enviar tras recibir la peticion
+     */
+    private int numeroMensajes;
+
     private TipoPeticion tipo;
 
-    public Peticion (TipoPeticion tipo) {
+    public Peticion (TipoPeticion tipo, int numeroMensajes ) {
+        this.numeroMensajes = numeroMensajes;
         this.tipo = tipo;
+    }
+
+    public Peticion(TipoPeticion tipo){
+        this.tipo = tipo;
+    }
+
+    public int getNumeroMensajes(){
+        return numeroMensajes;
     }
 
     /**

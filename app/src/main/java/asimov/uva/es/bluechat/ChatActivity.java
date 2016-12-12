@@ -64,7 +64,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 String texto = String.valueOf(campo_texto.getText());
                 Context contexto = this;
                 Mensaje mensaje = new Mensaje(texto,chat.getPar());
-                DBOperations.obtenerInstancia(contexto).insertMessage(mensaje,chat);
+                mensaje.registrar(this, chat);
                 mostrarMensajeEnviado(texto);
                 campo_texto.setText("");
         }

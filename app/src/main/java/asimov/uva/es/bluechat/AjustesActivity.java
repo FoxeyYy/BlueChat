@@ -55,7 +55,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_preferencias);
 
-        Button boton = (Button) findViewById(R.id.boton_anadir_imagen);
+        ImageButton boton = (ImageButton) findViewById(R.id.avatar_preferencias);
         boton.setOnClickListener(this);
 
         preferences = getSharedPreferences(PREFERENCIAS, Activity.MODE_PRIVATE);
@@ -111,7 +111,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         final String msg_mac = String.format(getString(R.string.mac_personal), getMacBluetooth());
         mac.setText(msg_mac);
 
-        ImageView avatar = (ImageView)findViewById(R.id.imagen_perfil);
+        ImageButton avatar = (ImageButton) findViewById(R.id.avatar_preferencias);
         Uri uri = Uri.parse(getAvatar());
         avatar.setImageURI(uri);
     }
@@ -146,7 +146,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.boton_anadir_imagen:
+            case R.id.avatar_preferencias:
                 buscarImagen();
         }
     }
@@ -167,7 +167,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             Log.d(IMAGEN, "Uri: " + uri.toString());
-            ImageView imagenPerfil = (ImageView) findViewById(R.id.imagen_perfil);
+            ImageButton imagenPerfil = (ImageButton) findViewById(R.id.avatar_preferencias);
             uriImagen = uri;
             imagenPerfil.setImageURI(uri);
 

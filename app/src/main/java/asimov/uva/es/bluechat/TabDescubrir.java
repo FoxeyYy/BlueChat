@@ -92,7 +92,11 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         Intent intentChat = new Intent(getContext(), ChatActivity.class);
         Contacto contacto = dispositivos.get(lista.indexOfChild(v));
-        intentChat.putExtra("chat", Chat.getChat(contacto));
+        Chat chat = Chat.getChat(contacto);
+        if(null == chat){
+            chat = new Chat(contacto);
+        }
+        intentChat.putExtra("chat", chat);
         startActivity(intentChat);
     }
 

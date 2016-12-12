@@ -10,8 +10,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.List;
 
+import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
+import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 
 /**
@@ -74,6 +77,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
         enEjecucion = true;
 
         while (enEjecucion) {
+
             conectar();
             try {
                 hilo.sleep(5000);
@@ -85,28 +89,31 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
     }
 
     private void conectar() {
-        // david        String dispositivo = "DA:23:46:03:35:1E";
-      // hector String dispositivo = "84:8E:DF:DA:A2:DE";
-        String dispositivo = "C0:EE:FB:4B:D9:F6";
-        String mensaje = "Este es un mensaje pendiente";
-        Contacto.getSelf();
 
-        // Obtenemos el nuevo dispostivo encontrado
-        BluetoothDevice device = adaptadorBluetooth.getRemoteDevice(dispositivo);
-        Log.d(SERVICIO, "Conectando con: " + device.getAddress());
+        List<Chat> chats = Chat.getChatsPendientes(MainActivity.getMainActivity());
         BluetoothSocket socket;
-        try {
-            socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
-            socket.connect();
-            ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
-            //ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, new Mensaje("Hola, mundo!", new Contacto("Hector", "AA:DD:CC:BB", "sin imagen"), new Date()));
-            conexion.start();
-            //conexion.enviar(new Contacto( "Hector",BluetoothAdapter.getDefaultAdapter().getAddress(), ""));
-        } catch (IOException e) {
-            Log.d(SERVICIO,"Error preparando el socket cliente");
-            e.printStackTrace();
-        }
+        Log.e(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
+        for(Chat chat : chats) {
+            List<Mensaje> mensajes = Mensaje.getMensajesPendientes(MainActivity.getMainActivity(), chat.getIdChat());
 
+            // Obtenemos el nuevo dispostivo encontrado
+            BluetoothDevice device = adaptadorBluetooth.getRemoteDevice(chat.getPar().getDireccionMac());
+            Log.d(SERVICIO, "Conectando con: " + device.getAddress());
+
+            try {
+                socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
+                socket.connect();
+                //ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
+
+                ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
+                conexion.start();
+
+                //conexion.enviar(new Contacto( "Hector",BluetoothAdapter.getDefaultAdapter().getAddress(), ""));
+            } catch (IOException e) {
+                Log.d(SERVICIO,"Error preparando el socket cliente");
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -104,6 +104,26 @@ public class Chat implements Parcelable{
         cursor.close();
     }
 
+    public static List<Chat> getChatsPendientes(Context context){
+        Cursor cursor = DBOperations.obtenerInstancia(context).getChatsPendientes();
+
+        List<Chat> chats = new ArrayList<>();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
+
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
+            Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
+            List<Mensaje> historial = Mensaje.getMensajesPendientes(context, idChat);
+
+            chats.add(new Chat(idChat, nombre, historial, contacto));
+        }
+
+        cursor.close();
+
+        return chats;
+    }
+
     /**
      * Consigue todos los chats disponibles
      * @return chats La lista de chats

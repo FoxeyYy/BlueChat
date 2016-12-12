@@ -21,6 +21,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
@@ -56,7 +57,7 @@ public class ConexionBluetooth extends Thread {
     private final String CONEXION = "CONEXION";
 
     private final BluetoothSocket socket;
-    private Mensaje mensaje = null;
+    private List<Mensaje> mensajes = null;
 
     private final String IMAGEN = "Imagen";
 
@@ -89,6 +90,7 @@ public class ConexionBluetooth extends Thread {
 
         } catch (IOException e) {
             Log.e(ERROR, "Thread de conexion no puede obtener los streams");
+            e.printStackTrace();
         }
 
     }
@@ -101,9 +103,9 @@ public class ConexionBluetooth extends Thread {
      * @param modo    de ejecucion
      * @param mensaje a enviar
      */
-    public ConexionBluetooth(BluetoothSocket socket, Modo modo, Mensaje mensaje) {
+    public ConexionBluetooth(BluetoothSocket socket, Modo modo, List<Mensaje> mensaje) {
         this(socket, modo);
-        this.mensaje = mensaje;
+        this.mensajes = mensaje;
     }
 
     /**
@@ -146,7 +148,10 @@ public class ConexionBluetooth extends Thread {
 
         solicitarEnvioMensajes();
         if (solicitudAceptada()) {
-            enviar(mensaje);
+            for(Mensaje mensaje : mensajes) {
+                enviar(mensaje);
+                mensaje.marcarEnviado();
+            }
         } else {
             Log.e(ERROR, "Solicitud rechadaza");
         }
@@ -182,7 +187,7 @@ public class ConexionBluetooth extends Thread {
                     break;
                 case MENSAJE:
                     responderPeticion(true);
-                    recibirMensaje();
+                    recibirMensaje(peticion.getNumeroMensajes());
                     break;
                 default:
                     Log.e(ERROR, "Peticion invalida");
@@ -247,7 +252,7 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void solicitarEnvioMensajes() {
-        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJE);
+        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJE, mensajes.size());
         enviar(peticion);
     }
 
@@ -265,10 +270,12 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-    private void recibirMensaje() {
+    private void recibirMensaje(int numeroMensajes) {
         try {
-            Mensaje mensaje = (Mensaje) entrada.readObject();
-            MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido()); //TODO guardar base de datos y demas
+            for(int i= 0; i<numeroMensajes; i++) {
+                Mensaje mensaje = (Mensaje) entrada.readObject();
+                MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido()); //TODO guardar base de datos y demas
+            }
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir el mensaje");
         } catch (ClassNotFoundException e) {
