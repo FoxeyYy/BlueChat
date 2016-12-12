@@ -47,8 +47,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         lista = (LinearLayout) rootView.findViewById(R.id.lista_chats);
-        Chat.cargarChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
-        historial = Chat.getChats();
+        historial = Chat.getChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
 
         for(int i = 0; i < historial.size(); i++) {
             View tarjeta = inflater.inflate(R.layout.tarjeta_contacto, null);

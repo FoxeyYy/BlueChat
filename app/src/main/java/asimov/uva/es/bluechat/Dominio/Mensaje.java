@@ -31,51 +31,7 @@ public class Mensaje implements Parcelable, Serializable {
     private Contacto emisor;
     private Date fecha;
     private int estado;
-
-    public static List<Mensaje> getMensajes(Context context, String chat) {
-        Cursor cursor = DBOperations.obtenerInstancia(context).getAllMessages();
-        List<Mensaje> mensajes = new ArrayList();
-
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
-            Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
-            String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
-
-            mensajes.add(new Mensaje(contenido, emisor, new Date())); //TODO Fecha de la bbdd
-        }
-
-        cursor.close();
-
-        return mensajes;
-    }
-
-    public static List<Mensaje> getMensajesPendientes(Context context, String idChat) {
-        Cursor cursor = DBOperations.obtenerInstancia(context).getMensajesPendientes(idChat);
-        List<Mensaje> mensajes = new ArrayList();
-
-        Cursor cursor1 = DBOperations.obtenerInstancia(context).getAllChats();
-
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
-            Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
-            String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
-
-            mensajes.add(new Mensaje(contenido, emisor, new Date())); //TODO Fecha de la bbdd
-        }
-
-        cursor.close();
-
-        return mensajes;
-    }
-
-    /**
-     * Guarda el mensaje
-     * @param context de la actividad
-     * @param chat del mensaje
-     */
-    public void guardar(Context context, Chat chat)  {
-        DBOperations.obtenerInstancia(context).insertMessage(this, chat);
-    }
+    private boolean esPersistente;
 
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
@@ -122,15 +78,6 @@ public class Mensaje implements Parcelable, Serializable {
     }
 
     public void registrar(Context contexto, Chat chat){
-        Cursor cursor = DBOperations.obtenerInstancia(contexto).getChatPorMac(chat.getPar().getDireccionMac());
-        if(cursor.getCount() == 0){
-            DBOperations.obtenerInstancia(contexto).insertChat(chat);
-        }
-        cursor = DBOperations.obtenerInstancia(contexto).getContact(chat.getPar().getDireccionMac());
-        if(cursor.getCount() == 0){
-            DBOperations.obtenerInstancia(contexto).insertContact(chat.getPar());
-        }
-
         DBOperations.obtenerInstancia(contexto).insertMessage(this,chat);
     }
 

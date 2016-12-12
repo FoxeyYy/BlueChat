@@ -1,6 +1,7 @@
 package asimov.uva.es.bluechat.Dominio;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.util.List;
 
 import asimov.uva.es.bluechat.AjustesActivity;
 import asimov.uva.es.bluechat.MainActivity;
@@ -35,44 +37,79 @@ public class Contacto implements Parcelable, Serializable{
      */
     private final String direccionMac;
 
-
-
     /**
      * Ruta de la imagen asociada al contacto
     */
     private String imagen;
 
+    /**
+     * Indicador de persistencia
+     */
+    private boolean esPersistente;
+
     public static Contacto getSelf() {
         String nombre = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.NOMBRE, "");
         String avatar = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.AVATAR, "");
         String mac = android.provider.Settings.Secure.getString(MainActivity.getMainActivity().getContentResolver(),"bluetooth_address");
-        return new Contacto (nombre, mac, avatar);
+        return new Contacto (nombre, mac, avatar, true);
     }
 
     /**
      * Encuentra un contacto
      * @param context
-     * @param mac
+     * @param device a encontrar
+     * @return el contacto o null si no existe
+     */
+    public static Contacto getContacto(Context context, BluetoothDevice device) {
+        Contacto contacto = getContacto(context, device.getAddress());
+
+        if (null == contacto) {
+            contacto = new Contacto(device.getName(), device.getAddress(), "", false);
+        }
+
+        return contacto;
+
+    }
+
+    /**
+     * Encuentra un contacto
+     * @param context
+     * @param mac a encontrar
      * @return el contacto o null si no existe
      */
     public static Contacto getContacto(Context context, String mac) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getContact(mac);
+        cursor.moveToFirst();
 
         if (cursor.getCount() == 0) {
             cursor.close();
             return null;
         }
 
-        cursor.moveToFirst();
-
         String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_NOMBRE));
         String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_IMAGE));
 
-        Contacto contacto = new Contacto(nombre, mac, imagen);
+        Contacto contacto = new Contacto(nombre, mac, imagen, true);
 
         cursor.close();
         return contacto;
 
+    }
+
+    /**
+     * Devuelve el chat de un contacto
+     * @return el chat
+     */
+    public Chat getChat(Context contexto) {
+        List<Chat> chats = Chat.getChats(contexto);
+        Chat chat = null;
+        for(int i = 0; i< chats.size();i++) {
+            chat = chats.get(i);
+            if(chat.getPar().equals(this)){
+                break;
+            }
+        }
+        return chat;
     }
 
     /**
@@ -89,10 +126,11 @@ public class Contacto implements Parcelable, Serializable{
      * @param nombre Nombre del usuario
      * @param imagen Imagen del usuario
      */
-    public Contacto (String nombre, String direccionMac, String imagen) {
+    private Contacto (String nombre, String direccionMac, String imagen, boolean persistente) {
         this.direccionMac = direccionMac;
         this.nombre = nombre;
         this.imagen = imagen;
+        esPersistente = persistente;
     }
 
     /**
@@ -142,6 +180,10 @@ public class Contacto implements Parcelable, Serializable{
      */
     public String getImagen() {
         return imagen;
+    }
+
+    public boolean esPersistente() {
+        return esPersistente;
     }
 
     /**

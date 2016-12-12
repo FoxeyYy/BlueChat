@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
+import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
@@ -64,6 +65,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 String texto = String.valueOf(campo_texto.getText());
                 Context contexto = this;
                 Mensaje mensaje = new Mensaje(texto);
+
+                if (!chat.esPersistente()) {
+                    chat.guardar(getBaseContext());
+                }
+
+                Contacto contacto = chat.getPar();
+                if (!contacto.esPersistente()) {
+                    contacto.guardar(getBaseContext());
+                }
+
                 mensaje.registrar(this, chat);
                 mostrarMensajeEnviado(texto);
                 campo_texto.setText("");

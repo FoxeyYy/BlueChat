@@ -25,7 +25,7 @@ public class DBOperations {
 
     /*Consultas a realizar por el gestor de bases de datos*/
     private static final String SQL_READ_MESSAGE = "SELECT * FROM Mensaje WHERE idMensaje = (SELECT MAX(idMensaje) FROM Mensaje);";
-    private static final String SQL_READ_MESSAGES = "SELECT * FROM Mensaje ORDER BY idMensaje;";
+    private static final String SQL_READ_MESSAGES = "SELECT * FROM Mensaje WHERE idChat = ? ORDER BY idMensaje;";
     private static final String SQL_READ_CONTACT = "SELECT * FROM Contacto WHERE mac = ?;";
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
@@ -61,11 +61,7 @@ public class DBOperations {
      * @param mensaje Mensaje que se va a insertar
      */
     public void insertMessage(Mensaje mensaje, Chat chat){
-        int num =0;
-        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_MSG_CHAT, null);
-        if(null != cursor && cursor.moveToFirst()){
-            num = cursor.getInt(0);
-        }
+        int num = getNumMsgChat(chat);
         ContentValues values = new ContentValues();
         values.put(DBContract.Mensaje.COLUMN_NAME_ID, num +1);
         values.put(DBContract.Mensaje.COLUMN_NAME_CONTENT, mensaje.getContenido());
@@ -76,6 +72,15 @@ public class DBOperations {
 
         /*Inserta la nueva fila*/
         getDb().insert(DBContract.Mensaje.TABLE_NAME, null, values);
+    }
+
+    public int getNumMsgChat (Chat chat) {
+        int num = 0;
+        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_MSG_CHAT, null);
+        if(null != cursor && cursor.moveToFirst()){
+            num = cursor.getInt(0);
+        }
+        return num;
     }
 
     /**
@@ -96,11 +101,7 @@ public class DBOperations {
      * @param chat El chat que se va a insertar
      */
     public void insertChat(Chat chat){
-        int num =0;
-        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_CHATS,null);
-        if(null != cursor && cursor.moveToFirst()){
-            num = cursor.getInt(0);
-        }
+        int num = getNumChats();
         chat.setIdChat(String.valueOf(num + 1));
         ContentValues values = new ContentValues();
         values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, num + 1);
@@ -108,6 +109,17 @@ public class DBOperations {
         values.put(DBContract.Chat.COLUMN_NAME_NOMBRE, chat.getNombre());
         /*Inserta una nueva fila*/
         getDb().insert(DBContract.Chat.TABLE_NAME, null, values);
+    }
+
+    public int getNumChats() {
+        int num = 0;
+
+        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_CHATS,null);
+        if(null != cursor && cursor.moveToFirst()){
+            num = cursor.getInt(0);
+        }
+
+        return num;
     }
 
     /**
@@ -129,11 +141,12 @@ public class DBOperations {
     }
 
     /**
-     * Devuelve los últimos mensajes de un chat
+     * Devuelve los mensajes de un chat
      * @return cursor El cursor a los últimos mensajes
      */
-    public Cursor getAllMessages(){
-        Cursor cursor = getDb().rawQuery(SQL_READ_MESSAGES, null);
+    public Cursor getMensajes(Chat chat){
+        String[] args = new String[] {chat.getIdChat()};
+        Cursor cursor = getDb().rawQuery(SQL_READ_MESSAGES, args);
         return cursor;
     }
 

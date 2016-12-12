@@ -93,11 +93,7 @@ public class MainActivity extends AppCompatActivity{
                     if (!dispositivos.contains(device)) {
                         Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
 
-                        Contacto contacto = Contacto.getContacto(getBaseContext(), device.getAddress());
-
-                        if (null == contacto) {
-                            contacto = new Contacto(device.getName(), device.getAddress(), "");
-                        }
+                        Contacto contacto = Contacto.getContacto(getBaseContext(), device);
 
                         tab_descubrir.anadirDispositivo(contacto, false);
 
