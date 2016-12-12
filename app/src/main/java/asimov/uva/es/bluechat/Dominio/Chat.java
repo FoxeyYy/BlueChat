@@ -74,7 +74,10 @@ public class Chat implements Parcelable{
 
     protected Chat(Parcel in) {
         par = in.readParcelable(Contacto.class.getClassLoader());
+        nombre = in.readString();
+        idChat = in.readString();
         in.readList(historial, Mensaje.class.getClassLoader());
+        esPersistente = in.readByte() != 0;
     }
 
     public static final Creator<Chat> CREATOR = new Creator<Chat>() {
@@ -237,6 +240,9 @@ public class Chat implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(par, 0);
+        dest.writeString(nombre);
+        dest.writeString(idChat);
         dest.writeList(historial);
+        dest.writeByte((byte) (esPersistente ? 1 : 0));
     }
 }

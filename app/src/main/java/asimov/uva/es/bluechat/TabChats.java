@@ -39,7 +39,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
     /**
      * Lista de chats con contactos
      */
-    private List<Chat> historial;
+    private List<Chat> chats;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,11 +47,11 @@ public class TabChats extends Fragment implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         lista = (LinearLayout) rootView.findViewById(R.id.lista_chats);
-        historial = Chat.getChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
+        chats = Chat.getChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
 
-        for(int i = 0; i < historial.size(); i++) {
+        for(int i = 0; i < chats.size(); i++) {
             View tarjeta = inflater.inflate(R.layout.tarjeta_contacto, null);
-            Chat chat = historial.get(i);
+            Chat chat = chats.get(i);
 
             mostrarNombreContacto(tarjeta, chat);
             mostrarUltimoMensaje(tarjeta, chat);
@@ -97,7 +97,8 @@ public class TabChats extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Intent intentChat = new Intent(getContext(), ChatActivity.class);
-        intentChat.putExtra("chat", historial.get(lista.indexOfChild(v)));
+        Chat chat = chats.get(lista.indexOfChild(v));
+        intentChat.putExtra("chat", chat);
         startActivity(intentChat);
     }
 }

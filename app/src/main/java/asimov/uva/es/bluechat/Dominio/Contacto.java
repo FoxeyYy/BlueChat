@@ -141,6 +141,7 @@ public class Contacto implements Parcelable, Serializable{
         nombre = in.readString();
         direccionMac = in.readString();
         imagen = in.readString();
+        esPersistente = in.readByte() != 0;
     }
 
     /**
@@ -213,6 +214,7 @@ public class Contacto implements Parcelable, Serializable{
         dest.writeString(nombre);
         dest.writeString(direccionMac);
         dest.writeString(imagen);
+        dest.writeInt((byte) (esPersistente ? 1 : 0));
     }
 
 }

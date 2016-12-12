@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,7 +64,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.boton_enviar:
                 String texto = String.valueOf(campo_texto.getText());
-                Context contexto = this;
                 Mensaje mensaje = new Mensaje(texto);
 
                 if (!chat.esPersistente()) {
