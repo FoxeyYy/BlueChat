@@ -24,7 +24,7 @@ public class DBOperations {
     private static DBHelper baseDatos = null;
 
     /*Consultas a realizar por el gestor de bases de datos*/
-    private static final String SQL_READ_MESSAGES = "SELECT * FROM Mensaje WHERE idChat = ? ORDER BY idMensaje;";
+    private static final String SQL_READ_MESSAGES = "SELECT * FROM Mensaje WHERE idChat = ? ORDER BY cast(idMensaje as unsigned);";
     private static final String SQL_READ_CONTACT = "SELECT * FROM Contacto WHERE mac = ?;";
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
