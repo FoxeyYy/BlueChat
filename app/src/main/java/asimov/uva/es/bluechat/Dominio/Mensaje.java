@@ -26,6 +26,9 @@ import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 public class Mensaje implements Parcelable, Serializable {
 
+    public static int ENVIADO = 1;
+    public static int PENDIENTE = 0;
+
     private String id;
     private String contenido;
     private Contacto emisor;

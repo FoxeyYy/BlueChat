@@ -1,6 +1,7 @@
 package asimov.uva.es.bluechat;
 
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.LocaleDisplayNames;
@@ -21,8 +22,10 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
+import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.Peticion;
@@ -271,16 +274,37 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void recibirMensaje(int numeroMensajes) {
+        mensajes = new ArrayList<>();
         try {
             for(int i= 0; i<numeroMensajes; i++) {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
-                MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido()); //TODO guardar base de datos y demas
+                mensaje.setEstado(Mensaje.ENVIADO);
+                mensajes.add(mensaje);
+                MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
             }
+            guardarMensajes();
+
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir el mensaje");
         } catch (ClassNotFoundException e) {
             Log.e(ERROR, "No se puede encontrar la clase mensaje");
         }
+    }
+
+    private void guardarMensajes(){
+        Context context = MainActivity.getMainActivity();
+        Contacto contacto = Contacto.getContacto(context, mensajes.get(0).getEmisor().getDireccionMac());
+        if(null == contacto) {
+            contacto = mensajes.get(0).getEmisor();
+            contacto.guardar(context);
+        }
+        Chat chat = Chat.getChatContacto(context, contacto);
+        if(null == chat) {
+            chat = new Chat(mensajes.get(0).getEmisor());
+            chat.guardar(context);
+        }
+        for(Mensaje mensaje : mensajes)
+            mensaje.registrar(context,chat);
     }
 
     private void responderPeticion(boolean aceptada) {

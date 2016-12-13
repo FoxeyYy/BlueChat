@@ -65,7 +65,7 @@ public class DBOperations {
         values.put(DBContract.Mensaje.COLUMN_NAME_CONTENT, mensaje.getContenido());
         values.put(DBContract.Mensaje.COLUMN_NAME_EMISOR, mensaje.getEmisor().getDireccionMac());
         values.put(DBContract.Mensaje.COLUMN_NAME_FECHA, mensaje.getFecha().toString());
-        values.put(DBContract.Mensaje.COLUMN_NAME_STATUS,0);
+        values.put(DBContract.Mensaje.COLUMN_NAME_STATUS,mensaje.getEstado());
         values.put(DBContract.Mensaje.COLUMN_NAME_ID_CHAT,chat.getIdChat());
 
         /*Inserta la nueva fila*/
