@@ -247,4 +247,26 @@ public class Chat implements Parcelable{
         dest.writeList(historial);
         dest.writeByte((byte) (esPersistente ? 1 : 0));
     }
+
+    /**
+     * Obtiene el chat asociado a un contacto
+     * @param context
+     * @param emisor
+     * @return
+     */
+    public static Chat getChatContacto(Context context, Contacto emisor) {
+
+        Cursor cursor = DBOperations.obtenerInstancia(context).getChatPorMac(emisor.getDireccionMac());
+        if(cursor.getCount() == 0)
+            return null;
+        cursor.moveToFirst();
+        String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
+        String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
+        Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
+        Chat chat = new Chat(idChat, nombre, contacto, true);
+
+        List<Mensaje> historial = chat.getMensajesPendientes(context);
+        chat.setHistorial(historial);
+        return chat;
+    }
 }

@@ -103,7 +103,7 @@ public class Contacto implements Parcelable, Serializable{
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
         for(Chat chat : chats){
-            if(chat.getPar().equals(this)){
+            if(chat.getPar().getDireccionMac().equals(this.getDireccionMac())){
                 return chat;
             }
         }
