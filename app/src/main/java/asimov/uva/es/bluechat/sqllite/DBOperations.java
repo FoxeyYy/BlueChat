@@ -29,9 +29,8 @@ public class DBOperations {
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
     private static final String SQL_READ_ALL_CHATS = "SELECT * FROM Chat;";
-    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Mensaje JOIN Chat USING(idChat) GROUP BY idChat";
+    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM (SELECT * FROM Mensaje WHERE estado = 0) JOIN Chat USING(idChat) GROUP BY idChat";
     private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM Mensaje where idChat = ? and estado = 0";
-    private static final String SQL_UPDATE_MSG_SENT = "UPDATE Mensaje SET estado = 1 where idMensaje = ?";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
     private static final String SQL_GET_NUM_MSG = "SELECT COUNT(*) FROM Mensaje";
@@ -201,6 +200,8 @@ public class DBOperations {
 
     public void marcarEnviado(String id) {
         String[] args = new String[] {id};
-        getDb().rawQuery(SQL_UPDATE_MSG_SENT, args);
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Mensaje.COLUMN_NAME_STATUS, 1);
+        getDb().update("Mensaje",values, "idMensaje = ?", args);
     }
 }
