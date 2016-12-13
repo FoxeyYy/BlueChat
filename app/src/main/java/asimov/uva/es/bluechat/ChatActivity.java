@@ -133,7 +133,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             imageView.setImageURI(mensaje.getImagen());
         }
 
-        ((TextView) tarjetaMensaje.findViewById(R.id.mensaje)).setText(chat.getPar().getNombre() + ": " + mensaje.getContenido());
+        ((TextView) tarjetaMensaje.findViewById(R.id.mensaje)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
