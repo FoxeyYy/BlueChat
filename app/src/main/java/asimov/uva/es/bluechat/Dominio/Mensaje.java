@@ -38,7 +38,21 @@ public class Mensaje implements Parcelable, Serializable {
      * @param emisor Emisor del mensaje
      * @param fecha fecha del mensaje
      */
-    public Mensaje(String contenido, Contacto emisor, Date fecha) {
+    public Mensaje(String id, String contenido, Contacto emisor, Date fecha) {
+        this.id = id;
+        this.contenido = contenido;
+        this.emisor = emisor;
+        this.fecha = fecha;
+        this.estado = 0;
+    }
+
+    /**
+     * Inicializa un Mensaje a los valores pasados por parámetro
+     * @param contenido Contenido del mensaje
+     * @param emisor Emisor del mensaje
+     * @param fecha fecha del mensaje
+     */
+    private Mensaje(String contenido, Contacto emisor, Date fecha) {
         this.contenido = contenido;
         this.emisor = emisor;
         this.fecha = fecha;
