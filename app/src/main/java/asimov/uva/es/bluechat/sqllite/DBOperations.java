@@ -60,9 +60,17 @@ public class DBOperations {
      */
     public void insertMessage(Mensaje mensaje, Chat chat){
         int num = getNumMensajes();
+        String imagen;
+        if (null == mensaje.getImagen()) {
+            imagen = "";
+        } else {
+            imagen = mensaje.getImagen().toString();
+        }
+
         ContentValues values = new ContentValues();
         values.put(DBContract.Mensaje.COLUMN_NAME_ID, num +1);
         values.put(DBContract.Mensaje.COLUMN_NAME_CONTENT, mensaje.getContenido());
+        values.put(DBContract.Mensaje.COLUMN_NAME_IMAGEN, imagen);
         values.put(DBContract.Mensaje.COLUMN_NAME_EMISOR, mensaje.getEmisor().getDireccionMac());
         values.put(DBContract.Mensaje.COLUMN_NAME_FECHA, mensaje.getFecha().toString());
         values.put(DBContract.Mensaje.COLUMN_NAME_STATUS,mensaje.getEstado());

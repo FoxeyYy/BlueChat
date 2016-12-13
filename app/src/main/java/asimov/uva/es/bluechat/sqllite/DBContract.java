@@ -43,6 +43,7 @@ public class DBContract {
         public static final String COLUMN_NAME_ID = "idMensaje";
         public static final String COLUMN_NAME_ID_CHAT = "idChat";
         public static final String COLUMN_NAME_CONTENT = "contenido";
+        public static final String COLUMN_NAME_IMAGEN = "imagen";
         public static final String COLUMN_NAME_EMISOR = "emisor";
         public static final String COLUMN_NAME_FECHA = "fecha";
         public static final String COLUMN_NAME_STATUS = "estado";
