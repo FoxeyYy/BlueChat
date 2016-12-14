@@ -130,7 +130,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen, null);
             ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
-            imageView.setImageURI(mensaje.getImagen());
+            imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
         ((TextView) tarjetaMensaje.findViewById(R.id.mensaje)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());

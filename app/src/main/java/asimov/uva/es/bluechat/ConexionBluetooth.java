@@ -226,7 +226,7 @@ public class ConexionBluetooth extends Thread {
             Bitmap imagen = recibirImagen();
             if (imagen != null) {
                 MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
-                String path = guardaImagen(contacto, imagen);
+                String path = guardarImagen(contacto, imagen);
                 contacto.setImagen(path);
                 contacto.guardar(MainActivity.getMainActivity());
             } else {
@@ -283,6 +283,8 @@ public class ConexionBluetooth extends Thread {
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
                 } else {
                     Bitmap imagen = recibirImagen();
+                    String path = guardarImagen(mensaje, imagen);
+                    mensaje.setImagen(path);
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
             }
@@ -365,7 +367,7 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
-    private String guardaImagen(Contacto contacto, Bitmap imagen) {
+    private String guardarImagen(Contacto contacto, Bitmap imagen) {
         FileOutputStream outputStream;
         try {
             File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
@@ -379,5 +381,23 @@ public class ConexionBluetooth extends Thread {
         }
         return null;
     }
+
+    private String guardarImagen(Mensaje mensaje, Bitmap imagen){
+        FileOutputStream outputStream;
+        try {
+            File file = new File(MainActivity.getMainActivity().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
+            outputStream = new FileOutputStream(file);
+            outputStream.write(this.getBytesImagen(imagen));
+            outputStream.close();
+            Log.d(IMAGEN, "He guardado en: " + file.getAbsolutePath());
+            return  file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+
 }
 

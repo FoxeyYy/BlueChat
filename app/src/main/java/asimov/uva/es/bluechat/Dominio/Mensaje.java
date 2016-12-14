@@ -116,12 +116,8 @@ public class Mensaje implements Parcelable, Serializable {
         return contenido;
     }
 
-    public Uri getImagen() {
-        if (null == imagen || imagen.isEmpty()) {
-            return null;
-        }
-
-        return Uri.parse(imagen);
+    public String getImagen() {
+        return imagen;
     }
 
     /**
@@ -156,9 +152,25 @@ public class Mensaje implements Parcelable, Serializable {
         this.estado = estado;
     }
 
+    /**
+     * Modifica el valor de la imagen del mensaje
+     * @param imagen path de la imagen
+     */
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    /**
+     * Obitene el id del mensaje
+     * @return id del mensaje
+     */
+    public String getId() {
+        return id;
     }
 
     @Override

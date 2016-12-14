@@ -64,7 +64,7 @@ public class DBOperations {
         if (null == mensaje.getImagen()) {
             imagen = "";
         } else {
-            imagen = mensaje.getImagen().toString();
+            imagen = mensaje.getImagen();
         }
 
         ContentValues values = new ContentValues();
