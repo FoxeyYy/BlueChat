@@ -1,5 +1,6 @@
 package asimov.uva.es.bluechat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author David Robles Gallardo
@@ -23,6 +28,11 @@ import android.widget.TextView;
  * @author Alberto Gutierrez Perez
  */
 public class AjustesActivity extends AppCompatActivity implements View.OnClickListener {
+
+    /**
+     * Resultado de la solicitud del permiso de localización
+     */
+    private final int PERMISO_ACCESO_DATOS = 1;
 
     /**
      * Constantes para los ajustes
@@ -171,6 +181,31 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
             uriImagen = uri;
             imagenPerfil.setImageURI(uri);
 
+        }
+    }
+
+    private void comprobarPermisos() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(AjustesActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISO_ACCESO_DATOS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //El usuario nos proporciona permisos
+
+                } else {
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }

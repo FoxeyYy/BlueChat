@@ -1,11 +1,16 @@
 package asimov.uva.es.bluechat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -29,6 +35,11 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
  * @author Alberto Gutierrez Perez
  */
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+
+    /**
+     * Resultado de la solicitud del permiso de localización
+     */
+    private final int PERMISO_ACCESO_DATOS = 1;
 
     /**
      * Chat a mostrar
@@ -76,6 +87,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.boton_foto:
+                comprobarPermisos();
                 buscarImagen();
                 break;
             case R.id.boton_enviar:
@@ -156,6 +168,31 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             uriImagen = data.getData();
+        }
+    }
+
+    private void comprobarPermisos() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(ChatActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISO_ACCESO_DATOS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //El usuario nos proporciona permisos
+
+                } else {
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }

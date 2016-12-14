@@ -55,11 +55,6 @@ public class MainActivity extends AppCompatActivity{
      */
     private final int PERMISO_LOCALIZACION = 1;
 
-    /**
-     * Resultado de la solicitud del permiso de localización
-     */
-    private final int PERMISO_ACCESO_DATOS = 2;
-
 
     /**
      * Resultado de la solicitud de la activación del bluetooth
@@ -280,10 +275,6 @@ public class MainActivity extends AppCompatActivity{
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
@@ -291,18 +282,6 @@ public class MainActivity extends AppCompatActivity{
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISO_LOCALIZACION: {
-
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
-
-                } else {
-                    //El usuario no proporciona permisos
-                    //mostramos un mensaje indicando que son necesarios
-                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
-                }
-            }
-            case PERMISO_ACCESO_DATOS: {
 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
