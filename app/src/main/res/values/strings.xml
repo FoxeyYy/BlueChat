@@ -23,4 +23,6 @@
     <string name="nombre_a_mostrar">Nombre a mostrar</string>
     <string name="tu_direccion">Tu dirección:</string>
     <string name="escribe_aqui">Escribe aquí</string>
+    <string name="action_actualizar">Añadir a contacto existente</string>
+    <string name="action_anadir">Crear contacto</string>
 </resources>

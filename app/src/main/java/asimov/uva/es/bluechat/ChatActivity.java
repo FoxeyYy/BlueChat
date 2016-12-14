@@ -2,15 +2,16 @@ package asimov.uva.es.bluechat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -71,6 +72,47 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_chat, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_anadir:
+                crearContacto();
+                break;
+            case R.id.action_actualizar:
+                actualizarContacto();
+                break;
+            default:
+                Log.e("ERROR", "Opcion desconocida");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void crearContacto() {
+        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, "BlueChat");
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, chat.getPar().getDireccionMac());
+        startActivity(intent);
+    }
+
+    private void actualizarContacto() {
+        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
+        intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, "BlueChat");
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, chat.getPar().getDireccionMac());
+        startActivity(intent);
+    }
 
     @Override
     public void onClick(View v) {
