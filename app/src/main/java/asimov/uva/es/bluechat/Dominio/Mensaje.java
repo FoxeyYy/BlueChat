@@ -1,20 +1,14 @@
 package asimov.uva.es.bluechat.Dominio;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBContract;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -33,7 +27,7 @@ public class Mensaje implements Parcelable, Serializable {
 
     private String id;
     private String contenido;
-    private Uri imagen;
+    private String imagen;
     private Contacto emisor;
     private Date fecha;
     private int estado;
@@ -45,7 +39,7 @@ public class Mensaje implements Parcelable, Serializable {
      */
     public Mensaje(String contenido, Uri imagen) {
         this(contenido, Contacto.getSelf(), new Date());
-        this.imagen = imagen;
+        this.imagen = imagen.toString();
     }
 
     /**
@@ -59,7 +53,7 @@ public class Mensaje implements Parcelable, Serializable {
         this.id = id;
 
         if (null != imagen && !imagen.isEmpty()) {
-            this.imagen = Uri.parse(imagen);
+            this.imagen = imagen;
         }
     }
 
@@ -88,7 +82,7 @@ public class Mensaje implements Parcelable, Serializable {
     protected Mensaje(Parcel in) {
         id = in.readString();
         contenido = in.readString();
-        imagen = in.readParcelable(Uri.class.getClassLoader());
+        imagen = in.readString();
         emisor = in.readParcelable(Contacto.class.getClassLoader());
         fecha = new Date(in.readLong());
         estado = in.readInt();
@@ -123,7 +117,11 @@ public class Mensaje implements Parcelable, Serializable {
     }
 
     public Uri getImagen() {
-        return imagen;
+        if (null == imagen || imagen.isEmpty()) {
+            return null;
+        }
+
+        return Uri.parse(imagen);
     }
 
     /**
@@ -167,7 +165,7 @@ public class Mensaje implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(contenido);
-        dest.writeParcelable(imagen, flags);
+        dest.writeString(imagen);
         dest.writeParcelable(emisor, flags);
         dest.writeLong(fecha.getTime());
         dest.writeInt(estado);

@@ -4,12 +4,10 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.icu.text.LocaleDisplayNames;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -21,7 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,6 +150,10 @@ public class ConexionBluetooth extends Thread {
         if (solicitudAceptada()) {
             for(Mensaje mensaje : mensajes) {
                 enviar(mensaje);
+                if (null != mensaje.getImagen()) {
+                    byte[] imagen = getBytesImagen(mensaje.getImagen().toString());
+                    enviar(imagen);
+                }
                 mensaje.marcarEnviado();
             }
         } else {
@@ -190,7 +191,7 @@ public class ConexionBluetooth extends Thread {
                     break;
                 case MENSAJE:
                     responderPeticion(true);
-                    recibirMensaje(peticion.getNumeroMensajes());
+                    recibirMensajes(peticion.getNumeroMensajes());
                     break;
                 default:
                     Log.e(ERROR, "Peticion invalida");
@@ -222,7 +223,7 @@ public class ConexionBluetooth extends Thread {
     private void recibirDescubrimiento() {
         try {
             Contacto contacto = (Contacto) entrada.readObject();
-            Bitmap imagen = recibirImagen((byte[]) entrada.readObject());
+            Bitmap imagen = recibirImagen();
             if (imagen != null) {
                 Log.e("FUNCIONA", "Ha llegado algo parecido a una imagen");
                 MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
@@ -273,14 +274,19 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-    private void recibirMensaje(int numeroMensajes) {
+    private void recibirMensajes(int numeroMensajes) {
         mensajes = new ArrayList<>();
         try {
             for(int i= 0; i<numeroMensajes; i++) {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
                 mensaje.setEstado(Mensaje.ENVIADO);
                 mensajes.add(mensaje);
-                MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+                if (null == mensaje.getImagen()) {
+                    MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+                } else {
+                    Bitmap imagen = recibirImagen();
+                    MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
+                }
             }
             guardarMensajes();
 
@@ -348,9 +354,17 @@ public class ConexionBluetooth extends Thread {
 
     }
 
-    private Bitmap recibirImagen(byte[] imagen) {
-        return BitmapFactory.decodeByteArray(imagen, 0, imagen.length);
+    private Bitmap recibirImagen() {
+        try {
+            byte[] imagen = (byte[]) entrada.readObject();
+            return BitmapFactory.decodeByteArray(imagen, 0, imagen.length);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
+        return null;
     }
 
     private String guardaImagen(Contacto contacto, Bitmap imagen) {
