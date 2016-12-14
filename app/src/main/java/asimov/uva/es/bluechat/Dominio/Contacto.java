@@ -103,7 +103,7 @@ public class Contacto implements Parcelable, Serializable{
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
         for(Chat chat : chats){
-            if(chat.getPar().getDireccionMac().equals(this.getDireccionMac())){
+            if(chat.getPar().equals(this)){
                 return chat;
             }
         }
@@ -214,5 +214,17 @@ public class Contacto implements Parcelable, Serializable{
         dest.writeString(imagen);
         dest.writeInt((byte) (esPersistente ? 1 : 0));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contacto contacto = (Contacto) o;
+
+        return getDireccionMac().equals(contacto.getDireccionMac());
+
+    }
+
 
 }
