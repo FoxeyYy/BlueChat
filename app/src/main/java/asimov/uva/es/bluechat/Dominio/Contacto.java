@@ -1,6 +1,7 @@
 package asimov.uva.es.bluechat.Dominio;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -78,6 +79,15 @@ public class Contacto implements Parcelable, Serializable{
      * @return el contacto o null si no existe
      */
     public static Contacto getContacto(Context context, String mac) {
+
+        if (!BluetoothAdapter.checkBluetoothAddress(mac)) {
+            return null;
+        }
+
+        if (mac.equals(android.provider.Settings.Secure.getString(context.getContentResolver(),"bluetooth_address"))) {
+            return getSelf();
+        }
+
         Cursor cursor = DBOperations.obtenerInstancia(context).getContact(mac);
         cursor.moveToFirst();
 

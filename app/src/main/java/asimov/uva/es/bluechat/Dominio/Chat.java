@@ -53,10 +53,11 @@ public class Chat implements Parcelable{
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
             String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
+            String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
             Contacto emisor = Contacto.getSelf(); //TODO nosotros mismos en la base? o siempre self
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            mensajes.add(new Mensaje(id, contenido, emisor, new Date())); //TODO Fecha de la bbdd
+            mensajes.add(new Mensaje(id, contenido, imagen, emisor, new Date())); //TODO Fecha de la bbdd
         }
 
         cursor.close();
@@ -158,9 +159,10 @@ public class Chat implements Parcelable{
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
             String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
             Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
+            String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            Mensaje mensaje = new Mensaje(id, contenido, emisor, new Date());
+            Mensaje mensaje = new Mensaje(id, contenido, imagen, emisor, new Date());
             mensajes.add(mensaje); //TODO Fecha de la bbdd
         }
 

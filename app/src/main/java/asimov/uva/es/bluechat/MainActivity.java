@@ -72,6 +72,11 @@ public class MainActivity extends AppCompatActivity{
     private final int BLUETOOTH_VISIBLE = 1;
 
     /**
+     * Constante para iniciar la actividad en un tab concreto
+     */
+    private final String CHATS = "Chats";
+
+    /**
      * Adaptador bluetooth del dispositivo
      */
     private BluetoothAdapter adaptadorBluetooth;
@@ -205,7 +210,10 @@ public class MainActivity extends AppCompatActivity{
             registerReceiver(receptorBluetooth, filter);
         }
 
-
+        // Abre la tab del historial si se accede por notificacion
+        if (getIntent().getAction().equals(CHATS)) {
+            mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
+        }
 
     }
 
@@ -218,8 +226,10 @@ public class MainActivity extends AppCompatActivity{
      * @param mensaje El mensaje a mostrar en la notificación
      */
     public void notificar(String mensaje){
-        Intent intent = new Intent(this, NotificationCompat.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+        //Intent intent = new Intent(this, NotificationCompat.class);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(CHATS);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notificacion =
@@ -228,10 +238,10 @@ public class MainActivity extends AppCompatActivity{
                         .setSmallIcon(R.drawable.notificacion_icon)
                         .setCategory(Notification.CATEGORY_MESSAGE)
                         .setAutoCancel(true)
-                        .setFullScreenIntent(pIntent,true)
-                        .setContentText(mensaje).build();
+                        .setContentText(mensaje)
+                        .setContentIntent(pIntent).build();
 
-        manager.notify(0,notificacion);
+        manager.notify(0, notificacion);
 
     }
 

@@ -1,18 +1,14 @@
 package asimov.uva.es.bluechat.Dominio;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBContract;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -31,6 +27,7 @@ public class Mensaje implements Parcelable, Serializable {
 
     private String id;
     private String contenido;
+    private String imagen;
     private Contacto emisor;
     private Date fecha;
     private int estado;
@@ -38,15 +35,26 @@ public class Mensaje implements Parcelable, Serializable {
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
      * @param contenido Contenido del mensaje
+     * @param imagen del mensaje
+     */
+    public Mensaje(String contenido, Uri imagen) {
+        this(contenido, Contacto.getSelf(), new Date());
+        this.imagen = imagen.toString();
+    }
+
+    /**
+     * Inicializa un Mensaje a los valores pasados por parámetro
+     * @param contenido Contenido del mensaje
      * @param emisor Emisor del mensaje
      * @param fecha fecha del mensaje
      */
-    public Mensaje(String id, String contenido, Contacto emisor, Date fecha) {
+    public Mensaje(String id, String contenido, String imagen, Contacto emisor, Date fecha) {
+        this(contenido, emisor, fecha);
         this.id = id;
-        this.contenido = contenido;
-        this.emisor = emisor;
-        this.fecha = fecha;
-        this.estado = 0;
+
+        if (null != imagen && !imagen.isEmpty()) {
+            this.imagen = imagen;
+        }
     }
 
     /**
@@ -59,7 +67,7 @@ public class Mensaje implements Parcelable, Serializable {
         this.contenido = contenido;
         this.emisor = emisor;
         this.fecha = fecha;
-        this.estado = 0;
+        this.estado = PENDIENTE;
     }
 
     /**
@@ -72,9 +80,12 @@ public class Mensaje implements Parcelable, Serializable {
 
 
     protected Mensaje(Parcel in) {
+        id = in.readString();
         contenido = in.readString();
+        imagen = in.readString();
         emisor = in.readParcelable(Contacto.class.getClassLoader());
         fecha = new Date(in.readLong());
+        estado = in.readInt();
     }
 
     public static final Creator<Mensaje> CREATOR = new Creator<Mensaje>() {
@@ -103,6 +114,14 @@ public class Mensaje implements Parcelable, Serializable {
      */
     public String getContenido() {
         return contenido;
+    }
+
+    public Uri getImagen() {
+        if (null == imagen || imagen.isEmpty()) {
+            return null;
+        }
+
+        return Uri.parse(imagen);
     }
 
     /**
@@ -144,8 +163,11 @@ public class Mensaje implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(contenido);
+        dest.writeString(imagen);
         dest.writeParcelable(emisor, flags);
         dest.writeLong(fecha.getTime());
+        dest.writeInt(estado);
     }
 }
