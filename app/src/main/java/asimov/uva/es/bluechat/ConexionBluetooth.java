@@ -226,7 +226,7 @@ public class ConexionBluetooth extends Thread {
             Bitmap imagen = recibirImagen();
             if (imagen != null) {
                 MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
-                String path = guardarImagen(contacto, imagen);
+                String path = guardarImagenContacto(contacto, imagen);
                 contacto.setImagen(path);
                 contacto.guardar(MainActivity.getMainActivity());
             } else {
@@ -283,7 +283,7 @@ public class ConexionBluetooth extends Thread {
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
                 } else {
                     Bitmap imagen = recibirImagen();
-                    String path = guardarImagen(mensaje, imagen);
+                    String path = guardarImagenMensaje(mensaje, imagen);
                     mensaje.setImagen(path);
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
@@ -367,36 +367,31 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
-    private String guardarImagen(Contacto contacto, Bitmap imagen) {
+    private String guardarImagenContacto(Contacto contacto, Bitmap imagen) {
+        File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
+        return guardarImagen(file, imagen);
+    }
+
+    private String guardarImagenMensaje(Mensaje mensaje, Bitmap imagen){
+        File file = new File(MainActivity.getMainActivity().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
+        return guardarImagen(file,imagen);
+    }
+
+    private String guardarImagen(File file, Bitmap imagen){
         FileOutputStream outputStream;
         try {
-            File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
             outputStream = new FileOutputStream(file);
             outputStream.write(this.getBytesImagen(imagen));
             outputStream.close();
             Log.d(IMAGEN, "He guardado en: " + file.getAbsolutePath());
             return file.getAbsolutePath();
-        } catch (Exception e) {
+         } catch (Exception e) {
             e.printStackTrace();
-        }
+            }
         return null;
     }
 
-    private String guardarImagen(Mensaje mensaje, Bitmap imagen){
-        FileOutputStream outputStream;
-        try {
-            File file = new File(MainActivity.getMainActivity().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
-            outputStream = new FileOutputStream(file);
-            outputStream.write(this.getBytesImagen(imagen));
-            outputStream.close();
-            Log.d(IMAGEN, "He guardado en: " + file.getAbsolutePath());
-            return  file.getAbsolutePath();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
 
-    }
 
 
 }
