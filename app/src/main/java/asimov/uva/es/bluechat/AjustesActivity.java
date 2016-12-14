@@ -157,6 +157,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.avatar_preferencias:
+                comprobarPermisos();
                 buscarImagen();
         }
     }
