@@ -224,14 +224,12 @@ public class ConexionBluetooth extends Thread {
             Contacto contacto = (Contacto) entrada.readObject();
             Bitmap imagen = recibirImagen((byte[]) entrada.readObject());
             if (imagen != null) {
-                Log.e("FUNCIONA", "Ha llegado algo parecido a una imagen");
                 MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
                 String path = guardaImagen(contacto, imagen);
                 contacto.setImagen(path);
                 contacto.guardar(MainActivity.getMainActivity());
             } else {
-                MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre()); //TODO guardar base de datos y demas
-                Log.e("FUNCIONA", "Lo has Intentado no llega na");
+                MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre());
             }
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");

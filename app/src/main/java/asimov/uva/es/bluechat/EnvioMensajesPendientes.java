@@ -106,10 +106,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
             try {
                 socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
                 socket.connect();
-                //ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
 
-                ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
-                conexion.start();
+                ConexionBluetooth descubrir = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
+                descubrir.start();
+                //ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
+               // conexion.start();
 
                 //conexion.enviar(new Contacto( "Hector",BluetoothAdapter.getDefaultAdapter().getAddress(), ""));
             } catch (IOException e) {
