@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,8 +74,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         List<Mensaje> historial = chat.getHistorial();
 
+        //TODO hacerlo en consultas separadas
+
+        Contacto myself = Contacto.getSelf();
         for(Mensaje msg: historial) {
-            mostrarMensajeRecibido(msg);
+            if(msg.getEmisor().equals(myself))
+                mostrarMensajeEnviado(msg);
+            else
+                mostrarMensajeRecibido(msg);
         }
     }
 
@@ -119,7 +122,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         mensaje.registrar(this, chat);
-        mostrarMensajeEnviado(texto);
+        if(uriImagen != null)
+            mostrarMensajeEnviado(new Mensaje(texto,uriImagen));
+        else
+            mostrarMensajeEnviado(new Mensaje(texto));
 
         campo_texto.setText("");
         uriImagen = null;
@@ -138,29 +144,29 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         View tarjetaMensaje;
 
         if (null == mensaje.getImagen()) {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_recibir, null);
         } else {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_recibir, null);
             ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
             imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
-        ((TextView) tarjetaMensaje.findViewById(R.id.mensaje)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_recibir)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
-    private void mostrarMensajeEnviado(String texto) {
-        View mensaje;
-        if (null == uriImagen) {
-            mensaje = getLayoutInflater().inflate(R.layout.mensaje, null);
+    private void mostrarMensajeEnviado(Mensaje mensaje) {
+        View tarjetaMensaje;
+        if (null == mensaje.getImagen()) {
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, null);
         } else {
-            mensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen, null);
-            ImageView imageView = (ImageView) mensaje.findViewById(R.id.imagen);
-            imageView.setImageURI(uriImagen);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_enviar, null);
+            ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
+            imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
-        ((TextView) mensaje.findViewById(R.id.mensaje)).setText(texto);
-        lista_mensajes.addView(mensaje, lista_mensajes.getChildCount());
+        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_enviar)).setText(mensaje.getContenido());
+        lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
     @Override
