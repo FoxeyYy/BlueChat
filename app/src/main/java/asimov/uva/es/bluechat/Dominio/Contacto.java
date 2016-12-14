@@ -3,12 +3,13 @@ package asimov.uva.es.bluechat.Dominio;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import android.provider.ContactsContract;
 
 import java.io.Serializable;
 import java.util.List;
@@ -96,7 +97,12 @@ public class Contacto implements Parcelable, Serializable{
             return null;
         }
 
-        String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_NOMBRE));
+        String nombre = getNombreContacto(context, mac);
+
+        if (null == nombre) {
+            nombre = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_NOMBRE));
+        }
+
         String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_IMAGE));
 
         Contacto contacto = new Contacto(nombre, mac, imagen, true);
@@ -106,6 +112,26 @@ public class Contacto implements Parcelable, Serializable{
 
     }
 
+    /**
+     * Devuelve el nombre de un contacto si ya ha sido registrado en la agenda.
+     * @param context de accesso a persistencia
+     * @param mac del contacto
+     * @return nombre de la agenda del contacto, null si no esta asociado.
+     */
+    private static String getNombreContacto(Context context, String mac) {
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(mac));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            String nombre = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+            cursor.close();
+            return nombre;
+        }
+
+        cursor.close();
+        return null;
+    }
     /**
      * Devuelve el chat de un contacto
      * @return el chat
