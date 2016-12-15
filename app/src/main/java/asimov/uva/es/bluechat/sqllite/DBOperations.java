@@ -60,6 +60,7 @@ public class DBOperations {
     /**
      * Inserta un mensaje en la base de datos
      * @param mensaje Mensaje que se va a insertar
+     * @param chat al que pertenece
      */
     public void insertMessage(Mensaje mensaje, Chat chat){
         int num = getNumMensajes();

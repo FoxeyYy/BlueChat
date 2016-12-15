@@ -200,7 +200,7 @@ public class Chat implements Parcelable{
      */
     public void guardar(Context context) {
 
-        if (!esGrupo) {
+        if (!esGrupo()) {
             DBOperations.obtenerInstancia(context).insertChat(this);
         } else {
             DBOperations.obtenerInstancia(context).insertarGrupo(this);
@@ -214,6 +214,10 @@ public class Chat implements Parcelable{
 
     public boolean esPersistente () {
         return esPersistente;
+    }
+
+    public boolean esGrupo() {
+        return esGrupo;
     }
 
     /**
