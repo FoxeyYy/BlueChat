@@ -28,11 +28,14 @@ public class DBOperations {
     private static final String SQL_READ_CONTACT = "SELECT * FROM Contacto WHERE mac = ?;";
     private static final String SQL_READ_ALL_CONTACTS = "SELECT * FROM Contacto;";
     private static final String SQL_READ_CHAT = "SELECT * FROM Chat WHERE idChat = ?;";
-    private static final String SQL_READ_ALL_CHATS = "SELECT * FROM Chat;";
+    private static final String SQL_READ_ALL_CHATS = String.format("SELECT * FROM %s", DBContract.Chat.TABLE_NAME);
+    private static final String SQL_READ_ALL_GRUPOS = String.format("SELECT * FROM %s", DBContract.ChatGrupal.TABLE_NAME);
+    private static final String SQL_READ_ALL_PARTICIPANTES_GRUPO = String.format("SELECT * FROM %s WHERE %s = ?", DBContract.ParticipantesGrupo.TABLE_NAME, DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT);
     private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM (SELECT * FROM Mensaje WHERE estado = 0) JOIN Chat USING(idChat) GROUP BY idChat";
     private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM Mensaje where idChat = ? and estado = 0";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
+    private static final String SQL_GET_NUM_GRUPOS = String.format("SELECT COUNT(*) FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_GET_NUM_MSG = "SELECT COUNT(*) FROM Mensaje";
 
     private static final DBOperations instancia = new DBOperations();
@@ -106,6 +109,45 @@ public class DBOperations {
         values.put(DBContract.Chat.COLUMN_NAME_NOMBRE, chat.getNombre());
         /*Inserta una nueva fila*/
         getDb().insert(DBContract.Chat.TABLE_NAME, null, values);
+    }
+
+    /**
+     * Inserta un nuevo chat grupal en la base de datos
+     * @param chat a insertar
+     */
+    public void insertarGrupo (Chat chat) {
+        int id = getNumGrupos() + Contacto.getSelf().getDireccionMac().hashCode(); //TODO jeje yoqueselaverdadxdxd
+        chat.setIdChat(String.valueOf(id));
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT, id);
+        values.put(DBContract.ChatGrupal.COLUMN_NAME_NOMBRE, chat.getNombre());
+
+        getDb().insert(DBContract.ChatGrupal.TABLE_NAME, null, values);
+    }
+
+    /**
+     * Asocia un grupo a un contacto
+     * @param chat a asociar
+     * @param contacto a asociar
+     */
+    public void insertarContactoEnGrupo (Chat chat, Contacto contacto) {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT, chat.getIdChat());
+        values.put(DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO, contacto.getDireccionMac());
+
+        getDb().insert(DBContract.ParticipantesGrupo.TABLE_NAME, null, values);
+    }
+
+    public int getNumGrupos() {
+        int num = 0;
+
+        Cursor cursor = getDb().rawQuery(SQL_GET_NUM_GRUPOS,null);
+        if(null != cursor && cursor.moveToFirst()){
+            num = cursor.getInt(0);
+        }
+
+        return num;
     }
 
     public int getNumChats() {
@@ -182,7 +224,25 @@ public class DBOperations {
      */
     public Cursor getAllChats (){
         Cursor cursor = getDb().rawQuery(SQL_READ_ALL_CHATS, null);
-        cursor.moveToFirst();
+        return cursor;
+    }
+
+    /**
+     * Devuelve todos los chats grupales
+     * @return cursor El cursor a los chats grupales.
+     */
+    public Cursor getGrupos () {
+        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_GRUPOS, null);
+        return cursor;
+    }
+
+    /**
+     * Devuelve un cursor a todos los participantes de un grupo
+     * @return cursor a los participantes
+     */
+    public Cursor getParticipantesGrupo (String id) {
+        String[] args = {id};
+        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_PARTICIPANTES_GRUPO, args);
         return cursor;
     }
 

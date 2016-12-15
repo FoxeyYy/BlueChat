@@ -1,8 +1,8 @@
 package asimov.uva.es.bluechat.sqllite;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Crea la base de datos a partir de las sentencias correspondientes para su creación
@@ -27,6 +27,20 @@ public class DBHelper extends SQLiteOpenHelper{
     /* Sentencia de creación de la tabla Chat */
     private static final String SQL_CREATE_TABLE_CHAT = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" + ", %s , %s TEXT);",
             DBContract.Chat.TABLE_NAME, DBContract.Chat.COLUMN_NAME_ID_CHAT, DBContract.Chat.COLUMN_NAME_ID_CONTACTO, DBContract.Chat.COLUMN_NAME_NOMBRE);
+
+    /* Sentencia de creación de la tabla Chat grupal*/
+    private static final String SQL_CREATE_TABLE_CHAT_GRUPAL = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY, %s TEXT);",
+            DBContract.ChatGrupal.TABLE_NAME,
+            DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT,
+            DBContract.ChatGrupal.COLUMN_NAME_NOMBRE);
+
+    /* Sentencia de creación de la tabla participantes grupo */
+    private static final String SQL_CREATE_TABLE_PARTICIPANTES_GRUPO = String.format("CREATE TABLE %s (%s TEXT, %s TEXT, PRIMARY KEY (%s, %s));",
+            DBContract.ParticipantesGrupo.TABLE_NAME,
+            DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT,
+            DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO,
+            DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT,
+            DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO);
 
     /*Sentencia de creación de la tabla Mensaje*/
     private static final String SQL_CREATE_TABLE_MENSAJE = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
@@ -55,6 +69,8 @@ public class DBHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_TABLE_CONTACTO);
         db.execSQL(SQL_CREATE_TABLE_CHAT);
+        db.execSQL(SQL_CREATE_TABLE_CHAT_GRUPAL);
+        db.execSQL(SQL_CREATE_TABLE_PARTICIPANTES_GRUPO);
         db.execSQL(SQL_CREATE_TABLE_MENSAJE);
     }
 
@@ -68,6 +84,8 @@ public class DBHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Contacto.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS" + DBContract.Chat.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS" + DBContract.ChatGrupal.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS" + DBContract.ParticipantesGrupo.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Mensaje.TABLE_NAME);
         db.setVersion(newVersion);
         onCreate(db);

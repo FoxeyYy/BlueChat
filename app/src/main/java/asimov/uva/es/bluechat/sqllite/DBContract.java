@@ -36,6 +36,24 @@ public class DBContract {
     }
 
     /**
+     * Define la tabla Chat Grupal con sus respectivos atributos
+     */
+    public static class ChatGrupal implements BaseColumns {
+        public static final String TABLE_NAME = "ChatGrupal";
+        public static final String COLUMN_NAME_ID_CHAT = "idChat";
+        public static final String COLUMN_NAME_NOMBRE = "nombre";
+    }
+
+    /**
+     * Define la tabla de participantes de un chat grupal con sus respectivos atributos
+     */
+    public static class ParticipantesGrupo implements BaseColumns {
+        public static final String TABLE_NAME = "ParticipantesGrupo";
+        public static final String COLUMN_NAME_ID_CHAT = "idChat";
+        public static final String COLUMN_NAME_ID_CONTACTO = "idContacto";
+    }
+
+    /**
      * Define la tabla Mensaje con sus respectivos atributos
      */
     public static class Mensaje implements BaseColumns{
@@ -47,7 +65,6 @@ public class DBContract {
         public static final String COLUMN_NAME_EMISOR = "emisor";
         public static final String COLUMN_NAME_FECHA = "fecha";
         public static final String COLUMN_NAME_STATUS = "estado";
-
     }
 
 }
