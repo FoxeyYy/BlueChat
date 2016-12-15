@@ -1,5 +1,6 @@
 package asimov.uva.es.bluechat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -149,5 +150,13 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
 
         ((TextView) mensaje.findViewById(R.id.mensaje)).setText(texto);
         lista_mensajes.addView(mensaje, lista_mensajes.getChildCount());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            uriImagen = data.getData();
+        }
     }
 }
