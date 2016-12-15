@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 
 public class ActivityChatGrupal extends AppCompatActivity implements View.OnClickListener {
@@ -20,7 +21,7 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
 
     private LinearLayout lista_mensajes;
     private TextView campo_texto;
-    private String nombreGrupo;
+    private Chat chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
 
         Bundle params = getIntent().getExtras();
         participantes = params.getParcelableArrayList(CONTACTOS);
-        nombreGrupo = params.getString(NOMBRE_GRUPO);
+        String nombreGrupo = params.getString(NOMBRE_GRUPO);
         String nombres = "";
 
         for (Contacto contacto : participantes) {
@@ -50,6 +51,9 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
 
         lista_mensajes = (LinearLayout) findViewById(R.id.lista_mensajes);
         campo_texto = (TextView) findViewById(R.id.texto);
+
+        chat = new Chat(nombreGrupo, participantes);
+        chat.guardar(this);
     }
 
     @Override
