@@ -94,6 +94,19 @@ public class Chat implements Parcelable{
         esGrupo = true;
     }
 
+    /**
+     * Inicializa un chat grupal extraido de persistencia
+     * @param id del chat
+     * @param nombre del grupo
+     * @param participantes del grupo
+     */
+    private Chat(String id, String nombre, List<Contacto> participantes) {
+        this(nombre, participantes);
+        esPersistente = true;
+        esGrupo = true;
+        idChat = id;
+    }
+
     protected Chat(Parcel in) {
         participantes = in.readArrayList(Contacto.class.getClassLoader());
         nombre = in.readString();
@@ -150,6 +163,23 @@ public class Chat implements Parcelable{
         }
 
         cursor.close();
+
+        cursor = DBOperations.obtenerInstancia(context).getGrupos();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idChat = cursor.getString(cursor.getColumnIndex(DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT));
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.ChatGrupal.COLUMN_NAME_NOMBRE));
+
+            List<Contacto> participantes = Contacto.getParticipantesGrupo(context, idChat);
+            Chat chat = new Chat(idChat, nombre, participantes);
+            List<Mensaje> historial = chat.getMensajes(context);
+            chat.setHistorial(historial);
+
+            chats.add(chat);
+        }
+
+        cursor.close();
+
         return chats;
     }
 
@@ -236,11 +266,19 @@ public class Chat implements Parcelable{
     }
 
     /**
-     * Obtiene el contacto con el que se ha establecido el chat
-     * @return {@link Contacto} con el que se ha establecido el chat
+     * Obtiene el contacto con el que se ha establecido el chat en caso de no ser un grupo
+     * @return {@link Contacto} con el que se ha establecido el chat, null en caso de ser un grupo
      */
     public Contacto getPar() {
-        return participantes.get(0);
+        return esGrupo() ? null : participantes.get(0);
+    }
+
+    /**
+     * Devuelve la lista de participantes del chat
+     * @return la lista de participantes
+     */
+    public List<Contacto> getParticipantes () {
+        return participantes;
     }
 
     /**

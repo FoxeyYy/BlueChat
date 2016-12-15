@@ -135,6 +135,25 @@ public class Contacto implements Parcelable, Serializable{
     }
 
     /**
+     * Encuentra los participantes de un grupo
+     * @param contexto de acceso a persistencia
+     * @param idGrupo a buscar
+     * @return la lista de participantes
+     */
+    public static List<Contacto> getParticipantesGrupo(Context contexto, String idGrupo) {
+        List<Contacto> participantes = new ArrayList();
+        Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesGrupo(idGrupo);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idContacto = cursor.getString(cursor.getColumnIndex(DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO));
+            Contacto participante = getContacto(contexto, idContacto);
+            participantes.add(participante);
+        }
+
+        return participantes;
+    }
+
+    /**
      * Devuelve el nombre de un contacto si ya ha sido registrado en la agenda.
      * @param context de accesso a persistencia
      * @param mac del contacto
@@ -161,7 +180,7 @@ public class Contacto implements Parcelable, Serializable{
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
         for(Chat chat : chats){
-            if(chat.getPar().getDireccionMac().equals(this.getDireccionMac())){
+            if(chat.getPar().getDireccionMac().equals(this.getDireccionMac()) && !chat.esGrupo()){
                 return chat;
             }
         }

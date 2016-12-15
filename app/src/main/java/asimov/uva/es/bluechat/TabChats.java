@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
  * Tab que muestra los chats con los que se ha establecido
@@ -53,7 +48,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
             View tarjeta = inflater.inflate(R.layout.tarjeta_contacto, null);
             Chat chat = chats.get(i);
 
-            mostrarNombreContacto(tarjeta, chat);
+            mostrarNombreChat(tarjeta, chat);
             mostrarUltimoMensaje(tarjeta, chat);
             mostrarImagen(tarjeta,chat);
 
@@ -69,8 +64,8 @@ public class TabChats extends Fragment implements View.OnClickListener {
      * @param vista a modificar
      * @param chat a mostrar
      */
-    private void mostrarNombreContacto(View vista, Chat chat) {
-        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
+    private void mostrarNombreChat(View vista, Chat chat) {
+        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getNombre());
     }
 
     /**
@@ -80,6 +75,11 @@ public class TabChats extends Fragment implements View.OnClickListener {
      */
     private void mostrarUltimoMensaje(View vista, Chat chat) {
         List<Mensaje> msgs = chat.getHistorial();
+
+        if (msgs.isEmpty()) {
+            return;
+        }
+
         String ultimoMensaje = msgs.get(msgs.size()-1).getContenido();
         ((TextView)vista.findViewById(R.id.ultimo_mensaje)).setText(ultimoMensaje);
     }
@@ -90,14 +90,23 @@ public class TabChats extends Fragment implements View.OnClickListener {
      * @param chat a mostrar
      */
     private void mostrarImagen(View vista, Chat chat){
+        if (chat.esGrupo()) {
+            return;
+        }
+
         ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);
         imagen.setImageURI(Uri.parse(chat.getPar().getImagen()));
     }
 
     @Override
     public void onClick(View v) {
-        Intent intentChat = new Intent(getContext(), ChatActivity.class);
         Chat chat = chats.get(lista.indexOfChild(v));
+        Intent intentChat;
+        if (!chat.esGrupo()) {
+            intentChat = new Intent(getContext(), ChatActivity.class);
+        } else {
+            intentChat = new Intent(getContext(), ActivityChatGrupal.class);
+        }
         intentChat.putExtra("chat", chat);
         startActivity(intentChat);
     }

@@ -29,8 +29,6 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
 
     private Uri uriImagen;
 
-    private List<Contacto> participantes;
-
     private LinearLayout lista_mensajes;
     private TextView campo_texto;
     private Chat chat;
@@ -45,24 +43,54 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
-        participantes = params.getParcelableArrayList(CONTACTOS);
-        String nombreGrupo = params.getString(NOMBRE_GRUPO);
-        String nombres = "";
+        chat = params.getParcelable("chat");
 
-        for (Contacto contacto : participantes) {
-            nombres += contacto.getNombre()+ ", ";
+        if (null == chat) {
+            nuevoChat(params);
         }
-
-        nombres = nombres.substring(0, nombres.length() - 2);
-
-        ((TextView) findViewById(R.id.nombre_grupo)).setText(nombreGrupo);
-        ((TextView) findViewById(R.id.participantes)).setText(nombres);
 
         findViewById(R.id.boton_enviar).setOnClickListener(this);
         findViewById(R.id.boton_foto).setOnClickListener(this);
 
         lista_mensajes = (LinearLayout) findViewById(R.id.lista_mensajes);
         campo_texto = (TextView) findViewById(R.id.texto);
+
+        String nombres = "";
+
+        for (Contacto contacto : chat.getParticipantes()) {
+            nombres += contacto.getNombre()+ ", ";
+        }
+
+        nombres = nombres.substring(0, nombres.length() - 2);
+        ((TextView) findViewById(R.id.nombre_grupo)).setText(chat.getNombre());
+        ((TextView) findViewById(R.id.participantes)).setText(nombres);
+
+        List<Mensaje> historial = chat.getHistorial();
+
+        for(Mensaje msg: historial) {
+            mostrarMensajeRecibido(msg);
+        }
+
+    }
+
+    private void mostrarMensajeRecibido(Mensaje mensaje) {
+        View tarjetaMensaje;
+
+        if (null == mensaje.getImagen()) {
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje, null);
+        } else {
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen, null);
+            ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
+            imageView.setImageURI(mensaje.getImagen());
+        }
+
+        ((TextView) tarjetaMensaje.findViewById(R.id.mensaje)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+        lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
+    }
+
+    private void nuevoChat (Bundle params) {
+        List<Contacto> participantes = params.getParcelableArrayList(CONTACTOS);
+        String nombreGrupo = params.getString(NOMBRE_GRUPO);
 
         chat = new Chat(nombreGrupo, participantes);
         chat.guardar(this);
