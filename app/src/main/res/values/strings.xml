@@ -24,4 +24,16 @@
     <string name="nombre_a_mostrar">Nombre a mostrar</string>
     <string name="tu_direccion">Tu dirección:</string>
     <string name="escribe_aqui">Escribe aquí</string>
+    <string name="introduce_apodo">Escribe tu apodo</string>
+    <string name="bienvenida_app">Bienvenido a Bluechat</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="select_image">Elegir imagen de perfil (opcional)</string>
+    <string name="search_image">IMAGEN</string>
+    <string name="info_aplicacion">Para el correcto funcionamiento es necesario que la aplicacion tenga diferentes permisos
+                                    entre los que se encuentran:
+                                    Acceso a ficheros multimedia, necesarios para poder establecer una imagen de perfil asi como enviar y recibir imágenes.
+                                    Acceso a contactos, lo cual le permite guardar contactos en su telefono asi como mmostrar los nombres de sus contactos en vez de los descubiertos por el bluetooth.
+                                    Acceso a localizacion: necesario para un correcto descubrimiento de los dispositivos bluetooth cercanos.</string>
+    <string name="agradecimiento">Gracias por confiar en BlueChat.
+                                    Es la aplicacion perfecta para hablar con personas que se encuentren cerca de ti, sean conocidas o no.</string>
 </resources>

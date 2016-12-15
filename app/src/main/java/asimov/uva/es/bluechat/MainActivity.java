@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -189,6 +190,19 @@ public class MainActivity extends AppCompatActivity{
         tabLayout.setupWithViewPager(mViewPager);
 
         mainActivity = this;
+
+        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
+        boolean primeraVez = preferencias.getBoolean("primeraVez", false);
+        if(!primeraVez){
+            SharedPreferences.Editor editor = preferencias.edit();
+            editor.putBoolean("primeraVez", true);
+            editor.commit();
+            Intent intent = new Intent(this, PrimeraVezActivity.class);
+            startActivity(intent);
+
+        }
+
+
 
         comprobarBluetooth();
         comprobarPermisos();
