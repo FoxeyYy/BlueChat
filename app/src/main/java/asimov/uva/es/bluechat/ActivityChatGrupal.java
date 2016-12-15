@@ -68,8 +68,12 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
 
         List<Mensaje> historial = chat.getHistorial();
 
+        Contacto myself = Contacto.getSelf();
         for(Mensaje msg: historial) {
-            mostrarMensajeRecibido(msg);
+            if(msg.getEmisor().equals(myself))
+                mostrarMensajeEnviado(msg);
+            else
+                mostrarMensajeRecibido(msg);
         }
 
     }
@@ -78,14 +82,14 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
         View tarjetaMensaje;
 
         if (null == mensaje.getImagen()) {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_recibir, null);
         } else {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_recibir, null);
             ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
-            imageView.setImageURI(mensaje.getImagen());
+            imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
-        ((TextView) tarjetaMensaje.findViewById(R.id.mensaje)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_recibir)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
@@ -123,7 +127,7 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
         }
 
         mensaje.registrar(this, chat);
-        mostrarMensajeEnviado(texto);
+        mostrarMensajeEnviado(mensaje);
 
         campo_texto.setText("");
         uriImagen = null;
@@ -138,18 +142,18 @@ public class ActivityChatGrupal extends AppCompatActivity implements View.OnClic
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
-    private void mostrarMensajeEnviado(String texto) {
-        View mensaje;
-        if (null == uriImagen) {
-            mensaje = getLayoutInflater().inflate(R.layout.mensaje, null);
+    private void mostrarMensajeEnviado(Mensaje mensaje) {
+        View tarjetaMensaje;
+        if (null == mensaje.getImagen()) {
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, null);
         } else {
-            mensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen, null);
-            ImageView imageView = (ImageView) mensaje.findViewById(R.id.imagen);
-            imageView.setImageURI(uriImagen);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_enviar, null);
+            ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
+            imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
-        ((TextView) mensaje.findViewById(R.id.mensaje)).setText(texto);
-        lista_mensajes.addView(mensaje, lista_mensajes.getChildCount());
+        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_enviar)).setText(mensaje.getContenido());
+        lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
     @Override

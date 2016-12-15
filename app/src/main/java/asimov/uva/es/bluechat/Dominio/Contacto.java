@@ -180,7 +180,7 @@ public class Contacto implements Parcelable, Serializable{
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
         for(Chat chat : chats){
-            if(chat.getPar().equals(this) && && !chat.esGrupo()){
+            if(chat.getPar().equals(this) && !chat.esGrupo()){
                 return chat;
             }
         }
