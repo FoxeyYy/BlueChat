@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/nombre_grupo"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:singleLine="true"
+        android:hint="@string/hint_nombre_grupo" />
+
+    <ListView
+        android:layout_width="0dp"
+        android:id="@+id/lista_contactos"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/nombre_grupo"
+        android:layout_marginTop="8dp"
+        android:layout_height="100dp" />
+
+    <Button
+        android:text="@android:string/ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/boton_crear"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/lista_contactos" />
+
+    <Button
+        android:text="@android:string/no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/boton_cancelar"
+        app:layout_constraintBaseline_toBaselineOf="@+id/boton_crear"
+        app:layout_constraintRight_toLeftOf="@+id/boton_crear"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+
+</android.support.constraint.ConstraintLayout>

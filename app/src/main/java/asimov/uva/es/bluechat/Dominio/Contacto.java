@@ -12,6 +12,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import asimov.uva.es.bluechat.AjustesActivity;
@@ -54,6 +55,27 @@ public class Contacto implements Parcelable, Serializable{
         String avatar = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.AVATAR, "");
         String mac = android.provider.Settings.Secure.getString(MainActivity.getMainActivity().getContentResolver(),"bluetooth_address");
         return new Contacto (nombre, mac, avatar, true);
+    }
+
+    /**
+     * Devuelve una lista con todos los contactos conocidos
+     * @param contexto de acceso a persistencia
+     * @return la lista de contactos conocidos
+     */
+    public static List<Contacto> getContactos (Context contexto) {
+        List<Contacto> contactos = new ArrayList();
+
+        Cursor cursor = DBOperations.obtenerInstancia(contexto).getAllContacts();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String mac = cursor.getString(cursor.getColumnIndex(DBContract.Contacto.COLUMN_NAME_MAC));
+            Contacto contacto = getContacto(contexto, mac);
+            contactos.add(contacto);
+        }
+
+        cursor.close();
+
+        return contactos;
     }
 
     /**
@@ -251,4 +273,8 @@ public class Contacto implements Parcelable, Serializable{
         dest.writeInt((byte) (esPersistente ? 1 : 0));
     }
 
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

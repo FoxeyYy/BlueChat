@@ -25,4 +25,9 @@
     <string name="escribe_aqui">Escribe aquí</string>
     <string name="action_actualizar">Añadir a contacto existente</string>
     <string name="action_anadir">Crear contacto</string>
+    <string name="crear_grupo">Crear grupo</string>
+    <string name="titulo_crear_grupo">Seleccionar participantes</string>
+    <string name="error_contactos_vacio">Al menos debe seleccionarse un contacto</string>
+    <string name="hint_nombre_grupo">Nombre del grupo</string>
+    <string name="error_nombre_grupo_vacio">El grupo debe tener nombre</string>
 </resources>

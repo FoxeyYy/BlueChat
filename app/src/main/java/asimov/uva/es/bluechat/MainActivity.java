@@ -414,6 +414,11 @@ public class MainActivity extends AppCompatActivity{
 
         switch (id) {
 
+            case R.id.action_crear_grupo:
+                Intent dialogo = new Intent(this, ActivityCrearGrupo.class);
+                startActivity(dialogo);
+                break;
+
             case (R.id.action_settings):
                 Intent intentAjustes= new Intent(this, AjustesActivity.class);
                 startActivity(intentAjustes);
