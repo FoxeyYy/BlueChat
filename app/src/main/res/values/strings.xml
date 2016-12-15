@@ -19,6 +19,7 @@
     <string name="info_bluetooth_desactivado">Con Bluetooth desactivado solamente podrá ver mensajes previos. Si desea enviar o recibir es necesario que lo active </string>
     <string name="info_bluetooth_visible">Es necesario que permita que el dispositivo sea visible para poder realizar la conexión Bluetooth</string>
     <string name="permisos_denegados">Es necesario el uso de la ubicación para poder descubrir dispositivos</string>
+    <string name="permisos_imagen_denegados">Es necesario el acceso a los ficheros multimedia para el correcto funcionamiento de la aplicación</string>
     <string name="dispositivo_sin_bluetooth">La aplicación necesita Bluetooth en el dispositivo</string>
     <string name="nombre_a_mostrar">Nombre a mostrar</string>
     <string name="tu_direccion">Tu dirección:</string>
@@ -30,4 +31,16 @@
     <string name="error_contactos_vacio">Al menos debe seleccionarse un contacto</string>
     <string name="hint_nombre_grupo">Nombre del grupo</string>
     <string name="error_nombre_grupo_vacio">El grupo debe tener nombre</string>
+    <string name="introduce_apodo">Escribe tu apodo</string>
+    <string name="bienvenida_app">Bienvenido a Bluechat</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="select_image">Elegir imagen de perfil (opcional)</string>
+    <string name="search_image">IMAGEN</string>
+    <string name="info_aplicacion">Para el correcto funcionamiento es necesario que la aplicacion tenga diferentes permisos
+                                    entre los que se encuentran:
+                                    Acceso a ficheros multimedia, necesarios para poder establecer una imagen de perfil asi como enviar y recibir imágenes.
+                                    Acceso a contactos, lo cual le permite guardar contactos en su telefono asi como mmostrar los nombres de sus contactos en vez de los descubiertos por el bluetooth.
+                                    Acceso a localizacion: necesario para un correcto descubrimiento de los dispositivos bluetooth cercanos.</string>
+    <string name="agradecimiento">Gracias por confiar en BlueChat.
+                                    Es la aplicacion perfecta para hablar con personas que se encuentren cerca de ti, sean conocidas o no.</string>
 </resources>

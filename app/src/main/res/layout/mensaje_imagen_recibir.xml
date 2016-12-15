@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/msg_recibir"
+        android:layout_margin="8dp">
+
+        <ImageView
+            app:srcCompat="@android:drawable/ic_menu_report_image"
+            android:id="@+id/imagen"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
+        <TextView
+            android:id="@+id/texto_msg_recibir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="fill_vertical|left"
+            android:background="@drawable/msg_recibir"
+            android:padding="16dp"/>
+    </LinearLayout>
+</FrameLayout>

@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/background_light"
+        android:background="@drawable/msg_enviar"
         android:layout_margin="8dp">
 
         <ImageView
@@ -19,10 +19,13 @@
             android:layout_height="150dp" />
 
         <TextView
-            android:text="Mensaje"
-            android:layout_width="match_parent"
+            android:id="@+id/texto_msg_enviar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/mensaje"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="fill_vertical|right"
+            android:background="@drawable/msg_enviar"
+            android:padding="16dp" />
     </LinearLayout>
 </FrameLayout>

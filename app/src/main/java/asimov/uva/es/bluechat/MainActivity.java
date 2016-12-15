@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -54,11 +55,6 @@ public class MainActivity extends AppCompatActivity{
      * Resultado de la solicitud del permiso de localización
      */
     private final int PERMISO_LOCALIZACION = 1;
-
-    /**
-     * Resultado de la solicitud del permiso de localización
-     */
-    private final int PERMISO_ACCESO_DATOS = 2;
 
 
     /**
@@ -195,6 +191,19 @@ public class MainActivity extends AppCompatActivity{
 
         mainActivity = this;
 
+        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
+        boolean primeraVez = preferencias.getBoolean("primeraVez", false);
+        if(!primeraVez){
+            SharedPreferences.Editor editor = preferencias.edit();
+            editor.putBoolean("primeraVez", true);
+            editor.commit();
+            Intent intent = new Intent(this, PrimeraVezActivity.class);
+            startActivity(intent);
+
+        }
+
+
+
         comprobarBluetooth();
         comprobarPermisos();
 
@@ -280,10 +289,6 @@ public class MainActivity extends AppCompatActivity{
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
@@ -291,18 +296,6 @@ public class MainActivity extends AppCompatActivity{
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISO_LOCALIZACION: {
-
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
-
-                } else {
-                    //El usuario no proporciona permisos
-                    //mostramos un mensaje indicando que son necesarios
-                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
-                }
-            }
-            case PERMISO_ACCESO_DATOS: {
 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

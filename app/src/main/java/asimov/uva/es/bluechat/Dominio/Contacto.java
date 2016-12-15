@@ -180,7 +180,7 @@ public class Contacto implements Parcelable, Serializable{
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
         for(Chat chat : chats){
-            if(chat.getPar().getDireccionMac().equals(this.getDireccionMac()) && !chat.esGrupo()){
+            if(chat.getPar().equals(this) && && !chat.esGrupo()){
                 return chat;
             }
         }
@@ -297,4 +297,17 @@ public class Contacto implements Parcelable, Serializable{
     public String toString() {
         return nombre;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contacto contacto = (Contacto) o;
+
+        return getDireccionMac().equals(contacto.getDireccionMac());
+
+    }
+
+
 }

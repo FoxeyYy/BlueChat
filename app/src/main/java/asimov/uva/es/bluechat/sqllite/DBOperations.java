@@ -68,7 +68,7 @@ public class DBOperations {
         if (null == mensaje.getImagen()) {
             imagen = "";
         } else {
-            imagen = mensaje.getImagen().toString();
+            imagen = mensaje.getImagen();
         }
 
         ContentValues values = new ContentValues();
@@ -89,6 +89,13 @@ public class DBOperations {
      * @param contacto Contacto que se va a insertar
      */
     public void insertContact(Contacto contacto){
+        Cursor cursor = getContact(contacto.getDireccionMac());
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            cursor.close();
+            updateContacto(contacto);
+        }
+
         ContentValues values = new ContentValues();
         values.put(DBContract.Contacto.COLUMN_NAME_MAC, contacto.getDireccionMac());
         values.put(DBContract.Contacto.COLUMN_NAME_NOMBRE, contacto.getNombre());
@@ -267,10 +274,30 @@ public class DBOperations {
         return baseDatos.getWritableDatabase();
     }
 
+    /**
+     * Marca un mensaje como enviado
+     * @param id del mensaje
+     */
     public void marcarEnviado(String id) {
         String[] args = new String[] {id};
         ContentValues values = new ContentValues();
         values.put(DBContract.Mensaje.COLUMN_NAME_STATUS, 1);
         getDb().update("Mensaje",values, "idMensaje = ?", args);
+    }
+
+    /**
+     * Actualiza un contacto con la nueva informacion
+     * @param contacto a actualizar
+     */
+    public void updateContacto(Contacto contacto){
+        String nombre = contacto.getNombre();
+        String mac = contacto.getDireccionMac();
+        String imagen = contacto.getImagen();
+        String[] args = new String[]{mac};
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Contacto.COLUMN_NAME_NOMBRE, nombre);
+        values.put(DBContract.Contacto.COLUMN_NAME_IMAGE, imagen);
+        getDb().update("Contacto",values, "mac = ?", args);
+
     }
 }

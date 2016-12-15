@@ -225,14 +225,12 @@ public class ConexionBluetooth extends Thread {
             Contacto contacto = (Contacto) entrada.readObject();
             Bitmap imagen = recibirImagen();
             if (imagen != null) {
-                Log.e("FUNCIONA", "Ha llegado algo parecido a una imagen");
                 MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
-                String path = guardaImagen(contacto, imagen);
+                String path = guardarImagenContacto(contacto, imagen);
                 contacto.setImagen(path);
                 contacto.guardar(MainActivity.getMainActivity());
             } else {
-                MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre()); //TODO guardar base de datos y demas
-                Log.e("FUNCIONA", "Lo has Intentado no llega na");
+                MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre());
             }
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");
@@ -285,6 +283,8 @@ public class ConexionBluetooth extends Thread {
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
                 } else {
                     Bitmap imagen = recibirImagen();
+                    String path = guardarImagenMensaje(mensaje, imagen);
+                    mensaje.setImagen(path);
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
             }
@@ -304,7 +304,7 @@ public class ConexionBluetooth extends Thread {
             contacto = mensajes.get(0).getEmisor();
             contacto.guardar(context);
         }
-        Chat chat = Chat.getChatContacto(context, contacto);
+        Chat chat = contacto.getChat(context);
         if(null == chat) {
             chat = new Chat(mensajes.get(0).getEmisor());
             chat.guardar(context);
@@ -367,19 +367,32 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
-    private String guardaImagen(Contacto contacto, Bitmap imagen) {
+    private String guardarImagenContacto(Contacto contacto, Bitmap imagen) {
+        File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
+        return guardarImagen(file, imagen);
+    }
+
+    private String guardarImagenMensaje(Mensaje mensaje, Bitmap imagen){
+        File file = new File(MainActivity.getMainActivity().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
+        return guardarImagen(file,imagen);
+    }
+
+    private String guardarImagen(File file, Bitmap imagen){
         FileOutputStream outputStream;
         try {
-            File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
             outputStream = new FileOutputStream(file);
             outputStream.write(this.getBytesImagen(imagen));
             outputStream.close();
             Log.d(IMAGEN, "He guardado en: " + file.getAbsolutePath());
             return file.getAbsolutePath();
-        } catch (Exception e) {
+         } catch (Exception e) {
             e.printStackTrace();
-        }
+            }
         return null;
     }
+
+
+
+
 }
 
