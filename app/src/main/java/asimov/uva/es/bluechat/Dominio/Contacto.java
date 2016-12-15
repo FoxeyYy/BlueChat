@@ -193,6 +193,7 @@ public class Contacto implements Parcelable, Serializable{
      */
     public void guardar(Context context)  {
         DBOperations.obtenerInstancia(context).insertContact(this);
+        esPersistente = true;
     }
 
     /**
