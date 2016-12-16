@@ -103,7 +103,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
         Chat chat = chats.get(lista.indexOfChild(v));
         Intent intentChat;
         if (!chat.esGrupo()) {
-            intentChat = new Intent(getContext(), ChatActivity.class);
+            intentChat = new Intent(getContext(), ActividadChatBase.class);
         } else {
             intentChat = new Intent(getContext(), ActivityChatGrupal.class);
         }
