@@ -16,7 +16,8 @@ public class Peticion implements Serializable {
     public enum TipoPeticion {
         ERROR,
         DESCUBRIMIENTO,
-        MENSAJE
+        MENSAJE,
+        MENSAJEGRUPO
     }
 
     /**
@@ -25,14 +26,24 @@ public class Peticion implements Serializable {
     private int numeroMensajes;
 
     private TipoPeticion tipo;
+    private String idGrupo;
 
     public Peticion (TipoPeticion tipo, int numeroMensajes ) {
         this.numeroMensajes = numeroMensajes;
         this.tipo = tipo;
     }
 
+    public Peticion(TipoPeticion tipo, String idChat){
+        this.tipo = tipo;
+        this.idGrupo = idChat;
+    }
+
     public Peticion(TipoPeticion tipo){
         this.tipo = tipo;
+    }
+
+    public String getIdGrupo(){
+        return idGrupo;
     }
 
     public int getNumeroMensajes(){

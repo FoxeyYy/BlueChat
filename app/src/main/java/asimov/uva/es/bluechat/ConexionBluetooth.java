@@ -40,7 +40,9 @@ public class ConexionBluetooth extends Thread {
     public enum Modo {
         SERVIDOR,
         CLIENTE_DESCUBRIMIENTO,
-        CLIENTE_MENSAJES;
+        CLIENTE_MENSAJES,
+        CLIENTE_MENSAJES_GRUPO;
+
     }
 
     /**
@@ -60,6 +62,20 @@ public class ConexionBluetooth extends Thread {
     private List<Mensaje> mensajes = null;
 
     private final String IMAGEN = "Imagen";
+
+
+    //TODO enviar idgrupo de forma correcta
+    /*EL protocolo hace lo siguiente:
+    Envia una peticion modo MENSAJEGRUPO con el id del grupo
+    El que recibe la peticion, si ya tiene el grupo en la bd acepta la peticion y el cliente entonces envia los mensajes correspondientes
+    Si no tiene dicho grupo en la bd, el cliente le envia una lista de contactos pertenecientes al grupo, este los guarda, crea el grupo
+    y luego se le envian los mensajes
+    El problema es pasar el ID del grupo desde el servicio de envio de mensajes  a la conexion para que la peticion de tipo MENSAJEGRUPO contenga dicho id
+    */
+    private String idGrupo;
+    public void setIdGrupo(String idGrupo){this.idGrupo = idGrupo;}
+
+
 
     /**
      * Modo de ejecucion
@@ -121,7 +137,10 @@ public class ConexionBluetooth extends Thread {
                 descubrir();
                 break;
             case CLIENTE_MENSAJES:
-                enviarMensajes();
+                enviarMensajeChat();
+                break;
+            case CLIENTE_MENSAJES_GRUPO:
+                enviarMensajesGrupo();
                 break;
             case SERVIDOR:
                 servidor();
@@ -143,23 +162,42 @@ public class ConexionBluetooth extends Thread {
     /**
      * Envia mensajes a un servidor
      */
-    private void enviarMensajes() {
+    private void enviarMensajeChat() {
         Log.d(CONEXION, "Enviando mensajes...");
-
         solicitarEnvioMensajes();
         if (solicitudAceptada()) {
-            for(Mensaje mensaje : mensajes) {
-                enviar(mensaje);
-                if (null != mensaje.getImagen()) {
-                    byte[] imagen = getBytesImagen(mensaje.getImagen().toString());
-                    enviar(imagen);
-                }
-                mensaje.marcarEnviado(socket.getRemoteDevice().getAddress());
-            }
+            enviarMensajes();
         } else {
             Log.e(ERROR, "Solicitud rechadaza");
         }
+
     }
+
+    /**
+     * Envia mensaje de un grupo
+     */
+    private void enviarMensajesGrupo(){
+        solicitarEnvioMensajesGrupo(idGrupo);
+        if(!solicitudAceptada())
+            enviarInfoGrupo(idGrupo);
+        enviarMensajes();
+
+    }
+
+    private void enviarMensajes(){
+        for(Mensaje mensaje : mensajes) {
+            enviar(mensaje);
+            if (null != mensaje.getImagen()) {
+                byte[] imagen = getBytesImagen(mensaje.getImagen().toString());
+                enviar(imagen);
+            }
+            mensaje.marcarEnviado(socket.getRemoteDevice().getAddress());
+        }
+    }
+
+
+
+
 
     /**
      * Envia solicitudes de descubrimiento a un servidor
@@ -193,6 +231,14 @@ public class ConexionBluetooth extends Thread {
                     responderPeticion(true);
                     recibirMensajes(peticion.getNumeroMensajes());
                     break;
+                case MENSAJEGRUPO:
+                    if(comprobarGrupo(peticion.getIdGrupo())){
+                        responderPeticion(true);
+                    }else {
+                        responderPeticion(false);
+                        recibirInfoGrupo(peticion.getIdGrupo());
+                    }
+                    recibirMensajes(peticion.getNumeroMensajes());
                 default:
                     Log.e(ERROR, "Peticion invalida");
                     responderPeticion(false);
@@ -251,6 +297,11 @@ public class ConexionBluetooth extends Thread {
         }
 
         return false;
+    }
+
+    private void solicitarEnvioMensajesGrupo(String idGrupo){
+        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJEGRUPO, idGrupo);
+        enviar(peticion);
     }
 
     private void solicitarEnvioMensajes() {
@@ -389,6 +440,29 @@ public class ConexionBluetooth extends Thread {
             }
         return null;
     }
+
+    private boolean comprobarGrupo(String id){
+        return Chat.existeGrupo(MainActivity.getMainActivity(), id);
+    }
+
+    private void enviarInfoGrupo(String id){
+        Chat grupo = Chat.getChatGrupal(MainActivity.getMainActivity(), id);
+        enviar((ArrayList)grupo.getParticipantes());
+    }
+
+    private void recibirInfoGrupo(String id){
+        try{
+            List<Contacto> participantes = (ArrayList)entrada.readObject();
+            Chat chat = new Chat(id, participantes);
+            chat.guardar(MainActivity.getMainActivity());
+        }catch (IOException e){
+            Log.e(ERROR, "No se han podido recibir los participantes del grupo");
+        }catch (ClassNotFoundException e){
+            Log.e(ERROR, "Clase no encontrada");
+        }
+
+    }
+
 
 
 

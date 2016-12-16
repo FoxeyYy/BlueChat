@@ -31,12 +31,20 @@ public class DBOperations {
     private static final String SQL_READ_ALL_CHATS = String.format("SELECT * FROM %s", DBContract.Chat.TABLE_NAME);
     private static final String SQL_READ_ALL_GRUPOS = String.format("SELECT * FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_READ_ALL_PARTICIPANTES_GRUPO = String.format("SELECT * FROM %s WHERE %s = ?", DBContract.ParticipantesGrupo.TABLE_NAME, DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT);
-    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Chat WHERE idChat IN(SELECT DISTINCT idChat FROM Mensaje m JOIN MensajePendiente mp GROUP BY m.idMensaje)";
+    //TODO CONSULTAS SEPARADAS PARA LEER CHATS NORMALES POR UNA PARTE Y GRUPOS POR OTRA
+    private static final String SQL_READ_PENDING_CHATS = "";
+    private static final String SQL_READ_PENDING_GROUPS = "";
     private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) WHERE idChat = ? GROUP BY idMensaje ";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
     private static final String SQL_GET_NUM_GRUPOS = String.format("SELECT COUNT(*) FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_GET_NUM_MSG = "SELECT COUNT(*) FROM Mensaje";
+    private static final String SQL_READ_GROUP_CHAT = String.format("SELECT * FROM %s JOIN %s USING(%s) WHERE %s =? GROUP BY %S",
+            DBContract.ChatGrupal.TABLE_NAME,
+            DBContract.ParticipantesGrupo.TABLE_NAME,
+            DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT,
+            DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT,
+            DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT);
 
     private static final DBOperations instancia = new DBOperations();
 
@@ -268,9 +276,21 @@ public class DBOperations {
         return cursor;
     }
 
+    public Cursor getGruposPendientes(){
+        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_CHATS, null);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
     public Cursor getMensajesPendientes(String idChat){
         String[] args = new String[] {idChat};
-        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_MESSAGES_CHAT, args);
+        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_GROUPS, args);
+        return cursor;
+    }
+
+    public  Cursor getChatGrupal(String idChat){
+        String[] args = new String[] {idChat};
+        Cursor cursor = getDb().rawQuery(SQL_READ_GROUP_CHAT, args);
         return cursor;
     }
 

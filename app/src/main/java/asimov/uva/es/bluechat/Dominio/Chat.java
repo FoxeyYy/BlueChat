@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import asimov.uva.es.bluechat.sqllite.DBContract;
+import asimov.uva.es.bluechat.sqllite.DBHelper;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -198,6 +199,21 @@ public class Chat implements Parcelable{
 
             chats.add(chat);
         }
+        cursor.close();
+
+        cursor = DBOperations.obtenerInstancia(context).getGruposPendientes();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idChat = cursor.getString(cursor.getColumnIndex(DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT));
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.ChatGrupal.COLUMN_NAME_NOMBRE));
+
+            List<Contacto> participantes = Contacto.getParticipantesGrupo(context, idChat);
+            Chat chat = new Chat(idChat, nombre, participantes);
+            List<Mensaje> historial = chat.getMensajesPendientes(context);
+            chat.setHistorial(historial);
+
+            chats.add(chat);
+        }
 
         cursor.close();
 
@@ -222,6 +238,42 @@ public class Chat implements Parcelable{
         cursor.close();
 
         return mensajes;
+    }
+
+    /**
+     * Comprueba si el grupo se encuentra guardado en la db
+     * @param context
+     * @param id del grupo
+     * @return true si el grupo existe, false en cualquier otro caso
+     */
+    public static boolean existeGrupo(Context context, String id){
+        Cursor cursor = DBOperations.obtenerInstancia(context).getChatGrupal(id);
+        return cursor.getCount() != 0;
+    }
+
+    public static Chat getChatGrupal(Context context, String id){
+        List<Chat> chats = new ArrayList<>();
+        Cursor cursor = DBOperations.obtenerInstancia(context).getGrupos();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idChat = cursor.getString(cursor.getColumnIndex(DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT));
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.ChatGrupal.COLUMN_NAME_NOMBRE));
+
+            List<Contacto> participantes = Contacto.getParticipantesGrupo(context, idChat);
+            Chat chat = new Chat(idChat, nombre, participantes);
+            List<Mensaje> historial = chat.getMensajes(context);
+            chat.setHistorial(historial);
+
+            chats.add(chat);
+        }
+        cursor.close();
+
+        for(Chat chat: chats){
+            if(chat.getIdChat().equals(id))
+                return chat;
+        }
+
+        return null;
     }
 
     /**

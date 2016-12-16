@@ -104,10 +104,17 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
                 socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
                 socket.connect();
 
+                //TODO cuando se lanza el descubrimiento
                 //ConexionBluetooth descubrir = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
                 //descubrir.start();
-                ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
-                conexion.start();
+                if(chat.esGrupo()){
+                    ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES_GRUPO, mensajes);
+                    conexion.setIdGrupo(chat.getIdChat());
+                    conexion.start();
+                }else{
+                    ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
+                    conexion.start();
+                }
 
             } catch (IOException e) {
                 Log.d(SERVICIO,"Error preparando el socket cliente");
