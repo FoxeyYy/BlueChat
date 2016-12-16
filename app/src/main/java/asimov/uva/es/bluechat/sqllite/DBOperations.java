@@ -31,8 +31,8 @@ public class DBOperations {
     private static final String SQL_READ_ALL_CHATS = String.format("SELECT * FROM %s", DBContract.Chat.TABLE_NAME);
     private static final String SQL_READ_ALL_GRUPOS = String.format("SELECT * FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_READ_ALL_PARTICIPANTES_GRUPO = String.format("SELECT * FROM %s WHERE %s = ?", DBContract.ParticipantesGrupo.TABLE_NAME, DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT);
-    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Chat JOIN (SELECT idChat FROM Mensaje JOIN MensajePendiente GROUP BY idMensaje) GROUP BY idChat";
-    private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) GROUP BY idMensaje where idChat = ?";
+    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Chat WHERE idChat IN(SELECT DISTINCT idChat FROM Mensaje m JOIN MensajePendiente mp GROUP BY m.idMensaje)";
+    private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) WHERE idChat = ? GROUP BY idMensaje ";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
     private static final String SQL_GET_NUM_GRUPOS = String.format("SELECT COUNT(*) FROM %s", DBContract.ChatGrupal.TABLE_NAME);
@@ -82,7 +82,7 @@ public class DBOperations {
         if(pendiente) {
             for (Contacto contacto : chat.getParticipantes()) {
                 ContentValues values1 = new ContentValues();
-                values1.put(DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE, mensaje.getId());
+                values1.put(DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE, num + 1);
                 values1.put(DBContract.MensajePendiente.COLUMN_NAME_ID_CONTACTO, contacto.getDireccionMac());
                 getDb().insert(DBContract.MensajePendiente.TABLE_NAME, null, values1);
             }

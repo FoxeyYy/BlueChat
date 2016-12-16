@@ -58,7 +58,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
     /*Sentencia de creación de la tabla Mensaje*/
     private static final String SQL_CREATE_TABLE_MENSAJE = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
-            ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(%s) REFERENCES " +
+            ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(%s) REFERENCES " +
             "Chat(%s));",
             DBContract.Mensaje.TABLE_NAME,
             DBContract.Mensaje.COLUMN_NAME_ID,
