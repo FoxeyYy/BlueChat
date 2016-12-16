@@ -33,9 +33,10 @@ public class Peticion implements Serializable {
         this.tipo = tipo;
     }
 
-    public Peticion(TipoPeticion tipo, String idChat){
+    public Peticion(TipoPeticion tipo, int numeroMensajes, String idGrupo){
+        this.idGrupo = idGrupo;
         this.tipo = tipo;
-        this.idGrupo = idChat;
+        this.numeroMensajes = numeroMensajes;
     }
 
     public Peticion(TipoPeticion tipo){

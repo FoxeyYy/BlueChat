@@ -153,6 +153,19 @@ public class Contacto implements Parcelable, Serializable{
         return participantes;
     }
 
+    public static List<Contacto> getParticipantesConMensajesPendientes(Context contexto, String idGrupo){
+        List<Contacto> participantes = new ArrayList();
+        Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesConMensajesPendientes(idGrupo);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String idContacto = cursor.getString(cursor.getColumnIndex(DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO));
+            Contacto participante = getContacto(contexto, idContacto);
+            participantes.add(participante);
+        }
+
+        return participantes;
+    }
+
     /**
      * Devuelve el nombre de un contacto si ya ha sido registrado en la agenda.
      * @param context de accesso a persistencia

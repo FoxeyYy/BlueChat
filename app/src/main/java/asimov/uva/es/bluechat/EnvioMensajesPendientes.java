@@ -2,6 +2,7 @@ package asimov.uva.es.bluechat;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
+import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 
@@ -91,15 +93,26 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
         List<Chat> chats = Chat.getChatsPendientes(MainActivity.getMainActivity());
 
-        BluetoothSocket socket;
         Log.d(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
-        for(Chat chat : chats) {
-            List<Mensaje> mensajes = chat.getHistorial();
-
+        for (Chat chat : chats) {
+            BluetoothDevice device;
             // Obtenemos el nuevo dispostivo encontrado
-            BluetoothDevice device = adaptadorBluetooth.getRemoteDevice(chat.getPar().getDireccionMac());
-            Log.d(SERVICIO, "Conectando con: " + device.getAddress());
+            if (!chat.esGrupo()) {
+                device = adaptadorBluetooth.getRemoteDevice(chat.getPar().getDireccionMac());
+                conexion(device, chat);
+            }else{
+                List<Contacto> participantes = chat.getParticipantes();
+                for(Contacto participante : participantes) {
+                    device = adaptadorBluetooth.getRemoteDevice(participante.getDireccionMac());
+                    conexion(device, chat);
+                }
+            }
+        }
+    }
 
+    private void conexion(BluetoothDevice device, Chat chat){
+        BluetoothSocket socket;
+        List<Mensaje> mensajes = chat.getHistorial();
             try {
                 socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
                 socket.connect();
@@ -121,6 +134,6 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
+
 
 }

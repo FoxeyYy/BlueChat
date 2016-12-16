@@ -31,9 +31,8 @@ public class DBOperations {
     private static final String SQL_READ_ALL_CHATS = String.format("SELECT * FROM %s", DBContract.Chat.TABLE_NAME);
     private static final String SQL_READ_ALL_GRUPOS = String.format("SELECT * FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_READ_ALL_PARTICIPANTES_GRUPO = String.format("SELECT * FROM %s WHERE %s = ?", DBContract.ParticipantesGrupo.TABLE_NAME, DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT);
-    //TODO CONSULTAS SEPARADAS PARA LEER CHATS NORMALES POR UNA PARTE Y GRUPOS POR OTRA
-    private static final String SQL_READ_PENDING_CHATS = "";
-    private static final String SQL_READ_PENDING_GROUPS = "";
+    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Chat WHERE idChat IN (SELECT idChat FROM Mensaje m, MensajePendiente mp WHERE m.idMensaje = mp.idMensaje) GROUP BY idChat";
+    private static final String SQL_READ_PENDING_GROUPS = "SELECT * FROM ChatGrupal WHERE idChat IN (SELECT idChat FROM Mensaje m, MensajePendiente mp WHERE m.idMensaje = mp.idMensaje) GROUP BY idChat";
     private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) WHERE idChat = ? GROUP BY idMensaje ";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
@@ -45,6 +44,7 @@ public class DBOperations {
             DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT,
             DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT,
             DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT);
+    private static final String SQL_READ_PARTICIPANTES_CON_MENSAJES_PENDIENTES = "SELECT * FROM ParticipantesGrupo pg, MensajePendiente mp WHERE idChat = ? AND pg.idContacto = mp.idContacto GROUP BY pg.idContacto";
 
     private static final DBOperations instancia = new DBOperations();
 
@@ -69,6 +69,7 @@ public class DBOperations {
      * Inserta un mensaje en la base de datos
      * @param mensaje Mensaje que se va a insertar
      * @param chat al que pertenece
+     * @param pendiente true si el mensaje es enviado por el usuario, false en cualquier otro caso
      */
     public void insertMessage(Mensaje mensaje, Chat chat, boolean pendiente){
         int num = getNumMensajes();
@@ -125,10 +126,13 @@ public class DBOperations {
      * @param chat El chat que se va a insertar
      */
     public void insertChat(Chat chat){
-        int num = getNumChats();
-        chat.setIdChat(String.valueOf(num + 1));
         ContentValues values = new ContentValues();
-        values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, num + 1);
+        if(!chat.esGrupo()) {
+            int num = getNumChats();
+            chat.setIdChat(String.valueOf(num + 1));
+            values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, num + 1);
+        }else
+            values.put(DBContract.Chat.COLUMN_NAME_ID_CHAT, chat.getIdChat());
         values.put(DBContract.Chat.COLUMN_NAME_ID_CONTACTO, chat.getPar().getDireccionMac());
         values.put(DBContract.Chat.COLUMN_NAME_NOMBRE, chat.getNombre());
         /*Inserta una nueva fila*/
@@ -140,9 +144,12 @@ public class DBOperations {
      * @param chat a insertar
      */
     public void insertarGrupo (Chat chat) {
-        int id = getNumGrupos() + Contacto.getSelf().getDireccionMac().hashCode(); //TODO jeje yoqueselaverdadxdxd
-        chat.setIdChat(String.valueOf(id));
-
+        int id;
+        if(!chat.esPersistente()){
+            id = getNumGrupos() + Contacto.getSelf().getDireccionMac().hashCode(); //TODO jeje yoqueselaverdadxdxd
+            chat.setIdChat(String.valueOf(id));
+        }else
+            id = Integer.valueOf(chat.getIdChat());
         ContentValues values = new ContentValues();
         values.put(DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT, id);
         values.put(DBContract.ChatGrupal.COLUMN_NAME_NOMBRE, chat.getNombre());
@@ -270,6 +277,12 @@ public class DBOperations {
         return cursor;
     }
 
+    public Cursor getParticipantesConMensajesPendientes(String id){
+        String[] args = {id};
+        Cursor cursor = getDb().rawQuery(SQL_READ_PARTICIPANTES_CON_MENSAJES_PENDIENTES, args);
+        return cursor;
+    }
+
     public Cursor getChatsPendientes(){
         Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_CHATS, null);
         cursor.moveToFirst();
@@ -277,14 +290,14 @@ public class DBOperations {
     }
 
     public Cursor getGruposPendientes(){
-        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_CHATS, null);
+        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_GROUPS, null);
         cursor.moveToFirst();
         return cursor;
     }
 
     public Cursor getMensajesPendientes(String idChat){
         String[] args = new String[] {idChat};
-        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_GROUPS, args);
+        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_MESSAGES_CHAT, args);
         return cursor;
     }
 

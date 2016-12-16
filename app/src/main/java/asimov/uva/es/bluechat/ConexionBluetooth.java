@@ -197,8 +197,6 @@ public class ConexionBluetooth extends Thread {
 
 
 
-
-
     /**
      * Envia solicitudes de descubrimiento a un servidor
      */
@@ -229,7 +227,7 @@ public class ConexionBluetooth extends Thread {
                     break;
                 case MENSAJE:
                     responderPeticion(true);
-                    recibirMensajes(peticion.getNumeroMensajes());
+                    recibirMensajes(peticion.getNumeroMensajes(),false);
                     break;
                 case MENSAJEGRUPO:
                     if(comprobarGrupo(peticion.getIdGrupo())){
@@ -238,7 +236,8 @@ public class ConexionBluetooth extends Thread {
                         responderPeticion(false);
                         recibirInfoGrupo(peticion.getIdGrupo());
                     }
-                    recibirMensajes(peticion.getNumeroMensajes());
+                    recibirMensajes(peticion.getNumeroMensajes(),true);
+                    break;
                 default:
                     Log.e(ERROR, "Peticion invalida");
                     responderPeticion(false);
@@ -300,7 +299,8 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void solicitarEnvioMensajesGrupo(String idGrupo){
-        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJEGRUPO, idGrupo);
+        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJEGRUPO, mensajes.size(),idGrupo);
+        Log.e("ENVIO", String.valueOf(mensajes.size()));
         enviar(peticion);
     }
 
@@ -323,7 +323,7 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-    private void recibirMensajes(int numeroMensajes) {
+    private void recibirMensajes(int numeroMensajes, boolean esGrupo) {
         mensajes = new ArrayList<>();
         try {
             for(int i= 0; i<numeroMensajes; i++) {
@@ -338,7 +338,10 @@ public class ConexionBluetooth extends Thread {
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
             }
-            guardarMensajes();
+            if(!esGrupo)
+                guardarMensajes();
+            else
+                guardarMensajesGrupo();
 
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir el mensaje");
@@ -359,6 +362,13 @@ public class ConexionBluetooth extends Thread {
             chat = new Chat(mensajes.get(0).getEmisor());
             chat.guardar(context);
         }
+        for(Mensaje mensaje : mensajes)
+            mensaje.registrar(context,chat);
+    }
+
+    private void guardarMensajesGrupo(){
+        Context context = MainActivity.getMainActivity();
+        Chat chat = Chat.getChatGrupal(context, idGrupo);
         for(Mensaje mensaje : mensajes)
             mensaje.registrar(context,chat);
     }
@@ -442,18 +452,26 @@ public class ConexionBluetooth extends Thread {
     }
 
     private boolean comprobarGrupo(String id){
+        idGrupo = id;
         return Chat.existeGrupo(MainActivity.getMainActivity(), id);
     }
 
     private void enviarInfoGrupo(String id){
         Chat grupo = Chat.getChatGrupal(MainActivity.getMainActivity(), id);
+        List<Contacto> participantes = grupo.getParticipantes();
+        for(Contacto contacto: participantes)
+            if(contacto.getDireccionMac().equals(socket.getRemoteDevice().getAddress()))
+                participantes.remove(contacto);
+        participantes.add(Contacto.getSelf());
+        enviar(grupo.getNombre());
         enviar((ArrayList)grupo.getParticipantes());
     }
 
     private void recibirInfoGrupo(String id){
         try{
+            String nombre = (String)entrada.readObject();
             List<Contacto> participantes = (ArrayList)entrada.readObject();
-            Chat chat = new Chat(id, participantes);
+            Chat chat = new Chat(id,nombre,participantes);
             chat.guardar(MainActivity.getMainActivity());
         }catch (IOException e){
             Log.e(ERROR, "No se han podido recibir los participantes del grupo");
