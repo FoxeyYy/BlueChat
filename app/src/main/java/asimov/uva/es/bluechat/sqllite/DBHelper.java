@@ -42,6 +42,20 @@ public class DBHelper extends SQLiteOpenHelper{
             DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT,
             DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO);
 
+    private static final String SQL_CREATE_TABLE_MENSAJE_PENDIENTE = String.format("CREATE TABLE %s (%s TEXT, %s TEXT, " +
+            "PRIMARY KEY (%s,%s), FOREIGN KEY (%s) REFERENCES Mensaje(%s), " +
+            "FOREIGN KEY (%s) REFERENCES Contacto(%s))",
+            DBContract.MensajePendiente.TABLE_NAME,
+            DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE,
+            DBContract.MensajePendiente.COLUMN_NAME_ID_CONTACTO,
+            DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE,
+            DBContract.MensajePendiente.COLUMN_NAME_ID_CONTACTO,
+            DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE,
+            DBContract.Mensaje.COLUMN_NAME_ID,
+            DBContract.MensajePendiente.COLUMN_NAME_ID_CONTACTO,
+            DBContract.Contacto.COLUMN_NAME_MAC);
+
+
     /*Sentencia de creación de la tabla Mensaje*/
     private static final String SQL_CREATE_TABLE_MENSAJE = String.format("CREATE TABLE %s (%s TEXT PRIMARY KEY" +
             ",%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, FOREIGN KEY(%s) REFERENCES " +
@@ -53,7 +67,6 @@ public class DBHelper extends SQLiteOpenHelper{
             DBContract.Mensaje.COLUMN_NAME_IMAGEN,
             DBContract.Mensaje.COLUMN_NAME_EMISOR,
             DBContract.Mensaje.COLUMN_NAME_FECHA,
-            DBContract.Mensaje.COLUMN_NAME_STATUS,
             DBContract.Mensaje.COLUMN_NAME_ID_CHAT,
             DBContract.Chat.COLUMN_NAME_ID_CHAT);
 
@@ -72,6 +85,7 @@ public class DBHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_TABLE_CHAT_GRUPAL);
         db.execSQL(SQL_CREATE_TABLE_PARTICIPANTES_GRUPO);
         db.execSQL(SQL_CREATE_TABLE_MENSAJE);
+        db.execSQL(SQL_CREATE_TABLE_MENSAJE_PENDIENTE);
     }
 
     /**
@@ -87,6 +101,7 @@ public class DBHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS" + DBContract.ChatGrupal.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS" + DBContract.ParticipantesGrupo.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Mensaje.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DBContract.MensajePendiente.TABLE_NAME);
         db.setVersion(newVersion);
         onCreate(db);
     }

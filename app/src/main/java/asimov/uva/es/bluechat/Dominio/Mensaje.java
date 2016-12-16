@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import asimov.uva.es.bluechat.MainActivity;
+import asimov.uva.es.bluechat.sqllite.DBContract;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -30,7 +31,6 @@ public class Mensaje implements Parcelable, Serializable {
     private String imagen;
     private Contacto emisor;
     private Date fecha;
-    private int estado;
 
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
@@ -67,7 +67,6 @@ public class Mensaje implements Parcelable, Serializable {
         this.contenido = contenido;
         this.emisor = emisor;
         this.fecha = fecha;
-        this.estado = PENDIENTE;
     }
 
     /**
@@ -85,7 +84,6 @@ public class Mensaje implements Parcelable, Serializable {
         imagen = in.readString();
         emisor = in.readParcelable(Contacto.class.getClassLoader());
         fecha = new Date(in.readLong());
-        estado = in.readInt();
     }
 
     public static final Creator<Mensaje> CREATOR = new Creator<Mensaje>() {
@@ -100,12 +98,13 @@ public class Mensaje implements Parcelable, Serializable {
         }
     };
 
-    public void marcarEnviado() {
-        DBOperations.obtenerInstancia(MainActivity.getMainActivity()).marcarEnviado(id);
+    public void marcarEnviado(String idContacto) {
+        DBOperations.obtenerInstancia(MainActivity.getMainActivity()).marcarEnviado(id, idContacto);
     }
 
     public void registrar(Context contexto, Chat chat){
-        DBOperations.obtenerInstancia(contexto).insertMessage(this,chat);
+        Boolean pendiente = getEmisor().equals(Contacto.getSelf());
+        DBOperations.obtenerInstancia(contexto).insertMessage(this,chat,pendiente);
     }
 
     /**
@@ -137,22 +136,6 @@ public class Mensaje implements Parcelable, Serializable {
     }
 
     /**
-     * Obtiene el estado del mensaje
-     * @return estado El estado del mensaje
-     */
-    public int getEstado() {
-        return estado;
-    }
-
-    /**
-     * Modifica el valor del estado del mensaje
-     * @param estado El estado del mensaje
-     */
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    /**
      * Modifica el valor de la imagen del mensaje
      * @param imagen path de la imagen
      */
@@ -180,6 +163,5 @@ public class Mensaje implements Parcelable, Serializable {
         dest.writeString(imagen);
         dest.writeParcelable(emisor, flags);
         dest.writeLong(fecha.getTime());
-        dest.writeInt(estado);
     }
 }

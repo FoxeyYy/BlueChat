@@ -60,6 +60,8 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity android:name=".PrimeraVezActivity"></activity>
+
     </application>
 
 </manifest>

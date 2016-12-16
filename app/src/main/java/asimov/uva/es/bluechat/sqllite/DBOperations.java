@@ -31,8 +31,8 @@ public class DBOperations {
     private static final String SQL_READ_ALL_CHATS = String.format("SELECT * FROM %s", DBContract.Chat.TABLE_NAME);
     private static final String SQL_READ_ALL_GRUPOS = String.format("SELECT * FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_READ_ALL_PARTICIPANTES_GRUPO = String.format("SELECT * FROM %s WHERE %s = ?", DBContract.ParticipantesGrupo.TABLE_NAME, DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT);
-    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM (SELECT * FROM Mensaje WHERE estado = 0) JOIN Chat USING(idChat) GROUP BY idChat";
-    private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM Mensaje where idChat = ? and estado = 0";
+    private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Chat JOIN (SELECT idChat FROM Mensaje JOIN MensajePendiente GROUP BY idMensaje) GROUP BY idChat";
+    private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) GROUP BY idMensaje where idChat = ?";
     private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
     private static final String SQL_GET_NUM_GRUPOS = String.format("SELECT COUNT(*) FROM %s", DBContract.ChatGrupal.TABLE_NAME);
@@ -62,7 +62,7 @@ public class DBOperations {
      * @param mensaje Mensaje que se va a insertar
      * @param chat al que pertenece
      */
-    public void insertMessage(Mensaje mensaje, Chat chat){
+    public void insertMessage(Mensaje mensaje, Chat chat, boolean pendiente){
         int num = getNumMensajes();
         String imagen;
         if (null == mensaje.getImagen()) {
@@ -77,8 +77,16 @@ public class DBOperations {
         values.put(DBContract.Mensaje.COLUMN_NAME_IMAGEN, imagen);
         values.put(DBContract.Mensaje.COLUMN_NAME_EMISOR, mensaje.getEmisor().getDireccionMac());
         values.put(DBContract.Mensaje.COLUMN_NAME_FECHA, mensaje.getFecha().toString());
-        values.put(DBContract.Mensaje.COLUMN_NAME_STATUS,mensaje.getEstado());
         values.put(DBContract.Mensaje.COLUMN_NAME_ID_CHAT,chat.getIdChat());
+
+        if(pendiente) {
+            for (Contacto contacto : chat.getParticipantes()) {
+                ContentValues values1 = new ContentValues();
+                values1.put(DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE, mensaje.getId());
+                values1.put(DBContract.MensajePendiente.COLUMN_NAME_ID_CONTACTO, contacto.getDireccionMac());
+                getDb().insert(DBContract.MensajePendiente.TABLE_NAME, null, values1);
+            }
+        }
 
         /*Inserta la nueva fila*/
         getDb().insert(DBContract.Mensaje.TABLE_NAME, null, values);
@@ -276,13 +284,12 @@ public class DBOperations {
 
     /**
      * Marca un mensaje como enviado
-     * @param id del mensaje
+     * @param idMensaje del mensaje
+     * @param idContacto del contacto
      */
-    public void marcarEnviado(String id) {
-        String[] args = new String[] {id};
-        ContentValues values = new ContentValues();
-        values.put(DBContract.Mensaje.COLUMN_NAME_STATUS, 1);
-        getDb().update("Mensaje",values, "idMensaje = ?", args);
+    public void marcarEnviado(String idMensaje, String idContacto) {
+        String[] args = new String[] {idMensaje, idContacto};
+        getDb().delete(DBContract.MensajePendiente.TABLE_NAME,"idMensaje = ? AND idContacto = ?", args);
     }
 
     /**
@@ -297,7 +304,7 @@ public class DBOperations {
         ContentValues values = new ContentValues();
         values.put(DBContract.Contacto.COLUMN_NAME_NOMBRE, nombre);
         values.put(DBContract.Contacto.COLUMN_NAME_IMAGE, imagen);
-        getDb().update("Contacto",values, "mac = ?", args);
+        getDb().update(DBContract.Contacto.TABLE_NAME,values, "mac = ?", args);
 
     }
 }

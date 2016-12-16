@@ -154,7 +154,7 @@ public class ConexionBluetooth extends Thread {
                     byte[] imagen = getBytesImagen(mensaje.getImagen().toString());
                     enviar(imagen);
                 }
-                mensaje.marcarEnviado();
+                mensaje.marcarEnviado(socket.getRemoteDevice().getAddress());
             }
         } else {
             Log.e(ERROR, "Solicitud rechadaza");
@@ -277,7 +277,6 @@ public class ConexionBluetooth extends Thread {
         try {
             for(int i= 0; i<numeroMensajes; i++) {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
-                mensaje.setEstado(Mensaje.ENVIADO);
                 mensajes.add(mensaje);
                 if (null == mensaje.getImagen()) {
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
