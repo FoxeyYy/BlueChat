@@ -458,11 +458,6 @@ public class ConexionBluetooth extends Thread {
 
     private void enviarInfoGrupo(String id){
         Chat grupo = Chat.getChatGrupal(MainActivity.getMainActivity(), id);
-        List<Contacto> participantes = grupo.getParticipantes();
-        for(Contacto contacto: participantes)
-            if(contacto.getDireccionMac().equals(socket.getRemoteDevice().getAddress()))
-                participantes.remove(contacto);
-        participantes.add(Contacto.getSelf());
         enviar(grupo.getNombre());
         enviar((ArrayList)grupo.getParticipantes());
     }
@@ -471,6 +466,8 @@ public class ConexionBluetooth extends Thread {
         try{
             String nombre = (String)entrada.readObject();
             List<Contacto> participantes = (ArrayList)entrada.readObject();
+            participantes.remove(Contacto.getSelf());
+            participantes.add(Contacto.getContacto(MainActivity.getMainActivity(), socket.getRemoteDevice()));
             Chat chat = new Chat(id,nombre,participantes);
             chat.guardar(MainActivity.getMainActivity());
         }catch (IOException e){
