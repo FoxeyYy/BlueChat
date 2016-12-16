@@ -327,7 +327,10 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "TabDescubrir", tab_descubrir);
+        if (null != tab_descubrir) {
+            getSupportFragmentManager().putFragment(outState, "TabDescubrir", tab_descubrir);
+        }
+
     }
 
     @Override
