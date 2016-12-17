@@ -2,7 +2,10 @@ package asimov.uva.es.bluechat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +15,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +43,15 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
  */
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Mensaje mensaje = intent.getParcelableExtra("mensaje");
+            Chat chat = intent.getParcelableExtra("chat");
+            ChatActivity.getChatActivity().mostrarMensajeRecibido(mensaje);
+        }
+    };
+
     /**
      * Resultado de la solicitud del permiso de localización
      */
@@ -53,6 +66,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout lista_mensajes;
 
     private Uri uriImagen;
+
+    private static ChatActivity chatActivity;
 
     /**
      * Resultado de la solicitud de acceso a imagenes
@@ -101,6 +116,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             else
                 mostrarMensajeRecibido(msg);
         }
+        chatActivity = this;
     }
 
     @Override
@@ -258,5 +274,22 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+    }
+
+    public static ChatActivity getChatActivity(){
+        return chatActivity;
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receptorMensajes);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        IntentFilter filter = new IntentFilter("mensajeNuevo");
+        LocalBroadcastManager.getInstance(this).registerReceiver(receptorMensajes,filter);
+        super.onResume();
     }
 }
