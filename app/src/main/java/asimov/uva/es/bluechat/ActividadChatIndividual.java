@@ -1,174 +1,119 @@
 package asimov.uva.es.bluechat;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
+import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 /**
- * Created by Hector Del Campo Pando on 16/12/2016.
- */
-
-/**
- * Actividad base para los chats interactivos
+ * Actividad para los chats interactivos
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class ActividadChatIndividual extends AppCompatActivity implements View.OnClickListener {
-
-    /**
-     * Resultado de la solicitud de acceso a imagenes
-     */
-    private final int READ_REQUEST_CODE = 1;
-
-    /**
-     * Resultado de la solicitud del permiso de localización
-     */
-    private final int PERMISO_ACCESO_DATOS = 1;
-
-    /**
-     * Chat a mostrar
-     */
-    private Chat chat;
-
-    private TextView campo_texto;
-    private LinearLayout lista_mensajes;
-
-    private Uri uriImagen;
+public class ActividadChatIndividual extends ActividadChatBase {
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onCreate(Bundle savedInstanceState) {
 
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            uriImagen = data.getData();
-        }
-    }
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_chat);
 
-    private void comprobarPermisos() {
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-    }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISO_ACCESO_DATOS: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
+        Bundle params = getIntent().getExtras();
+        setChat((Chat) params.getParcelable("chat"));
 
-                } else {
-                    //El usuario no proporciona permisos
-                    //mostramos un mensaje indicando que son necesarios
-                    Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
-                }
-            }
+        ((TextView) findViewById(R.id.nombre_contacto)).setText(getChat().getPar().getNombre());
+        findViewById(R.id.boton_enviar).setOnClickListener(this);
+        findViewById(R.id.boton_foto).setOnClickListener(this);
+        setListaMensajes((LinearLayout) findViewById(R.id.lista_mensajes));
+        setCampoTexto((TextView) findViewById(R.id.texto));
+
+        List<Mensaje> historial = getChat().getHistorial();
+
+        //TODO hacerlo en consultas separadas
+
+        Contacto myself = Contacto.getSelf();
+        for(Mensaje msg: historial) {
+            if(msg.getEmisor().equals(myself))
+                mostrarMensajeEnviado(msg);
+            else
+                mostrarMensajeRecibido(msg);
         }
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.boton_foto:
-                comprobarPermisos();
-                buscarImagen();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_chat, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_anadir:
+                crearContacto();
                 break;
-            case R.id.boton_enviar:
-                enviar();
+            case R.id.action_actualizar:
+                actualizarContacto();
                 break;
             default:
-                Log.e("Chat", "Boton incorrecto");
+                Log.e("ERROR", "Opcion desconocida");
                 break;
         }
+        return super.onOptionsItemSelected(item);
     }
 
+    private void crearContacto() {
+        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, "BlueChat");
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, getChat().getPar().getDireccionMac());
+        startActivity(intent);
+    }
+
+    private void actualizarContacto() {
+        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
+        intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, "BlueChat");
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, getChat().getPar().getDireccionMac());
+        startActivity(intent);
+    }
+
+    @Override
     protected void enviar() {
-        String texto = String.valueOf(campo_texto.getText());
-        Mensaje mensaje;
 
-        if (null == uriImagen) {
-            mensaje = new Mensaje(texto);
-        } else {
-            mensaje = new Mensaje(texto, uriImagen);
+        if (!getChat().esPersistente()) {
+            getChat().guardar(getBaseContext());
         }
 
-        mensaje.registrar(this, chat);
-        mostrarMensajeEnviado(mensaje);
-
-        campo_texto.setText("");
-        uriImagen = null;
-    }
-
-    private void buscarImagen(){
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        intent.setType("image/*");
-        startActivityForResult(intent, READ_REQUEST_CODE);
-    }
-
-    protected void mostrarMensajeRecibido(Mensaje mensaje) {
-        View tarjetaMensaje;
-
-        if (null == mensaje.getImagen()) {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_recibir, null);
-        } else {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_recibir, null);
-            ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
-            imageView.setImageURI(Uri.parse(mensaje.getImagen()));
+        Contacto contacto = getChat().getPar();
+        if (!contacto.esPersistente()) {
+            contacto.guardar(getBaseContext());
         }
 
-        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_recibir)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
-        lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
+        super.enviar();
+
     }
 
-    protected void mostrarMensajeEnviado(Mensaje mensaje) {
-        View tarjetaMensaje;
-        if (null == mensaje.getImagen()) {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, null);
-        } else {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_enviar, null);
-            ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
-            imageView.setImageURI(Uri.parse(mensaje.getImagen()));
-        }
-
-        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_enviar)).setText(mensaje.getContenido());
-        lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
-    }
-
-    protected Chat getChat () {
-        return chat;
-    }
-
-    protected void setChat (Chat chat) {
-        this.chat = chat;
-    }
-
-    protected void setListaMensajes (LinearLayout lista) {
-        lista_mensajes = lista;
-    }
-
-    protected void setCampoTexto (TextView vista) {
-        campo_texto = vista;
-    }
 }

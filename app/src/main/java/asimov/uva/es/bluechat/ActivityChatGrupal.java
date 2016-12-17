@@ -11,7 +11,7 @@ import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
-public class ActivityChatGrupal extends ActividadChatIndividual {
+public class ActivityChatGrupal extends ActividadChatBase {
 
     public static final String CONTACTOS = "Participantes";
     public static final String NOMBRE_GRUPO = "Nombre";
