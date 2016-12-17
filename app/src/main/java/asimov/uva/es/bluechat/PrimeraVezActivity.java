@@ -89,10 +89,6 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         TextView textNombre = (TextView) findViewById(R.id.apodo);
         String nombre = String.valueOf(textNombre.getText());
 
-        //TODO direccion del icono
-        if(avatar == null)
-            avatar = "android.resource://asimov.uva.es.bluechat/mipmap/ic_launcher";
-
         editor.putString(AjustesActivity.NOMBRE, nombre);
         editor.putString(AjustesActivity.AVATAR, avatar);
         editor.commit();

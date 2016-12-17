@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -70,6 +72,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Bundle params = getIntent().getExtras();
         chat = params.getParcelable("chat");
 
+        ImageView imagen = (ImageView) findViewById(R.id.avatar_contacto);
+        String imagenContacto = chat.getPar().getImagen();
+        if(imagenContacto != null && !imagenContacto.isEmpty()){
+            imagen.setImageURI(Uri.parse(imagenContacto));
+        }else {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            imagen.setImageBitmap(image);
+        }
+
+
         ((TextView) findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
         findViewById(R.id.boton_enviar).setOnClickListener(this);
         findViewById(R.id.boton_foto).setOnClickListener(this);
@@ -77,6 +89,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         campo_texto = (TextView) findViewById(R.id.texto);
 
         List<Mensaje> historial = chat.getHistorial();
+
+
 
         //TODO hacerlo en consultas separadas
 

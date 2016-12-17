@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -119,8 +121,15 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         mac.setText(msg_mac);
 
         ImageButton avatar = (ImageButton) findViewById(R.id.avatar_preferencias);
-        Uri uri = Uri.parse(getAvatar());
-        avatar.setImageURI(uri);
+        String avatarContacto = getAvatar();
+        if(avatarContacto != null && !avatarContacto.isEmpty()) {
+            Uri uri = Uri.parse(avatarContacto);
+            avatar.setImageURI(uri);
+        }else{
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            avatar.setImageBitmap(image);
+        }
+
     }
 
     /**

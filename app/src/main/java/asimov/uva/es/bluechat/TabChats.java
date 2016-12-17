@@ -1,6 +1,8 @@
 package asimov.uva.es.bluechat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -66,7 +68,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
      * @param chat a mostrar
      */
     private void mostrarNombreChat(View vista, Chat chat) {
-        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getNombre());
+        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
     }
 
     /**
@@ -96,7 +98,13 @@ public class TabChats extends Fragment implements View.OnClickListener {
         }
 
         ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);
-        imagen.setImageURI(Uri.parse(chat.getPar().getImagen()));
+        String avatarContacto = chat.getPar().getImagen();
+        if(avatarContacto !=null && !avatarContacto.isEmpty())
+            imagen.setImageURI(Uri.parse(chat.getPar().getImagen()));
+        else {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            imagen.setImageBitmap(image);
+        }
     }
 
     @Override

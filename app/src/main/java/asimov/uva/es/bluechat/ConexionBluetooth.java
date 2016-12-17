@@ -133,9 +133,6 @@ public class ConexionBluetooth extends Thread {
         Log.d(CONEXION, "Ejecutando...");
 
         switch (modo) {
-            case CLIENTE_DESCUBRIMIENTO:
-                descubrir();
-                break;
             case CLIENTE_MENSAJES:
                 enviarMensajeChat();
                 break;
@@ -166,6 +163,7 @@ public class ConexionBluetooth extends Thread {
         Log.d(CONEXION, "Enviando mensajes...");
         solicitarEnvioMensajes();
         if (solicitudAceptada()) {
+            enviarDescubrimiento();
             enviarMensajes();
         } else {
             Log.e(ERROR, "Solicitud rechadaza");
@@ -180,6 +178,7 @@ public class ConexionBluetooth extends Thread {
         solicitarEnvioMensajesGrupo(idGrupo);
         if(!solicitudAceptada())
             enviarInfoGrupo(idGrupo);
+        enviarDescubrimiento();
         enviarMensajes();
 
     }
@@ -195,22 +194,6 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
-
-
-    /**
-     * Envia solicitudes de descubrimiento a un servidor
-     */
-    private void descubrir() {
-        Log.d(CONEXION, "Enviando...");
-
-        solicitarDescubrimiento();
-        if (solicitudAceptada()) {
-            recibirDescubrimiento();
-        } else {
-            Log.e(ERROR, "Solicitud rechadaza");
-        }
-    }
-
     /**
      * Recibe peticiones y actua en consecuencia
      */
@@ -221,10 +204,6 @@ public class ConexionBluetooth extends Thread {
         try {
             Peticion peticion = (Peticion) entrada.readObject();
             switch (peticion.getTipoPeticion()) {
-                case DESCUBRIMIENTO:
-                    responderPeticion(true);
-                    enviarDescubrimiento();
-                    break;
                 case MENSAJE:
                     responderPeticion(true);
                     recibirMensajes(peticion.getNumeroMensajes(),false);
@@ -256,13 +235,13 @@ public class ConexionBluetooth extends Thread {
 
     private void enviarDescubrimiento() {
         Contacto yo = Contacto.getSelf();
-        //TODO la imagen se coge del objeto yo
         byte[] imagen = getBytesImagen(yo.getImagen());
         enviar(yo);
         if (imagen != null) {
             enviar(imagen);
             Log.d(IMAGEN, "Enviando bytes de la imagen: " + yo.getImagen());
-        }
+        }else
+            enviar(new byte[0]);
     }
 
     private void recibirDescubrimiento() {
@@ -270,13 +249,10 @@ public class ConexionBluetooth extends Thread {
             Contacto contacto = (Contacto) entrada.readObject();
             Bitmap imagen = recibirImagen();
             if (imagen != null) {
-                MainActivity.getMainActivity().notificar("Hemos recibido un mensaje nuevo", imagen);
                 String path = guardarImagenContacto(contacto, imagen);
                 contacto.setImagen(path);
-                contacto.guardar(MainActivity.getMainActivity());
-            } else {
-                MainActivity.getMainActivity().notificar(contacto.getDireccionMac() + ": " + contacto.getNombre());
             }
+                contacto.guardar(MainActivity.getMainActivity());
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");
             e.printStackTrace();
@@ -309,11 +285,6 @@ public class ConexionBluetooth extends Thread {
         enviar(peticion);
     }
 
-    private void solicitarDescubrimiento() {
-        Peticion peticion = new Peticion(Peticion.TipoPeticion.DESCUBRIMIENTO);
-        enviar(peticion);
-    }
-
     private void enviar(Serializable objeto) {
         try {
             salida.writeObject(objeto);
@@ -326,6 +297,7 @@ public class ConexionBluetooth extends Thread {
     private void recibirMensajes(int numeroMensajes, boolean esGrupo) {
         mensajes = new ArrayList<>();
         try {
+            recibirDescubrimiento();
             for(int i= 0; i<numeroMensajes; i++) {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
                 mensajes.add(mensaje);
