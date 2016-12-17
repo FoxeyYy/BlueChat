@@ -79,7 +79,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
                 case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                     Log.d(TAG, "EMPEZANDO A DESCUBRIR");
                     getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
-                    eliminarTarjetas();
+                    eliminarDispositivosDescubiertos();
                     setEstadoBarraProgreso(true);
                     break;
 
@@ -173,7 +173,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Elimina todas las tarjetas de los dispositivos que se encuentran en la vista
      */
-    private void eliminarTarjetas(){
+    private void eliminarDispositivosDescubiertos() {
+        dispositivos.removeAll(dispositivos);
         lista.removeAllViews();
     }
 
