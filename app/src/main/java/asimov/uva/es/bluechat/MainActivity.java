@@ -192,14 +192,13 @@ public class MainActivity extends AppCompatActivity{
         mainActivity = this;
 
         SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
-        boolean primeraVez = preferencias.getBoolean("primeraVez", false);
-        if(!primeraVez){
+        boolean primeraVez = preferencias.getBoolean("primeraVez", true);
+        if(primeraVez){
             SharedPreferences.Editor editor = preferencias.edit();
-            editor.putBoolean("primeraVez", true);
+            editor.putBoolean("primeraVez", false);
             editor.commit();
             Intent intent = new Intent(this, PrimeraVezActivity.class);
             startActivity(intent);
-
         }
 
 

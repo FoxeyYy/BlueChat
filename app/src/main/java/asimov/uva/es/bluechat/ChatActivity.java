@@ -136,7 +136,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.boton_foto:
                 comprobarPermisos();
-                buscarImagen();
                 break;
             case R.id.boton_enviar:
                 enviar();
@@ -226,7 +225,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(ChatActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
@@ -236,7 +235,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             case PERMISO_ACCESO_DATOS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
+                    buscarImagen();
 
                 } else {
                     //El usuario no proporciona permisos

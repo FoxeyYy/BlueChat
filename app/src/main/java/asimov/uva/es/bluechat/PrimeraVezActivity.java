@@ -66,7 +66,6 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.selecciona_imagen:
                 comprobarPermisos();
-                buscarImagen();
                 break;
         }
     }
@@ -123,7 +122,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(PrimeraVezActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
@@ -133,8 +132,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
             case PERMISO_ACCESO_DATOS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
-
+                    buscarImagen();
                 } else {
                     //El usuario no proporciona permisos
                     //mostramos un mensaje indicando que son necesarios
