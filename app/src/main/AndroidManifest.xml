@@ -49,7 +49,7 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
-            android:name=".ActividadChatBase"
+            android:name=".ActividadChatIndividual"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 

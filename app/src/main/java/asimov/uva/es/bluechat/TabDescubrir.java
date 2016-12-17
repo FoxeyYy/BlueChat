@@ -160,7 +160,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        Intent intentChat = new Intent(getContext(), ActividadChatBase.class);
+        Intent intentChat = new Intent(getContext(), ActividadChatIndividual.class);
         Contacto contacto = dispositivos.get(lista.indexOfChild(v));
         Chat chat = contacto.getChat(getContext());
         if(null == chat){
