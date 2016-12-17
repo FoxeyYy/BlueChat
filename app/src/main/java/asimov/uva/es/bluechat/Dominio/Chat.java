@@ -287,6 +287,7 @@ public class Chat implements Parcelable{
         } else {
             DBOperations.obtenerInstancia(context).insertarGrupo(this);
             for (Contacto participante: participantes) {
+                DBOperations.obtenerInstancia(context).insertContact(participante);
                 DBOperations.obtenerInstancia(context).insertarContactoEnGrupo(this, participante);
             }
         }
@@ -353,6 +354,9 @@ public class Chat implements Parcelable{
      */
     public void setIdChat(String idChat) {
         this.idChat = idChat;
+    }
+
+    public void setParticipantes(List<Contacto> participantes){this.participantes = participantes;
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
+import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 /**
