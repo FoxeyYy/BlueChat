@@ -1,11 +1,15 @@
 package asimov.uva.es.bluechat;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +32,19 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
  * @author Alberto Gutierrez Perez
  */
 public class TabChats extends Fragment implements View.OnClickListener {
+
+    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Mensaje mensaje = intent.getParcelableExtra("mensaje");
+            Chat chat = intent.getParcelableExtra("chat");
+
+            int posicion = chats.indexOf(chat);
+            View tarjeta = lista.getChildAt(posicion);
+            ((TextView)tarjeta.findViewById(R.id.ultimo_mensaje)).setText(mensaje.getContenido());
+
+        }
+    };
 
     /**
      * Lista donde añadir tarjetas de personas
@@ -119,4 +136,19 @@ public class TabChats extends Fragment implements View.OnClickListener {
         intentChat.putExtra("chat", chat);
         startActivity(intentChat);
     }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorMensajes);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        IntentFilter filter = new IntentFilter("mensajeNuevo");
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorMensajes,filter);
+        super.onResume();
+    }
+
+
 }

@@ -373,4 +373,15 @@ public class Chat implements Parcelable{
         dest.writeByte((byte) (esPersistente ? 1 : 0));
         dest.writeByte((byte) (esGrupo ? 1 : 0));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Chat)) return false;
+
+        Chat chat = (Chat) o;
+
+        return idChat != null ? idChat.equals(chat.idChat) : chat.idChat == null;
+
+    }
 }
