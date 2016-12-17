@@ -1,6 +1,11 @@
 package asimov.uva.es.bluechat;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -45,8 +50,71 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      */
     private LayoutInflater inflater;
 
-
     private final String TAG = "BLUETOOTH";
+
+    /**
+     * Receptor de información de los dispositivos descubiertos
+     */
+    private BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            // Descubrimos un nuevo dispositivo
+            switch (action) {
+                case (BluetoothDevice.ACTION_FOUND):
+
+                    // Obtenemos el nuevo dispostivo encontrado
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    Contacto contacto = Contacto.getContacto(getContext(), device);
+
+                    if (!dispositivos.contains(contacto)) {
+                        Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
+                        anadirDispositivo(contacto, false);
+                    }
+
+                    break;
+
+                //
+                case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                    Log.d(TAG, "EMPEZANDO A DESCUBRIR");
+                    getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                    eliminarTarjetas();
+                    setEstadoBarraProgreso(true);
+                    break;
+
+                //Finaliza el descubrimiento, oculta la barra de progreso
+                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                    Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
+                    setEstadoBarraProgreso(false);
+                    getActivity().startService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                    break;
+            }
+        }
+    };
+
+    private SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            BluetoothAdapter.getDefaultAdapter().startDiscovery();
+        }
+    };
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        getActivity().registerReceiver(receptorBluetooth, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(receptorBluetooth);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +125,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
         dispositivos = new ArrayList<>();
         lista = (LinearLayout) rootView.findViewById(R.id.lista_descubrir);
+
+        ((SwipeRefreshLayout) rootView.findViewById(R.id.layout_swipe)).setOnRefreshListener(receptorGestoActualizar);
 
         setEstadoBarraProgreso(false);
 
@@ -103,7 +173,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Elimina todas las tarjetas de los dispositivos que se encuentran en la vista
      */
-    public void eliminarTarjetas(){
+    private void eliminarTarjetas(){
         lista.removeAllViews();
     }
 
@@ -122,7 +192,6 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
         if (null != barraProgreso){
             barraProgreso.setRefreshing(visibilidad);
-            barraProgreso.setEnabled(visibilidad);
         }
     }
 
