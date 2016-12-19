@@ -136,7 +136,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         scrollAlUltimo();
     }
 
-    private void scrollAlUltimo() {
+    protected void scrollAlUltimo() {
         final ScrollView scroll = (ScrollView) findViewById(R.id.scroll_chat);
         scroll.post(new Runnable() {
             @Override

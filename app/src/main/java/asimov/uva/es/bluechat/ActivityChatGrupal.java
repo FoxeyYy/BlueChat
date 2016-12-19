@@ -58,6 +58,8 @@ public class ActivityChatGrupal extends ActividadChatBase {
                 mostrarMensajeRecibido(msg);
         }
 
+        scrollAlUltimo();
+
     }
 
     private void nuevoChat (Bundle params) {

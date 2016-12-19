@@ -56,6 +56,8 @@ public class ActividadChatIndividual extends ActividadChatBase {
             else
                 mostrarMensajeRecibido(msg);
         }
+
+        scrollAlUltimo();
     }
 
     @Override

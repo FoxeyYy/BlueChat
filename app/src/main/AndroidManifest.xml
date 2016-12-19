@@ -50,7 +50,8 @@
         <activity
             android:name=".ActividadChatIndividual"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".ActivityCrearGrupo"
@@ -60,7 +61,7 @@
         <activity
             android:name=".ActivityChatGrupal"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
     </application>
 
