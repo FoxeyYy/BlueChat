@@ -84,7 +84,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
      * @param chat a mostrar
      */
     private void mostrarNombreChat(View vista, Chat chat) {
-        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
+        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getNombre());
     }
 
     /**
