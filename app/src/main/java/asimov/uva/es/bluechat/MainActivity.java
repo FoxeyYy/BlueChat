@@ -328,7 +328,10 @@ public class MainActivity extends AppCompatActivity{
                                     R.string.dispositivo_sin_bluetooth,
                                     Toast.LENGTH_SHORT).show();
                 break;
-
+            case R.id.action_ayuda:
+                Intent intentAyuda = new Intent(this, AyudaActivity.class);
+                startActivity(intentAyuda);
+                break;
             default:
                 Log.e(TAG, "Elemento de menu desconocido");
                 break;

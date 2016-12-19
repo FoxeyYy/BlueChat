@@ -18,11 +18,6 @@ public class AyudaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_ayuda);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 }

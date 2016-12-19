@@ -54,14 +54,19 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
+            android:name=".ActivityChatGrupal"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity
             android:name=".ActivityCrearGrupo"
             android:label="@string/titulo_crear_grupo"
             android:theme="@style/Base.Theme.AppCompat.Dialog" />
 
         <activity
-            android:name=".ActivityChatGrupal"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".AyudaActivity"
+            android:parentActivityName=".MainActivity"/>
 
     </application>
 

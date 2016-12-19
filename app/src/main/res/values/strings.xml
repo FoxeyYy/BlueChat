@@ -45,10 +45,10 @@
                                     Es la aplicacion perfecta para hablar con personas que se encuentren cerca de ti, sean conocidas o no.</string>
 
     <string name="info_ayuda">Información y Ayuda</string>
-    <string name="info_desc">BlueChat es una aplicación de mnesajería instántanea por Bluetooth. Podrás hablar con otras personas cercanas.</string>
+    <string name="info_desc">BlueChat es una aplicación de mensajería instántanea por Bluetooth. Podrás hablar con otras personas cercanas que también tengan Bluechat instalado en sus dispositivos Android.</string>
     <string name="funciona_ayuda">¿Cómo funciona?</string>
-    <string name="funcionamiento_descubrir">Descubrir permite ver los dispositivos cercanos con los que poder hablar.</string>
-    <string name="funcionamiento_chats">Chats muestra las conversaciones y contactos ya guardados.</string>
-    <string name="funcionamiento_refrescar">Si quieres buscar nuevos contactos utiliza el botón de refrescar situado arriba a la derecha.</string>
+    <string name="funcionamiento_descubrir">Descubrir permite ver las personas cercanas, que tengan el Bluetooth activado y público, con los que poder hablar.</string>
+    <string name="funcionamiento_chats">Chats muestra el historial de las conversaciones que vayas teniendo y los grupos a los que pertenezcas.</string>
+    <string name="funcionamiento_refrescar">Si quieres buscar nuevos contactos utiliza el botón de refrescar situado arriba a la derecha, aunque también podras deslizar hacia abajo en descubrir para buscar nuevos contactos.</string>
     <string name="funcionamiento_ajustes">En Ajustes podrás cambiar tu nombre y tu foto de perfil.</string>
 </resources>
