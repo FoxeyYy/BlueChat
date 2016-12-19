@@ -5,11 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -32,10 +28,6 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import asimov.uva.es.bluechat.Dominio.Contacto;
 import io.fabric.sdk.android.Fabric;
 
 import static asimov.uva.es.bluechat.R.id.container;
@@ -78,54 +70,6 @@ public class MainActivity extends AppCompatActivity{
     private BluetoothAdapter adaptadorBluetooth;
 
     /**
-     * Receptor de información de los dispositivos descubiertos
-     */
-    private BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String action = intent.getAction();
-            // Descubrimos un nuevo dispositivo
-            switch (action) {
-                case (BluetoothDevice.ACTION_FOUND):
-
-                    // Obtenemos el nuevo dispostivo encontrado
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if (!dispositivos.contains(device)) {
-                        Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
-
-                        Contacto contacto = Contacto.getContacto(getBaseContext(), device);
-
-                        tab_descubrir.anadirDispositivo(contacto, false);
-
-                        dispositivos.add(device);
-                    }
-                    break;
-
-                //
-                case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
-                    Log.d(TAG, "EMPEZANDO A DESCUBRIR");
-                    tab_descubrir.setEstadoBarraProgreso(true);
-                    buscando = true;
-                    break;
-
-                //Finaliza el descubrimiento, oculta la barra de progreso
-                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                    Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
-                    buscando = false;
-                    tab_descubrir.setEstadoBarraProgreso(false);
-                    startService(new Intent(getMainActivity(), EnvioMensajesPendientes.class));
-                    break;
-            }
-        }
-    };
-
-    /**
-     * Estado del dispositivo bluetooth, buscando o no
-     */
-    private boolean buscando = false;
-
-    /**
      * El dispositivo es compatible con el bluetooth
      */
     private boolean esCompatibleBluetooth;
@@ -134,12 +78,6 @@ public class MainActivity extends AppCompatActivity{
      * Tag para debug
      */
     private static final String TAG = "BLUETOOTH";
-
-    /**
-     * Dispositivos descubiertos
-     */
-    private static List<BluetoothDevice> dispositivos = new ArrayList();
-
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -165,8 +103,6 @@ public class MainActivity extends AppCompatActivity{
      * Implementación para el patron Singleton
      */
     private static MainActivity mainActivity;
-
-    private Intent servicio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,15 +143,8 @@ public class MainActivity extends AppCompatActivity{
         comprobarPermisos();
 
         if( esCompatibleBluetooth ) {
-            servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);
             startService(new Intent(MainActivity.this, ServidorBluetooth.class));
-            startService(servicio);
-
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-            registerReceiver(receptorBluetooth, filter);
+            startService(new Intent(MainActivity.this, EnvioMensajesPendientes.class));
         }
 
         // Abre la tab del historial si se accede por notificacion
@@ -275,9 +204,6 @@ public class MainActivity extends AppCompatActivity{
         manager.notify(0,notificacion);
 
     }
-
-
-
 
     /**
      * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
@@ -369,20 +295,6 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    /**
-     * Busca los dispositivos que se encuentren en modo visible dentro del rango
-     */
-    private void buscarDispositivos() {
-        //Elimina los dispositivos encontrados previamente
-        //asi como las tarjetas asociadas a los mismos en la vista
-        dispositivos.clear();
-        tab_descubrir.eliminarTarjetas();
-
-        /*Comienza a descubrir dispositivos*/
-        adaptadorBluetooth.startDiscovery();
-    }
-
-
     @Override
     protected void onPause(){
         super.onPause();
@@ -391,8 +303,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        stopService(servicio);
-        unregisterReceiver(receptorBluetooth);
+        stopService(new Intent(MainActivity.this, EnvioMensajesPendientes.class));
         super.onDestroy();
     }
 
@@ -422,13 +333,10 @@ public class MainActivity extends AppCompatActivity{
             case (R.id.action_bluetooth):
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
-                    stopService(servicio);
                     comprobarPermisos();
                     activarBluetooth();
-                    servicio = new Intent(MainActivity.this, EnvioMensajesPendientes.class);
-                    if (!buscando) {
-                        buscarDispositivos();
-                    }
+                    adaptadorBluetooth.startDiscovery();
+
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,
@@ -443,7 +351,6 @@ public class MainActivity extends AppCompatActivity{
 
         return super.onOptionsItemSelected(item);
     }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

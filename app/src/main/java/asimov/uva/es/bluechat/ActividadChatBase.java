@@ -10,38 +10,34 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 /**
- * Actividad para los chats interactivos
+ * Actividad base para los chats interactivos
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+public class ActividadChatBase extends AppCompatActivity implements View.OnClickListener {
+
+    /**
+     * Resultado de la solicitud de acceso a imagenes
+     */
+    private final int READ_REQUEST_CODE = 1;
 
     private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
         @Override
@@ -75,90 +71,37 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private final int READ_REQUEST_CODE = 1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_chat);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Bundle params = getIntent().getExtras();
-        chat = params.getParcelable("chat");
-
-        ImageView imagen = (ImageView) findViewById(R.id.avatar_contacto);
-        String imagenContacto = chat.getPar().getImagen();
-        if(imagenContacto != null && !imagenContacto.isEmpty()){
-            imagen.setImageURI(Uri.parse(imagenContacto));
-        }else {
-            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-            imagen.setImageBitmap(image);
-        }
-
-
-        ((TextView) findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
-        findViewById(R.id.boton_enviar).setOnClickListener(this);
-        findViewById(R.id.boton_foto).setOnClickListener(this);
-        lista_mensajes = (LinearLayout) findViewById(R.id.lista_mensajes);
-        campo_texto = (TextView) findViewById(R.id.texto);
-
-        List<Mensaje> historial = chat.getHistorial();
-
-
-
-        //TODO hacerlo en consultas separadas
-
-        Contacto myself = Contacto.getSelf();
-        for(Mensaje msg: historial) {
-            if(msg.getEmisor().equals(myself))
-                mostrarMensajeEnviado(msg);
-            else
-                mostrarMensajeRecibido(msg);
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            uriImagen = data.getData();
         }
         chatActivity = this;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_chat, menu);
-        return super.onCreateOptionsMenu(menu);
+    private void comprobarPermisos() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISO_ACCESO_DATOS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //El usuario nos proporciona permisos
 
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_anadir:
-                crearContacto();
-                break;
-            case R.id.action_actualizar:
-                actualizarContacto();
-                break;
-            default:
-                Log.e("ERROR", "Opcion desconocida");
-                break;
+                } else {
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
+                }
+            }
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void crearContacto() {
-        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, "BlueChat");
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE, chat.getPar().getDireccionMac());
-        startActivity(intent);
-    }
-
-    private void actualizarContacto() {
-        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
-        intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, "BlueChat");
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE, chat.getPar().getDireccionMac());
-        startActivity(intent);
     }
 
     @Override
@@ -166,6 +109,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.boton_foto:
                 comprobarPermisos();
+                buscarImagen();
                 break;
             case R.id.boton_enviar:
                 enviar();
@@ -176,7 +120,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void enviar() {
+    protected void enviar() {
         String texto = String.valueOf(campo_texto.getText());
         Mensaje mensaje;
 
@@ -214,7 +158,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
-    private void mostrarMensajeRecibido(Mensaje mensaje) {
+    protected void mostrarMensajeRecibido(Mensaje mensaje) {
         View tarjetaMensaje;
 
         if (null == mensaje.getImagen()) {
@@ -229,7 +173,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
-    private void mostrarMensajeEnviado(Mensaje mensaje) {
+    protected void mostrarMensajeEnviado(Mensaje mensaje) {
         View tarjetaMensaje;
         if (null == mensaje.getImagen()) {
             tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, null);
@@ -243,37 +187,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            uriImagen = data.getData();
-        }
+    protected Chat getChat () {
+        return chat;
     }
 
-    private void comprobarPermisos() {
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(ChatActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    protected void setChat (Chat chat) {
+        this.chat = chat;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISO_ACCESO_DATOS: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    buscarImagen();
+    protected void setListaMensajes (LinearLayout lista) {
+        lista_mensajes = lista;
+    }
 
-                } else {
-                    //El usuario no proporciona permisos
-                    //mostramos un mensaje indicando que son necesarios
-                    Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
+    protected void setCampoTexto (TextView vista) {
+        campo_texto = vista;
     }
 
     public static ChatActivity getChatActivity(){

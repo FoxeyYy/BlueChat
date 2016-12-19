@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         app:srcCompat="@android:drawable/ic_menu_gallery"
@@ -38,14 +39,4 @@
         app:layout_constraintLeft_toRightOf="@+id/foto_contacto"
         android:layout_marginLeft="16dp" />
 
-    <ImageView
-        app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
-        android:id="@+id/imagen_conectado"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="16dp"
-        app:layout_constraintHorizontal_bias="0.62"
-        app:layout_constraintTop_toTopOf="@+id/foto_contacto"
-        android:layout_width="75dp"
-        android:layout_height="75dp" />
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,11 @@
 package asimov.uva.es.bluechat;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -47,8 +52,71 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      */
     private LayoutInflater inflater;
 
-
     private final String TAG = "BLUETOOTH";
+
+    /**
+     * Receptor de información de los dispositivos descubiertos
+     */
+    private BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            // Descubrimos un nuevo dispositivo
+            switch (action) {
+                case (BluetoothDevice.ACTION_FOUND):
+
+                    // Obtenemos el nuevo dispostivo encontrado
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    Contacto contacto = Contacto.getContacto(getContext(), device);
+
+                    if (!dispositivos.contains(contacto)) {
+                        Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
+                        anadirDispositivo(contacto, false);
+                    }
+
+                    break;
+
+                //
+                case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                    Log.d(TAG, "EMPEZANDO A DESCUBRIR");
+                    getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                    eliminarDispositivosDescubiertos();
+                    setEstadoBarraProgreso(true);
+                    break;
+
+                //Finaliza el descubrimiento, oculta la barra de progreso
+                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                    Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
+                    setEstadoBarraProgreso(false);
+                    getActivity().startService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                    break;
+            }
+        }
+    };
+
+    private SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            BluetoothAdapter.getDefaultAdapter().startDiscovery();
+        }
+    };
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        getActivity().registerReceiver(receptorBluetooth, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(receptorBluetooth);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +127,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
         dispositivos = new ArrayList<>();
         lista = (LinearLayout) rootView.findViewById(R.id.lista_descubrir);
+
+        ((SwipeRefreshLayout) rootView.findViewById(R.id.layout_swipe)).setOnRefreshListener(receptorGestoActualizar);
 
         setEstadoBarraProgreso(false);
 
@@ -97,7 +167,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        Intent intentChat = new Intent(getContext(), ChatActivity.class);
+        Intent intentChat = new Intent(getContext(), ActividadChatIndividual.class);
         Contacto contacto = dispositivos.get(lista.indexOfChild(v));
         Chat chat = contacto.getChat(getContext());
         if(null == chat){
@@ -110,7 +180,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Elimina todas las tarjetas de los dispositivos que se encuentran en la vista
      */
-    public void eliminarTarjetas(){
+    private void eliminarDispositivosDescubiertos() {
+        dispositivos.removeAll(dispositivos);
         lista.removeAllViews();
     }
 
@@ -129,7 +200,6 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
         if (null != barraProgreso){
             barraProgreso.setRefreshing(visibilidad);
-            barraProgreso.setEnabled(visibilidad);
         }
     }
 
