@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -37,21 +35,21 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     /**
      * Resultado de la solicitud de acceso a imagenes
      */
-    private final int READ_REQUEST_CODE = 1;
-
-    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Mensaje mensaje = intent.getParcelableExtra("mensaje");
-            Chat chat = intent.getParcelableExtra("chat");
-            ChatActivity.getChatActivity().mostrarMensajeRecibido(mensaje);
-        }
-    };
+    private final int READ_REQUEST_CODE = 0;
 
     /**
      * Resultado de la solicitud del permiso de localización
      */
     private final int PERMISO_ACCESO_DATOS = 1;
+
+    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Mensaje mensaje = intent.getParcelableExtra("mensaje");
+            Chat chat = intent.getParcelableExtra("chat"); //TODO wtf?
+            ActividadChatBase.getChatActivity().mostrarMensajeRecibido(mensaje);
+        }
+    };
 
     /**
      * Chat a mostrar
@@ -63,12 +61,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
 
     private Uri uriImagen;
 
-    private static ChatActivity chatActivity;
-
-    /**
-     * Resultado de la solicitud de acceso a imagenes
-     */
-    private final int READ_REQUEST_CODE = 1;
+    private static ActividadChatBase chatActivity;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -93,7 +86,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
             case PERMISO_ACCESO_DATOS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
+                    buscarImagen();
 
                 } else {
                     //El usuario no proporciona permisos
@@ -128,15 +121,6 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
             mensaje = new Mensaje(texto);
         } else {
             mensaje = new Mensaje(texto, uriImagen);
-        }
-
-        if (!chat.esPersistente()) {
-            chat.guardar(getBaseContext());
-        }
-
-        Contacto contacto = chat.getPar();
-        if (!contacto.esPersistente()) {
-            contacto.guardar(getBaseContext());
         }
 
         mensaje.registrar(this, chat);
@@ -203,7 +187,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         campo_texto = vista;
     }
 
-    public static ChatActivity getChatActivity(){
+    public static ActividadChatBase getChatActivity(){
         return chatActivity;
     }
 
