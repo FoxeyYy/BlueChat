@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -131,6 +132,18 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
 
         campo_texto.setText("");
         uriImagen = null;
+
+        scrollAlUltimo();
+    }
+
+    private void scrollAlUltimo() {
+        final ScrollView scroll = (ScrollView) findViewById(R.id.scroll_chat);
+        scroll.post(new Runnable() {
+            @Override
+            public void run() {
+                scroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
     private void buscarImagen(){
