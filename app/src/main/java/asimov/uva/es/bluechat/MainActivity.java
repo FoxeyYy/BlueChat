@@ -46,8 +46,7 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Resultado de la solicitud del permiso de localización
      */
-    private final int PERMISO_LOCALIZACION = 1;
-
+    private final int PERMISO_LOCALIZACION = 2;
 
     /**
      * Resultado de la solicitud de la activación del bluetooth
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Resultado de la solicitud de visibilidad del bluetooth
      */
-    private final int BLUETOOTH_VISIBLE = 1;
+    private final int BLUETOOTH_VISIBLE = 2;
 
     /**
      * Constante para iniciar la actividad en un tab concreto
@@ -130,27 +129,21 @@ public class MainActivity extends AppCompatActivity{
         SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
         boolean primeraVez = preferencias.getBoolean("primeraVez", true);
         if(primeraVez){
-            SharedPreferences.Editor editor = preferencias.edit();
-            editor.putBoolean("primeraVez", false);
-            editor.commit();
             Intent intent = new Intent(this, PrimeraVezActivity.class);
             startActivity(intent);
+            comprobarBluetooth();
+        }else{
+            comprobarBluetooth();
+            if( esCompatibleBluetooth )
+                comprobarPermisos();
         }
 
 
+            // Abre la tab del historial si se accede por notificacion
+            if (getIntent().getAction().equals(CHATS)) {
+                mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
+            }
 
-        comprobarBluetooth();
-        comprobarPermisos();
-
-        if( esCompatibleBluetooth ) {
-            startService(new Intent(MainActivity.this, ServidorBluetooth.class));
-            startService(new Intent(MainActivity.this, EnvioMensajesPendientes.class));
-        }
-
-        // Abre la tab del historial si se accede por notificacion
-        if (getIntent().getAction().equals(CHATS)) {
-            mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
-        }
 
     }
 
@@ -206,36 +199,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
-     * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
-     * De no ser así le pide dichos permisos al usuario
-     */
-    private void comprobarPermisos() {
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISO_LOCALIZACION: {
-
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
-
-                } else {
-                    //El usuario no proporciona permisos
-                    //mostramos un mensaje indicando que son necesarios
-                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
-
-    /**
      * Comprueba si el disposivo dispone de bluetooth
      */
     private void comprobarBluetooth() {
@@ -265,6 +228,35 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
+     * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
+     * De no ser así le pide dichos permisos al usuario
+     */
+    private void comprobarPermisos() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISO_LOCALIZACION);
+        else
+            activarBluetooth();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISO_LOCALIZACION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    activarBluetooth();
+                else
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
      * Pide permiso al usuario para activar el Bluetooth del dispositivo
      */
     private void activarBluetooth(){
@@ -272,33 +264,27 @@ public class MainActivity extends AppCompatActivity{
         if( BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE != adaptadorBluetooth.getScanMode()) {
             Intent discoverableIntent = new
                     Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivityForResult(discoverableIntent, BLUETOOTH_VISIBLE);
-        }
-
-        if (!adaptadorBluetooth.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BLUETOOTH_ACTIVADO) {
-            if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, R.string.info_bluetooth_desactivado, Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == BLUETOOTH_VISIBLE){
-            if(resultCode == RESULT_CANCELED)
-                Toast.makeText(this, R.string.info_bluetooth_visible, Toast.LENGTH_SHORT).show();
+        switch (requestCode){
+            case BLUETOOTH_VISIBLE :
+                if(resultCode == RESULT_CANCELED)
+                    Toast.makeText(this, R.string.info_bluetooth_visible, Toast.LENGTH_SHORT).show();
+                else
+                    adaptadorBluetooth.startDiscovery();
+                break;
         }
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        adaptadorBluetooth.cancelDiscovery();
+        if(adaptadorBluetooth != null)
+            adaptadorBluetooth.cancelDiscovery();
     }
 
     @Override
@@ -334,9 +320,7 @@ public class MainActivity extends AppCompatActivity{
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
                     comprobarPermisos();
-                    activarBluetooth();
                     adaptadorBluetooth.startDiscovery();
-
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,

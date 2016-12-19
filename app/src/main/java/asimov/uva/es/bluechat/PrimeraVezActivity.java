@@ -31,14 +31,10 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
     private String avatar;
 
     /**
-     * Resultado de la solicitud del permiso de localización
+     * Resultado de la solicitud del permiso de acceso a datos
      */
     private final int PERMISO_ACCESO_DATOS = 1;
 
-    /**
-     * Resultado de la solicitud de acceso a imagenes
-     */
-    private final int READ_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +57,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, "El campo de apodo es obligatorio", Toast.LENGTH_LONG).show();
                 }else {
                     guardarPreferencias();
+                    finalizarPrimeraVez();
                     finish();
                 }
                 break;
@@ -100,13 +97,12 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         intent.setType("image/*");
-        startActivityForResult(intent, READ_REQUEST_CODE);
+        startActivityForResult(intent, PERMISO_ACCESO_DATOS);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PERMISO_ACCESO_DATOS && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             ImageView imagenPerfil = (ImageView) findViewById(R.id.imagen_perfil);
             avatar = uri.toString();
@@ -116,9 +112,9 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
 
     private void comprobarPermisos() {
         if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(PrimeraVezActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISO_ACCESO_DATOS);
     }
 
     @Override
@@ -138,10 +134,18 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+
     private boolean apodoVacio(){
         TextView campoApodo = (TextView)findViewById(R.id.apodo);
         String apodo = String.valueOf(campoApodo.getText());
         return apodo.length() == 0;
+    }
+
+    private void finalizarPrimeraVez(){
+        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferencias.edit();
+        editor.putBoolean("primeraVez", false);
+        editor.commit();
     }
 
 

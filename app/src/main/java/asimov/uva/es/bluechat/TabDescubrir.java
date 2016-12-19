@@ -74,23 +74,33 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
                         Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
                         anadirDispositivo(contacto, false);
                     }
-
                     break;
-
-                //
                 case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                     Log.d(TAG, "EMPEZANDO A DESCUBRIR");
                     getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
                     eliminarDispositivosDescubiertos();
                     setEstadoBarraProgreso(true);
                     break;
-
                 //Finaliza el descubrimiento, oculta la barra de progreso
                 case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                     Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
                     setEstadoBarraProgreso(false);
                     getActivity().startService(new Intent(getContext(), EnvioMensajesPendientes.class));
                     break;
+                case BluetoothAdapter.ACTION_STATE_CHANGED:
+                    final int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                    switch (bluetoothState) {
+                        case BluetoothAdapter.STATE_ON:
+                            Log.e("SERVICIO", "LLAMANDO AL SERVICIO DESDE EL BROADCAST");
+                            getActivity().startService(new Intent(getContext(), ServidorBluetooth.class));
+                            getActivity().startService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                            break;
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                            getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                            getActivity().stopService(new Intent(getContext(), ServidorBluetooth.class));
+                            break;
+                    }
+
             }
         }
     };
@@ -225,6 +235,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
             anadirDispositivo(dispositivo, true);
         }
     }
+
+
 
 
 }
