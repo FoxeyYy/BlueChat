@@ -90,14 +90,9 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
                 case BluetoothAdapter.ACTION_STATE_CHANGED:
                     final int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                     switch (bluetoothState) {
-                        case BluetoothAdapter.STATE_ON:
-                            Log.e("SERVICIO", "LLAMANDO AL SERVICIO DESDE EL BROADCAST");
-                            getActivity().startService(new Intent(getContext(), ServidorBluetooth.class));
-                            getActivity().startService(new Intent(getContext(), EnvioMensajesPendientes.class));
-                            break;
                         case BluetoothAdapter.STATE_TURNING_OFF:
-                            getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
                             getActivity().stopService(new Intent(getContext(), ServidorBluetooth.class));
+                            getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
                             break;
                     }
 

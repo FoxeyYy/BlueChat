@@ -134,10 +134,12 @@ public class MainActivity extends AppCompatActivity{
             comprobarBluetooth();
         }else{
             comprobarBluetooth();
-            if( esCompatibleBluetooth )
+            if( esCompatibleBluetooth ) {
                 comprobarPermisos();
+                startService(new Intent(this, ServidorBluetooth.class));
+                startService(new Intent(this, EnvioMensajesPendientes.class));
+            }
         }
-
 
             // Abre la tab del historial si se accede por notificacion
             if (getIntent().getAction().equals(CHATS)) {
