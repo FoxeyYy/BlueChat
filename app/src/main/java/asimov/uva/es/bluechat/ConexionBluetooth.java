@@ -335,7 +335,7 @@ public class ConexionBluetooth extends Thread {
         Context context = MainActivity.getMainActivity();
         Chat chat = contacto.getChat(context);
         if(null == chat) {
-            chat = new Chat(mensajes.get(0).getEmisor());
+            chat = new Chat(contacto);
             chat.guardar(context);
         }
         chatConexion = chat;

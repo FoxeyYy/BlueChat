@@ -111,14 +111,15 @@ public class DBOperations {
         if (cursor.getCount() != 0) {
             cursor.close();
             updateContacto(contacto);
-        }
+        }else {
 
-        ContentValues values = new ContentValues();
-        values.put(DBContract.Contacto.COLUMN_NAME_MAC, contacto.getDireccionMac());
-        values.put(DBContract.Contacto.COLUMN_NAME_NOMBRE, contacto.getNombre());
-        values.put(DBContract.Contacto.COLUMN_NAME_IMAGE, contacto.getImagen());
+            ContentValues values = new ContentValues();
+            values.put(DBContract.Contacto.COLUMN_NAME_MAC, contacto.getDireccionMac());
+            values.put(DBContract.Contacto.COLUMN_NAME_NOMBRE, contacto.getNombre());
+            values.put(DBContract.Contacto.COLUMN_NAME_IMAGE, contacto.getImagen());
         /*Inserta la nueva fila*/
-        getDb().insert(DBContract.Contacto.TABLE_NAME, null, values);
+            getDb().insert(DBContract.Contacto.TABLE_NAME, null, values);
+        }
     }
 
     /**
