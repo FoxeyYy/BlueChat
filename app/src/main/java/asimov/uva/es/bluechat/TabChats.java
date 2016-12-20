@@ -40,7 +40,17 @@ public class TabChats extends Fragment implements View.OnClickListener {
 
             int posicion = chats.indexOf(chat);
             View tarjeta = lista.getChildAt(posicion);
-            ((TextView)tarjeta.findViewById(R.id.ultimo_mensaje)).setText(mensaje.getContenido());
+
+            if (null == tarjeta) {
+                tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, null);
+                mostrarNombreChat(tarjeta, chat);
+                mostrarImagen(tarjeta, chat);
+                tarjeta.setOnClickListener(TabChats.this);
+                chats.add(chat);
+                lista.addView(tarjeta);
+            }
+
+            ((TextView) tarjeta.findViewById(R.id.ultimo_mensaje)).setText(mensaje.getContenido());
 
         }
     };
@@ -148,6 +158,5 @@ public class TabChats extends Fragment implements View.OnClickListener {
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorMensajes,filter);
         super.onResume();
     }
-
 
 }
