@@ -41,12 +41,16 @@ public class ActividadChatIndividual extends ActividadChatBase {
         Chat chat;
         String idChat = params.getString("idChat");
 
+        //El chat ha sido creado desde TabDescubrir
+        //No sabemos si es persistente o no.
         if(idChat ==null){
             chat = params.getParcelable("chat");
             Chat chatActualizado = chat.getPar().getChat(this);
             if(chatActualizado != null)
                 chat = chatActualizado;
         }else {
+            //El chat ha sido creado desde el TabChats
+            // sabemos que se encuentra en la bd
             chat = Chat.getChatById(this, idChat);
         }
         setChat(chat);
