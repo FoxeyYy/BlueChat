@@ -57,6 +57,7 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.boton_crear:
                 crearGrupo();
+                finish();
                 break;
             case R.id.boton_cancelar:
                 finish();
