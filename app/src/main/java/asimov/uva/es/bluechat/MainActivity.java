@@ -171,9 +171,13 @@ public class MainActivity extends AppCompatActivity{
                         .setCategory(Notification.CATEGORY_MESSAGE)
                         .setAutoCancel(true)
                         .setContentText(mensaje)
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setDefaults(Notification.DEFAULT_VIBRATE)
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setContentIntent(pIntent).build();
 
         manager.notify(0, notificacion);
+
 
     }
 
@@ -189,11 +193,14 @@ public class MainActivity extends AppCompatActivity{
         Notification notificacion =
                 new NotificationCompat.Builder(this)
                         .setContentTitle("BlueChat")
-                        .setLargeIcon(imagen)
                         .setSmallIcon(R.drawable.notificacion_icon)
                         .setCategory(Notification.CATEGORY_MESSAGE)
                         .setAutoCancel(true)
+                        .setLargeIcon(imagen)
                         .setFullScreenIntent(pIntent,true)
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setDefaults(Notification.DEFAULT_VIBRATE)
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setContentText(mensaje).build();
 
         manager.notify(0,notificacion);
