@@ -47,8 +47,11 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         @Override
         public void onReceive(Context context, Intent intent) {
             Mensaje mensaje = intent.getParcelableExtra("mensaje");
-            Chat chat = intent.getParcelableExtra("chat"); //TODO wtf?
-            mostrarMensajeRecibido(mensaje);
+            Chat chat = intent.getParcelableExtra("chat");
+
+            if (getChat().equals(chat)) {
+                mostrarMensajeRecibido(mensaje);
+            }
         }
     };
 

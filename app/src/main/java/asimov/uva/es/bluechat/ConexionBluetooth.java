@@ -80,8 +80,6 @@ public class ConexionBluetooth extends Thread {
     private String idGrupo;
     public void setIdGrupo(String idGrupo){this.idGrupo = idGrupo;}
 
-
-
     /**
      * Modo de ejecucion
      */
@@ -459,9 +457,6 @@ public class ConexionBluetooth extends Thread {
         intent.putExtra("mensaje", (Parcelable) mensaje);
         LocalBroadcastManager.getInstance(MainActivity.getMainActivity()).sendBroadcast(intent);
     }
-
-
-
 
 }
 

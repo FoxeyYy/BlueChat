@@ -8,8 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,10 @@ public class TabChats extends Fragment implements View.OnClickListener {
 
             int posicion = chats.indexOf(chat);
             View tarjeta = lista.getChildAt(posicion);
+
+            if (chats.contains(chat)) {
+                chats.set(posicion, chat);
+            }
 
             if (null == tarjeta) {
                 tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, null);
@@ -142,21 +148,22 @@ public class TabChats extends Fragment implements View.OnClickListener {
         } else {
             intentChat = new Intent(getContext(), ActivityChatGrupal.class);
         }
+        Log.e("PRUEBA", "insertando " + lista.indexOfChild(v));
         intentChat.putExtra("chat", chat);
         startActivity(intentChat);
     }
 
     @Override
-    public void onPause() {
+    public void onDestroy() {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorMensajes);
-        super.onPause();
+        super.onDestroy();
     }
 
     @Override
-    public void onResume() {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         IntentFilter filter = new IntentFilter("mensajeNuevo");
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorMensajes,filter);
-        super.onResume();
+        super.onCreate(savedInstanceState);
     }
 
 }
