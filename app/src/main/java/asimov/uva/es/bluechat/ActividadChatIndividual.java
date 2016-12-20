@@ -1,6 +1,10 @@
 package asimov.uva.es.bluechat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
@@ -8,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,10 +59,18 @@ public class ActividadChatIndividual extends ActividadChatBase {
             chat = Chat.getChatById(this, idChat);
         }
         setChat(chat);
+        ImageView avatar = (ImageView)findViewById(R.id.avatar_contacto);
+        String imagen = getChat().getPar().getImagen();
+        if(imagen.isEmpty()) {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            avatar.setImageBitmap(image);
+        } else
+            avatar.setImageURI(Uri.parse(imagen));
 
         ((TextView) findViewById(R.id.nombre_contacto)).setText(getChat().getPar().getNombre());
         findViewById(R.id.boton_enviar).setOnClickListener(this);
         findViewById(R.id.boton_foto).setOnClickListener(this);
+
         setListaMensajes((LinearLayout) findViewById(R.id.lista_mensajes));
         setCampoTexto((TextView) findViewById(R.id.texto));
 

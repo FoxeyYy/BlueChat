@@ -21,6 +21,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
 
@@ -46,12 +48,14 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Mensaje mensaje = intent.getParcelableExtra("mensaje");
             Chat chat = intent.getParcelableExtra("chat");
+            List<Mensaje> mensajes =  chat.getHistorial();
 
             if (getChat().equals(chat)) {
-                mostrarMensajeRecibido(mensaje);
+                mostrarMensajeRecibido(mensajes.get(mensajes.size()-1));
             }
+
+            scrollAlUltimo();
         }
     };
 
@@ -77,9 +81,10 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     private void comprobarPermisos() {
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(ActividadChatBase.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -104,7 +109,6 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.boton_foto:
                 comprobarPermisos();
-                buscarImagen();
                 break;
             case R.id.boton_enviar:
                 enviar();
@@ -117,27 +121,27 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
 
     protected void enviar() {
         String texto = String.valueOf(campo_texto.getText());
-        if(!texto.isEmpty()) {
-            Mensaje mensaje;
+        Mensaje mensaje;
 
-            if (null == uriImagen) {
-                mensaje = new Mensaje(texto);
-            } else {
-                mensaje = new Mensaje(texto, uriImagen);
-            }
-
-            mensaje.registrar(this, chat);
-            if (uriImagen != null)
-                mostrarMensajeEnviado(new Mensaje(texto, uriImagen));
-            else
-                mostrarMensajeEnviado(new Mensaje(texto));
-
-            campo_texto.setText("");
-            uriImagen = null;
-
-            scrollAlUltimo();
+        if (null == uriImagen) {
+            mensaje = new Mensaje(texto);
+        } else {
+            mensaje = new Mensaje(texto, uriImagen);
         }
+
+        mensaje.registrar(this, chat);
+        if(uriImagen != null)
+            mostrarMensajeEnviado(new Mensaje(texto,uriImagen));
+        else
+            mostrarMensajeEnviado(new Mensaje(texto));
+
+        campo_texto.setText("");
+        uriImagen = null;
+
+        scrollAlUltimo();
     }
+
+
 
     protected void scrollAlUltimo() {
         final ScrollView scroll = (ScrollView) findViewById(R.id.scroll_chat);
@@ -213,7 +217,6 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     protected void onResume() {
         IntentFilter filter = new IntentFilter("mensajeNuevo");
         LocalBroadcastManager.getInstance(this).registerReceiver(receptorMensajes,filter);
-
         super.onResume();
     }
 }

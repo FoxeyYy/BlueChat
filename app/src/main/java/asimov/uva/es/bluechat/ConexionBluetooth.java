@@ -42,7 +42,6 @@ public class ConexionBluetooth extends Thread {
 
     public enum Modo {
         SERVIDOR,
-        CLIENTE_DESCUBRIMIENTO,
         CLIENTE_MENSAJES,
         CLIENTE_MENSAJES_GRUPO;
 
@@ -70,13 +69,6 @@ public class ConexionBluetooth extends Thread {
 
 
     //TODO enviar idgrupo de forma correcta
-    /*EL protocolo hace lo siguiente:
-    Envia una peticion modo MENSAJEGRUPO con el id del grupo
-    El que recibe la peticion, si ya tiene el grupo en la bd acepta la peticion y el cliente entonces envia los mensajes correspondientes
-    Si no tiene dicho grupo en la bd, el cliente le envia una lista de contactos pertenecientes al grupo, este los guarda, crea el grupo
-    y luego se le envian los mensajes
-    El problema es pasar el ID del grupo desde el servicio de envio de mensajes  a la conexion para que la peticion de tipo MENSAJEGRUPO contenga dicho id
-    */
     private String idGrupo;
     public void setIdGrupo(String idGrupo){this.idGrupo = idGrupo;}
 
@@ -214,6 +206,7 @@ public class ConexionBluetooth extends Thread {
                 case MENSAJEGRUPO:
                     if(comprobarGrupo(peticion.getIdGrupo())){
                         responderPeticion(true);
+                        geetInfoGrupo();
                     }else {
                         responderPeticion(false);
                         recibirInfoGrupo(peticion.getIdGrupo());
@@ -300,7 +293,6 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void recibirMensajes(int numeroMensajes, boolean esGrupo) {
-        mensajes = new ArrayList<>();
         try {
             Contacto contacto = recibirDescubrimiento();
             if(!esGrupo)
@@ -308,19 +300,18 @@ public class ConexionBluetooth extends Thread {
 
             for(int i= 0; i<numeroMensajes; i++) {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
-                mensajes.add(mensaje);
+                guardarMensaje(mensaje);
                 if (null == mensaje.getImagen()) {
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
-                    notificarMensaje(mensaje);
                 } else {
                     Bitmap imagen = recibirImagen();
                     String path = guardarImagenMensaje(mensaje, imagen);
                     mensaje.setImagen(path);
-                    notificarMensaje(mensaje);
+
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
+                notificarMensaje();
             }
-            guardarMensajes();
 
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir el mensaje");
@@ -339,9 +330,8 @@ public class ConexionBluetooth extends Thread {
         chatConexion = chat;
     }
 
-    private void guardarMensajes(){
+    private void guardarMensaje(Mensaje mensaje){
         Context context = MainActivity.getMainActivity();
-        for(Mensaje mensaje : mensajes)
             mensaje.registrar(context,chatConexion);
     }
 
@@ -434,6 +424,10 @@ public class ConexionBluetooth extends Thread {
         enviar((ArrayList)grupo.getParticipantes());
     }
 
+    private void geetInfoGrupo(){
+        chatConexion = Chat.getChatGrupal(MainActivity.getMainActivity(),idGrupo);
+    }
+
     private void recibirInfoGrupo(String id){
         try{
             String nombre = (String)entrada.readObject();
@@ -451,10 +445,15 @@ public class ConexionBluetooth extends Thread {
 
     }
 
-    private void notificarMensaje(Mensaje mensaje){
+    private void notificarMensaje(){
+        Context context = MainActivity.getMainActivity();
         Intent intent = new Intent("mensajeNuevo");
-        intent.putExtra("chat", chatConexion);
-        intent.putExtra("mensaje", (Parcelable) mensaje);
+        Chat chatActualizado;
+        if(chatConexion.esGrupo())
+            chatActualizado = Chat.getChatGrupal(context,chatConexion.getIdChat());
+        else
+            chatActualizado = Chat.getChatById(context, chatConexion.getIdChat());
+        intent.putExtra("chat", chatActualizado);
         LocalBroadcastManager.getInstance(MainActivity.getMainActivity()).sendBroadcast(intent);
     }
 
