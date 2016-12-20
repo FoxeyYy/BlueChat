@@ -39,6 +39,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
         public void onReceive(Context context, Intent intent) {
             Mensaje mensaje = intent.getParcelableExtra("mensaje");
             Chat chat = intent.getParcelableExtra("chat");
+            chat.getHistorial().add(mensaje);
 
             int posicion = chats.indexOf(chat);
             View tarjeta = lista.getChildAt(posicion);
