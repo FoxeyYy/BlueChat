@@ -72,16 +72,24 @@ public class TabChats extends Fragment implements View.OnClickListener {
      */
     private List<Chat> chats;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         lista = (LinearLayout) rootView.findViewById(R.id.lista_chats);
-        chats = Chat.getChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
+        chats = Chat.getChats(getContext());
+        actualizar();
 
+
+        return rootView;
+    }
+
+    private void actualizar(){
+        lista.removeAllViews();
         for(int i = 0; i < chats.size(); i++) {
-            View tarjeta = inflater.inflate(R.layout.tarjeta_contacto, null);
+            View tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, null);
             Chat chat = chats.get(i);
 
             mostrarNombreChat(tarjeta, chat);
@@ -91,8 +99,6 @@ public class TabChats extends Fragment implements View.OnClickListener {
             lista.addView(tarjeta);
             tarjeta.setOnClickListener(this);
         }
-
-        return rootView;
     }
 
     /**
@@ -149,7 +155,6 @@ public class TabChats extends Fragment implements View.OnClickListener {
         } else {
             intentChat = new Intent(getContext(), ActivityChatGrupal.class);
         }
-        Log.e("PRUEBA", "insertando " + lista.indexOfChild(v));
         intentChat.putExtra("idChat", chat.getIdChat());
         startActivity(intentChat);
     }
@@ -163,6 +168,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         chats = Chat.getChats(getContext());
+        actualizar();
         super.onResume();
     }
 

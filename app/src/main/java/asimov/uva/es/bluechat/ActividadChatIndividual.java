@@ -37,7 +37,18 @@ public class ActividadChatIndividual extends ActividadChatBase {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
-        Chat chat = Chat.getChatById(this,params.getString("idChat"));
+
+        Chat chat;
+        String idChat = params.getString("idChat");
+
+        if(idChat ==null){
+            chat = params.getParcelable("chat");
+            Chat chatActualizado = chat.getPar().getChat(this);
+            if(chatActualizado != null)
+                chat = chatActualizado;
+        }else {
+            chat = Chat.getChatById(this, idChat);
+        }
         setChat(chat);
 
         ((TextView) findViewById(R.id.nombre_contacto)).setText(getChat().getPar().getNombre());

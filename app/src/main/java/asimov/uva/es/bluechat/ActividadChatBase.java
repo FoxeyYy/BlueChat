@@ -117,24 +117,26 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
 
     protected void enviar() {
         String texto = String.valueOf(campo_texto.getText());
-        Mensaje mensaje;
+        if(!texto.isEmpty()) {
+            Mensaje mensaje;
 
-        if (null == uriImagen) {
-            mensaje = new Mensaje(texto);
-        } else {
-            mensaje = new Mensaje(texto, uriImagen);
+            if (null == uriImagen) {
+                mensaje = new Mensaje(texto);
+            } else {
+                mensaje = new Mensaje(texto, uriImagen);
+            }
+
+            mensaje.registrar(this, chat);
+            if (uriImagen != null)
+                mostrarMensajeEnviado(new Mensaje(texto, uriImagen));
+            else
+                mostrarMensajeEnviado(new Mensaje(texto));
+
+            campo_texto.setText("");
+            uriImagen = null;
+
+            scrollAlUltimo();
         }
-
-        mensaje.registrar(this, chat);
-        if(uriImagen != null)
-            mostrarMensajeEnviado(new Mensaje(texto,uriImagen));
-        else
-            mostrarMensajeEnviado(new Mensaje(texto));
-
-        campo_texto.setText("");
-        uriImagen = null;
-
-        scrollAlUltimo();
     }
 
     protected void scrollAlUltimo() {
