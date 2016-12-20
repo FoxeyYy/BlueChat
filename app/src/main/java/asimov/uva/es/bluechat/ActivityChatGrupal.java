@@ -26,7 +26,8 @@ public class ActivityChatGrupal extends ActividadChatBase {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
-        setChat((Chat) params.getParcelable("chat"));
+        Chat chat = Chat.getChatGrupal(this, params.getString("idChat"));
+        setChat(chat);
 
         if (null == getChat()) {
             nuevoChat(params);

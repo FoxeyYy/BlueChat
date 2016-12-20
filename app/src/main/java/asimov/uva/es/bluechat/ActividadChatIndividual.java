@@ -37,7 +37,8 @@ public class ActividadChatIndividual extends ActividadChatBase {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle params = getIntent().getExtras();
-        setChat((Chat) params.getParcelable("chat"));
+        Chat chat = Chat.getChatById(this,params.getString("idChat"));
+        setChat(chat);
 
         ((TextView) findViewById(R.id.nombre_contacto)).setText(getChat().getPar().getNombre());
         findViewById(R.id.boton_enviar).setOnClickListener(this);
@@ -113,7 +114,6 @@ public class ActividadChatIndividual extends ActividadChatBase {
         if (!contacto.esPersistente()) {
             contacto.guardar(getBaseContext());
         }
-
         super.enviar();
 
     }

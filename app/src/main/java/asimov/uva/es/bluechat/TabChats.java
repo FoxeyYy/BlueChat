@@ -150,7 +150,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
             intentChat = new Intent(getContext(), ActivityChatGrupal.class);
         }
         Log.e("PRUEBA", "insertando " + lista.indexOfChild(v));
-        intentChat.putExtra("chat", chat);
+        intentChat.putExtra("idChat", chat.getIdChat());
         startActivity(intentChat);
     }
 
@@ -158,6 +158,12 @@ public class TabChats extends Fragment implements View.OnClickListener {
     public void onDestroy() {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorMensajes);
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        chats = Chat.getChats(getContext());
+        super.onResume();
     }
 
     @Override

@@ -295,6 +295,21 @@ public class Chat implements Parcelable{
         esPersistente = true;
     }
 
+    public static Chat getChatById(Context context, String idChat) {
+        Cursor cursor = DBOperations.obtenerInstancia(context).getChat(idChat);
+        if(cursor.moveToFirst()) {
+            String id = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
+            Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
+
+            Chat chat = new Chat(idChat, nombre, contacto);
+            List<Mensaje> historial = chat.getMensajes(context);
+            chat.setHistorial(historial);
+            return chat;
+        }
+        return null;
+    }
+
     public boolean esPersistente () {
         return esPersistente;
     }
