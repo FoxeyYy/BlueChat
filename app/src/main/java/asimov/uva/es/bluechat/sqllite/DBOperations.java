@@ -86,7 +86,7 @@ public class DBOperations {
         values.put(DBContract.Mensaje.COLUMN_NAME_IMAGEN, imagen);
         values.put(DBContract.Mensaje.COLUMN_NAME_EMISOR, mensaje.getEmisor().getDireccionMac());
         values.put(DBContract.Mensaje.COLUMN_NAME_FECHA, mensaje.getFecha().toString());
-        values.put(DBContract.Mensaje.COLUMN_NAME_ID_CHAT,chat.getIdChat());
+        values.put(DBContract.Mensaje.COLUMN_NAME_ID_CHAT, chat.getIdChat());
 
         if(pendiente) {
             for (Contacto contacto : chat.getParticipantes()) {

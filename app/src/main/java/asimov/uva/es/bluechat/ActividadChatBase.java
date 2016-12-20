@@ -48,7 +48,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         public void onReceive(Context context, Intent intent) {
             Mensaje mensaje = intent.getParcelableExtra("mensaje");
             Chat chat = intent.getParcelableExtra("chat"); //TODO wtf?
-            ActividadChatBase.getChatActivity().mostrarMensajeRecibido(mensaje);
+            mostrarMensajeRecibido(mensaje);
         }
     };
 
@@ -62,15 +62,13 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
 
     private Uri uriImagen;
 
-    private static ActividadChatBase chatActivity;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             uriImagen = data.getData();
         }
-        chatActivity = this;
+
     }
 
     private void comprobarPermisos() {
@@ -200,10 +198,6 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         campo_texto = vista;
     }
 
-    public static ActividadChatBase getChatActivity(){
-        return chatActivity;
-    }
-
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receptorMensajes);
@@ -214,6 +208,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     protected void onResume() {
         IntentFilter filter = new IntentFilter("mensajeNuevo");
         LocalBroadcastManager.getInstance(this).registerReceiver(receptorMensajes,filter);
+
         super.onResume();
     }
 }
