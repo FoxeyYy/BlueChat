@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
@@ -56,13 +58,14 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
                 if(apodoVacio()){
                     Toast.makeText(this, "El campo de apodo es obligatorio", Toast.LENGTH_LONG).show();
                 }else {
+                    comprobarPermisos();
                     guardarPreferencias();
                     finalizarPrimeraVez();
                     finish();
                 }
                 break;
             case R.id.selecciona_imagen:
-                comprobarPermisos();
+                comprobarPermisosImagen();
                 break;
         }
     }
@@ -110,7 +113,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void comprobarPermisos() {
+    private void comprobarPermisosImagen() {
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(PrimeraVezActivity.this,
@@ -148,5 +151,31 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         editor.commit();
     }
 
+    private void comprobarPermisos(){
 
+        ArrayList<String> permisosNecesarios = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            permisosNecesarios.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            permisosNecesarios.add(Manifest.permission.READ_CONTACTS);
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            permisosNecesarios.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (!permisosNecesarios.isEmpty()) {
+            String[] arraySolicitudes = new String[permisosNecesarios.size()];
+            arraySolicitudes = permisosNecesarios.toArray(arraySolicitudes);
+            ActivityCompat.requestPermissions(PrimeraVezActivity.this,
+                    arraySolicitudes, PERMISO_ACCESO_DATOS);
+        }
+
+    }
 }
