@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBContract;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -22,9 +21,6 @@ import asimov.uva.es.bluechat.sqllite.DBOperations;
  */
 
 public class Mensaje implements Parcelable, Serializable {
-
-    public static int ENVIADO = 1;
-    public static int PENDIENTE = 0;
 
     private String id;
     private String contenido;

@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBHelper;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -381,9 +379,6 @@ public class Chat implements Parcelable{
      */
     public void setIdChat(String idChat) {
         this.idChat = idChat;
-    }
-
-    public void setParticipantes(List<Contacto> participantes){this.participantes = participantes;
     }
 
     @Override

@@ -39,10 +39,6 @@ public class Peticion implements Serializable {
         this.numeroMensajes = numeroMensajes;
     }
 
-    public Peticion(TipoPeticion tipo){
-        this.tipo = tipo;
-    }
-
     public String getIdGrupo(){
         return idGrupo;
     }

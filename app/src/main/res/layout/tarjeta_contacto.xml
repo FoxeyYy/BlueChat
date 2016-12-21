@@ -23,7 +23,6 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:text="Carlos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nombre_contacto"
@@ -33,7 +32,6 @@
         android:layout_marginLeft="16dp" />
 
     <TextView
-        android:text="Hola mundo!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ultimo_mensaje"

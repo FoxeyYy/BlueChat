@@ -244,11 +244,6 @@ public class DBOperations {
         return cursor;
     }
 
-    public Cursor getChatPorMac(String mac){
-        String[] args = new String[] {mac};
-        Cursor cursor = getDb().rawQuery(SQL_GET_CHAT_BY_MAC, args);
-        return cursor;
-    }
 
     /**
      * Devuelve todos los chats

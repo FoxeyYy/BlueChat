@@ -48,10 +48,6 @@ public class MainActivity extends AppCompatActivity{
      */
     private final int PERMISO_LOCALIZACION = 2;
 
-    /**
-     * Resultado de la solicitud de la activación del bluetooth
-     */
-    private final int BLUETOOTH_ACTIVADO = 1;
 
     /**
      * Resultado de la solicitud de visibilidad del bluetooth
