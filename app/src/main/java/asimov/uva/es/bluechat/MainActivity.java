@@ -136,8 +136,6 @@ public class MainActivity extends AppCompatActivity{
             comprobarBluetooth();
             if( esCompatibleBluetooth ) {
                 comprobarPermisos();
-                startService(new Intent(this, ServidorBluetooth.class));
-                startService(new Intent(this, EnvioMensajesPendientes.class));
             }
         }
 
@@ -217,7 +215,11 @@ public class MainActivity extends AppCompatActivity{
             Log.d(TAG, "BLUETOOTH NO DISPONIBLE");
             esCompatibleBluetooth = false;
             Toast.makeText(this, R.string.dispositivo_sin_bluetooth, Toast.LENGTH_SHORT).show();
-        }
+        }else
+            if(adaptadorBluetooth.isEnabled()){
+                startService(new Intent(this, ServidorBluetooth.class));
+                startService(new Intent(this, EnvioMensajesPendientes.class));
+            }
 
     }
 
@@ -283,8 +285,11 @@ public class MainActivity extends AppCompatActivity{
             case BLUETOOTH_VISIBLE :
                 if(resultCode == RESULT_CANCELED)
                     Toast.makeText(this, R.string.info_bluetooth_visible, Toast.LENGTH_SHORT).show();
-                else
+                else {
                     adaptadorBluetooth.startDiscovery();
+                    startService(new Intent(this, ServidorBluetooth.class));
+                    startService(new Intent(this, EnvioMensajesPendientes.class));
+                }
                 break;
         }
     }
