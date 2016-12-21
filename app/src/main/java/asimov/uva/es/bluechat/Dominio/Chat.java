@@ -26,7 +26,7 @@ public class Chat implements Parcelable{
     /**
      * {@link Contacto} con los que se establece el chat
      */
-    private List<Contacto> participantes;
+    private final List<Contacto> participantes;
 
     /**
      * Identifica al chat
@@ -36,7 +36,7 @@ public class Chat implements Parcelable{
     /**
      * Nombre del chat
      */
-    private String nombre;
+    private final String nombre;
 
     /**
      * Historial de mensajes del chat

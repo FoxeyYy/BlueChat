@@ -34,7 +34,6 @@ public class DBOperations {
     private static final String SQL_READ_PENDING_CHATS = "SELECT * FROM Chat WHERE idChat IN (SELECT idChat FROM Mensaje m, MensajePendiente mp WHERE m.idMensaje = mp.idMensaje) GROUP BY idChat";
     private static final String SQL_READ_PENDING_GROUPS = "SELECT * FROM ChatGrupal WHERE idChat IN (SELECT idChat FROM Mensaje m, MensajePendiente mp WHERE m.idMensaje = mp.idMensaje) GROUP BY idChat";
     private static final String SQL_READ_PENDING_MESSAGES_CHAT = "SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) WHERE idChat = ? GROUP BY idMensaje ";
-    private static final String SQL_GET_CHAT_BY_MAC = "SELECT * FROM Chat WHERE idContacto = ?";
     private static final String SQL_GET_NUM_CHATS = "SELECT COUNT(*) FROM Chat";
     private static final String SQL_GET_NUM_GRUPOS = String.format("SELECT COUNT(*) FROM %s", DBContract.ChatGrupal.TABLE_NAME);
     private static final String SQL_GET_NUM_MSG = "SELECT COUNT(*) FROM Mensaje";

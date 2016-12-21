@@ -24,12 +24,12 @@ public class ServidorBluetooth extends Service implements Runnable {
     /**
      * Subproceso de ejecucion
      */
-    private Thread hilo;
+    private final Thread hilo;
 
     /**
      * Socket del servidor
      */
-    private BluetoothServerSocket socketServidor;
+    private final BluetoothServerSocket socketServidor;
 
     /**
      * Identificador único y universal
@@ -42,7 +42,7 @@ public class ServidorBluetooth extends Service implements Runnable {
     /**
      * Adaptador bluetooth del dispositivo
      */
-    private BluetoothAdapter adaptadorBluetooth;
+    private final BluetoothAdapter adaptadorBluetooth;
 
     /**
      * Inicializa el servidor, creando un socketServidor en modo escucha pasiva

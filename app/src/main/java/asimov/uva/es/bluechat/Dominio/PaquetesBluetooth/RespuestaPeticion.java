@@ -15,7 +15,7 @@ public class RespuestaPeticion implements Serializable {
         RECHAZAR
     }
 
-    private TipoRespuesta tipo;
+    private final TipoRespuesta tipo;
 
     public RespuestaPeticion (TipoRespuesta tipo) {
         this.tipo = tipo;

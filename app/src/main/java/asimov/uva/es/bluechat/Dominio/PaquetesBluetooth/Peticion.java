@@ -14,8 +14,6 @@ public class Peticion implements Serializable {
      * Constantes identificativas de los tipos de paquete
      */
     public enum TipoPeticion {
-        ERROR,
-        DESCUBRIMIENTO,
         MENSAJE,
         MENSAJEGRUPO
     }
@@ -23,19 +21,19 @@ public class Peticion implements Serializable {
     /**
      * Numero de mensajes a enviar tras recibir la peticion
      */
-    private int numeroMensajes;
+    private final int numeroMensajes;
 
-    private TipoPeticion tipo;
+    private final TipoPeticion tipo;
     private String idGrupo;
 
-    public Peticion (TipoPeticion tipo, int numeroMensajes ) {
+    public Peticion(int numeroMensajes) {
         this.numeroMensajes = numeroMensajes;
-        this.tipo = tipo;
+        this.tipo = TipoPeticion.MENSAJE;
     }
 
-    public Peticion(TipoPeticion tipo, int numeroMensajes, String idGrupo){
+    public Peticion(int numeroMensajes, String idGrupo){
         this.idGrupo = idGrupo;
-        this.tipo = tipo;
+        this.tipo = TipoPeticion.MENSAJEGRUPO;
         this.numeroMensajes = numeroMensajes;
     }
 

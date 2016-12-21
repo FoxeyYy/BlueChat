@@ -33,7 +33,7 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
  */
 public class TabChats extends Fragment implements View.OnClickListener {
 
-    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
+    private final BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Chat chat = intent.getParcelableExtra("chat");

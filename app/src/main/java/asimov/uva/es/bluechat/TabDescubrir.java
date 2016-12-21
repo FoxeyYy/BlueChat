@@ -57,7 +57,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Receptor de información de los dispositivos descubiertos
      */
-    private BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
+    private final BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -100,7 +100,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         }
     };
 
-    private SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
+    private final SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             BluetoothAdapter.getDefaultAdapter().startDiscovery();

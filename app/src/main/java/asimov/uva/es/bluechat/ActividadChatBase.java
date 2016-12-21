@@ -45,7 +45,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
      */
     private final int PERMISO_ACCESO_DATOS = 1;
 
-    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
+    private final BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Chat chat = intent.getParcelableExtra("chat");

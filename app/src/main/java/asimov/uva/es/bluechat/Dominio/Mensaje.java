@@ -23,10 +23,10 @@ import asimov.uva.es.bluechat.sqllite.DBOperations;
 public class Mensaje implements Parcelable, Serializable {
 
     private String id;
-    private String contenido;
+    private final String contenido;
     private String imagen;
-    private Contacto emisor;
-    private Date fecha;
+    private final Contacto emisor;
+    private final Date fecha;
 
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro

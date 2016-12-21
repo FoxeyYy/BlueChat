@@ -272,13 +272,13 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void solicitarEnvioMensajesGrupo(String idGrupo){
-        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJEGRUPO, mensajes.size(),idGrupo);
+        Peticion peticion = new Peticion(mensajes.size(),idGrupo);
         Log.e("ENVIO", String.valueOf(mensajes.size()));
         enviar(peticion);
     }
 
     private void solicitarEnvioMensajes() {
-        Peticion peticion = new Peticion(Peticion.TipoPeticion.MENSAJE, mensajes.size());
+        Peticion peticion = new Peticion(mensajes.size());
         enviar(peticion);
     }
 
