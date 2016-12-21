@@ -32,7 +32,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="24dp"
         android:background="@android:color/transparent"
-        android:layout_height="51dp" />
+        android:layout_height="51dp"
+        android:scaleType="fitXY" />
 
     <TextView
         android:text="@string/mac_personal"

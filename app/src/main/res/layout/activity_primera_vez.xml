@@ -76,7 +76,8 @@
         android:layout_marginStart="104dp"
         app:layout_constraintLeft_toRightOf="@+id/selecciona_imagen"
         android:layout_marginLeft="104dp"
-        app:layout_constraintBottom_toBottomOf="@+id/selecciona_imagen" />
+        app:layout_constraintBottom_toBottomOf="@+id/selecciona_imagen"
+        android:scaleType="fitXY" />
 
     <Button
         android:text="@string/search_image"

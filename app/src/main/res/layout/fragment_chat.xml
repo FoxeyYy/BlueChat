@@ -15,7 +15,8 @@
             android:id="@+id/avatar_contacto"
             android:background="@android:drawable/ic_menu_gallery"
             android:layout_height="match_parent"
-            android:layout_width="50dp" />
+            android:layout_width="50dp"
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/nombre_contacto"
