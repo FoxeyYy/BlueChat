@@ -147,7 +147,7 @@ public class DBOperations {
     public void insertarGrupo (Chat chat) {
         int id;
         if(!chat.esPersistente()){
-            id = getNumGrupos() + Contacto.getSelf().getDireccionMac().hashCode(); //TODO jeje yoqueselaverdadxdxd
+            id = getNumGrupos() + Contacto.getSelf().getDireccionMac().hashCode();
             chat.setIdChat(String.valueOf(id));
         }else
             id = Integer.valueOf(chat.getIdChat());

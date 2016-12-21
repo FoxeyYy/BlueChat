@@ -117,9 +117,6 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
                 socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
                 socket.connect();
 
-                //TODO cuando se lanza el descubrimiento
-                //ConexionBluetooth descubrir = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
-                //descubrir.start();
                 if(chat.esGrupo()){
                     ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES_GRUPO, mensajes);
                     conexion.setIdGrupo(chat.getIdChat());

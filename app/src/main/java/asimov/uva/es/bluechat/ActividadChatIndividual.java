@@ -76,8 +76,6 @@ public class ActividadChatIndividual extends ActividadChatBase {
 
         List<Mensaje> historial = getChat().getHistorial();
 
-        //TODO hacerlo en consultas separadas
-
         Contacto myself = Contacto.getSelf();
         for(Mensaje msg: historial) {
             if(msg.getEmisor().equals(myself))
