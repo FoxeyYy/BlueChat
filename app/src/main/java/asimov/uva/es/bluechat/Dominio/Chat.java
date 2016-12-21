@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,10 +63,19 @@ public class Chat implements Parcelable{
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
             String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
-            Contacto emisor = Contacto.getSelf(); //TODO nosotros mismos en la base? o siempre self
+            Contacto emisor = Contacto.getSelf();
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            mensajes.add(new Mensaje(id, contenido, imagen, emisor, new Date())); //TODO Fecha de la bbdd
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy");
+            Mensaje mensaje;
+            try{
+                Date date = formatoFecha.parse(fecha);
+                mensaje = new Mensaje(id,contenido,imagen,emisor,date);
+            }catch (ParseException e){
+                e.printStackTrace();
+                mensaje = new Mensaje(id,contenido,imagen,emisor,new Date());
+            }
+            mensajes.add(mensaje);
         }
 
         cursor.close();
