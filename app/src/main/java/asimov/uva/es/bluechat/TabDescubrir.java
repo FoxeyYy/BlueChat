@@ -186,7 +186,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * Elimina todas las tarjetas de los dispositivos que se encuentran en la vista
      */
     private void eliminarDispositivosDescubiertos() {
-        dispositivos.removeAll(dispositivos);
+        dispositivos.clear();
         lista.removeAllViews();
     }
 
