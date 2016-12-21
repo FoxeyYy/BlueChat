@@ -300,16 +300,17 @@ public class ConexionBluetooth extends Thread {
 
             for(int i= 0; i<numeroMensajes; i++) {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
-                guardarMensaje(mensaje);
                 if (null == mensaje.getImagen()) {
+                    guardarMensaje(mensaje);
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
                 } else {
                     Bitmap imagen = recibirImagen();
                     String path = guardarImagenMensaje(mensaje, imagen);
                     mensaje.setImagen(path);
-
+                    guardarMensaje(mensaje);
                     MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
+
                 notificarMensaje();
             }
 
