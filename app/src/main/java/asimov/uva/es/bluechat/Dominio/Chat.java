@@ -5,12 +5,12 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBHelper;
 import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 /**
@@ -230,9 +230,16 @@ public class Chat implements Parcelable{
             Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
-
-            Mensaje mensaje = new Mensaje(id, contenido, imagen, emisor, new Date());
-            mensajes.add(mensaje); //TODO Fecha de la bbdd
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+            Date date;
+            try {
+                date = formatoFecha.parse(fecha);
+                Mensaje mensaje = new Mensaje(id, contenido, imagen, emisor, date);
+                mensajes.add(mensaje); //TODO Fecha de la bbdd
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
         }
 
         cursor.close();

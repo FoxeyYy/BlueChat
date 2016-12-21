@@ -153,7 +153,8 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
             imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
-        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_recibir)).setText(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_recibir)).setText(mensaje.getEmisor().getNombre() + ": "
+                + mensaje.getContenido()+"\n" + mensaje.getFecha());
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
@@ -167,7 +168,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
             imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
 
-        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_enviar)).setText(mensaje.getContenido());
+        ((TextView) tarjetaMensaje.findViewById(R.id.texto_msg_enviar)).setText(mensaje.getContenido() + "\n" + mensaje.getFecha());
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
