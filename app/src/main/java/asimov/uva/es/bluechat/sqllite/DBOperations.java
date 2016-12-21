@@ -220,8 +220,7 @@ public class DBOperations {
      */
     public Cursor getMensajes(Chat chat){
         String[] args = new String[] {chat.getIdChat()};
-        Cursor cursor = getDb().rawQuery(SQL_READ_MESSAGES, args);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_MESSAGES, args);
     }
 
     /**
@@ -229,8 +228,7 @@ public class DBOperations {
      * @return cursor El cursor a los contactos
      */
     public Cursor getAllContacts(){
-        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_CONTACTS, null);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_ALL_CONTACTS, null);
     }
 
     /**
@@ -240,8 +238,7 @@ public class DBOperations {
      */
     public Cursor getChat(String idChat){
         String[] args = new String[] {idChat};
-        Cursor cursor = getDb().rawQuery(SQL_READ_CHAT, args);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_CHAT, args);
     }
 
 
@@ -250,8 +247,7 @@ public class DBOperations {
      * @return cursor El cursor a los chats.
      */
     public Cursor getAllChats (){
-        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_CHATS, null);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_ALL_CHATS, null);
     }
 
     /**
@@ -259,8 +255,7 @@ public class DBOperations {
      * @return cursor El cursor a los chats grupales.
      */
     public Cursor getGrupos () {
-        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_GRUPOS, null);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_ALL_GRUPOS, null);
     }
 
     /**
@@ -269,14 +264,12 @@ public class DBOperations {
      */
     public Cursor getParticipantesGrupo (String id) {
         String[] args = {id};
-        Cursor cursor = getDb().rawQuery(SQL_READ_ALL_PARTICIPANTES_GRUPO, args);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_ALL_PARTICIPANTES_GRUPO, args);
     }
 
     public Cursor getParticipantesConMensajesPendientes(String id){
         String[] args = {id};
-        Cursor cursor = getDb().rawQuery(SQL_READ_PARTICIPANTES_CON_MENSAJES_PENDIENTES, args);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_PARTICIPANTES_CON_MENSAJES_PENDIENTES, args);
     }
 
     public Cursor getChatsPendientes(){
@@ -293,14 +286,12 @@ public class DBOperations {
 
     public Cursor getMensajesPendientes(String idChat){
         String[] args = new String[] {idChat};
-        Cursor cursor = getDb().rawQuery(SQL_READ_PENDING_MESSAGES_CHAT, args);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_PENDING_MESSAGES_CHAT, args);
     }
 
     public  Cursor getChatGrupal(String idChat){
         String[] args = new String[] {idChat};
-        Cursor cursor = getDb().rawQuery(SQL_READ_GROUP_CHAT, args);
-        return cursor;
+        return getDb().rawQuery(SQL_READ_GROUP_CHAT, args);
     }
 
     /**

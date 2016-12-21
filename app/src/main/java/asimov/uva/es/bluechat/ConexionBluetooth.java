@@ -42,7 +42,7 @@ public class ConexionBluetooth extends Thread {
     public enum Modo {
         SERVIDOR,
         CLIENTE_MENSAJES,
-        CLIENTE_MENSAJES_GRUPO;
+        CLIENTE_MENSAJES_GRUPO
 
     }
 
@@ -181,7 +181,7 @@ public class ConexionBluetooth extends Thread {
         for(Mensaje mensaje : mensajes) {
             enviar(mensaje);
             if (null != mensaje.getImagen()) {
-                byte[] imagen = getBytesImagen(mensaje.getImagen().toString());
+                byte[] imagen = getBytesImagen(mensaje.getImagen());
                 enviar(imagen);
             }
             mensaje.marcarEnviado(socket.getRemoteDevice().getAddress());
@@ -371,18 +371,14 @@ public class ConexionBluetooth extends Thread {
     private byte[] getBytesImagen(Bitmap imagen){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         imagen.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] bytes = stream.toByteArray();
-        return bytes;
-
+        return stream.toByteArray();
     }
 
     private Bitmap recibirImagen() {
         try {
             byte[] imagen = (byte[]) entrada.readObject();
             return BitmapFactory.decodeByteArray(imagen, 0, imagen.length);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

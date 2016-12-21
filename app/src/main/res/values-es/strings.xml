@@ -37,8 +37,9 @@
     <string name="funcionamiento_descubrir">Descubrir permite ver las personas cercanas, que tengan el Bluetooth activado y público, con los que poder hablar.</string>
     <string name="agradecimiento">Gracias por confiar en BlueChat.\nEs la aplicacion perfecta para hablar con personas que se encuentren cerca de ti, sean conocidas o no.</string>
     <string name="info_aplicacion">Para el correcto funcionamiento es necesario que la aplicacion tenga diferentes permisos entre los que se encuentran:\n
-        -Acceso a ficheros multimedia, necesarios para poder establecer una imagen de perfil asi como enviar y recibir imágenes.\n
-        -Acceso a contactos, lo cual le permite guardar contactos en su telefono asi como mostrar los nombres de sus contactos en vez de los descubiertos por el bluetooth.\n
+        -Acceso a ficheros multimedia, necesarios para poder establecer una imagen de perfil así como enviar y recibir imágenes.\n
+        -Acceso a contactos, lo cual le permite guardar contactos en su telefono así como mostrar los nombres de sus contactos en vez de los descubiertos por el bluetooth.\n
         -Acceso a localización: necesario para un correcto descubrimiento de los dispositivos bluetooth cercanos.</string>
     <string name="error_apodo_primera_vez">El campo de apodo es obligatorio</string>
+    <string name="tu_direccion">Tu dirección:</string>
 </resources>

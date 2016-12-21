@@ -36,11 +36,6 @@ public class ServidorBluetooth extends Service implements Runnable {
      */
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
-    /**
-     * Nombre de la aplicación para ofrecer
-     */
-    private final String NOMBRE = "BlueChat";
-
     private final String CONEXION = "CONEXION";
     private final String ERROR = "ERROR";
 
@@ -61,6 +56,10 @@ public class ServidorBluetooth extends Service implements Runnable {
         adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
 
         try {
+            /*
+      Nombre de la aplicación para ofrecer
+     */
+            String NOMBRE = "BlueChat";
             tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
         } catch (IOException e) {
             Log.d(CONEXION, "Error creando el socket que va a escuchar");

@@ -13,7 +13,7 @@
         David Robles Gallardo
     </string>
     <string name="info_aplicacion">In order for this App to work properly you must grant permissions for:\n
-        -Media files access, mandatory to establish an avatar and to send and recieve images.\n
+        -Media files access, mandatory to establish an avatar and to send and receive images.\n
         -Contacts access, mandatory so we can show your linked agenda names.\n
         -Location access, mandatory for a proper discover of near bluetooth devices.</string>
     <string name="agradecimiento">Thanks for trusting Bluechat.\nIt\'s the perfect App to talk with other near people, already known or not.</string>
@@ -44,8 +44,9 @@
     <string name="introduce_apodo">Write your nickname</string>
     <string name="info_bluetooth_visible">Device must be visible in order to connect to other devices</string>
     <string name="info_desc">BlueChat is an instant messaging application via Bluetooth. You will be able to talk to other near people that also have Bluechat installed on their Android devices.</string>
-    <string name="info_bluetooth_desactivado">When bluetooth is disabled you can only see chat\'s historial. If you want to send or recieve you must enable bluetooth</string>
+    <string name="info_bluetooth_desactivado">When bluetooth is disabled you can only see chat\'s historial. If you want to send or receive you must enable bluetooth</string>
     <string name="funcionamiento_refrescar">If you want to discover near people use the refresh button at top-right, you can also swype down discover tab in order to discover new people.</string>
     <string name="funcionamiento_descubrir">Discover allows you to see near people, with public and enabled bluetooth, with whom to talk.</string>
     <string name="error_apodo_primera_vez">Nickname field is required</string>
+    <string name="tu_direccion">Your address:</string>
 </resources>
