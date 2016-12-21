@@ -2,7 +2,7 @@
 <resources>
     <string name="action_actualizar">Ajouter à un contact</string>
     <string name="action_settings">Paramètres</string>
-    <string name="agradecimiento">Merci pour confier en Bluechat. C'est l'application parfaite pour parler avec des autres personnes prochènnes</string>
+    <string name="agradecimiento">Merci de faire confiance à Bluechat.\n C'est l'application parfaite pour parler avec des autres personnes prochènnes</string>
     <string name="action_ajustes">Aide</string>
     <string name="action_anadir">Créer un contact</string>
     <string name="action_refrescar">Rafraîchir</string>
@@ -31,9 +31,9 @@
     <string name="funcionamiento_descubrir">Découvrez permet de voir les personnes à proximité qui ont l\'application, avec lesquels vous pouvez parler.</string>
     <string name="funcionamiento_refrescar">Si vous voulez rechercher de nouveaux contacts, vous pouvez utiliser le bouton de rafraîchissement situé en haut à droite.
     Vous pouvez également glisser vers le bas pour découvrir de nouveaux contacts.</string>
-    <string name="info_aplicacion">Pour un bon fonctionnement, il est nécessaire que l\'application dispose des différentes autorisations parmi lesquels:
-                                    Accès aux fichiers multimédias, nécessaires pour choisir une image de profil et envoyer et recevoir des images.
-                                    Accès à vos contacts, pour enregistrer les contacts sur votre téléphone, ainsi que d\'afficher les noms des contacts découvertes par le bluetooth.
+    <string name="info_aplicacion">Pour un bon fonctionnement, il est nécessaire que l\'application dispose des différentes autorisations parmi lesquels:\n
+                                    Accès aux fichiers multimédias, nécessaires pour choisir une image de profil et envoyer et recevoir des images.\n
+                                    Accès à vos contacts, pour enregistrer les contacts sur votre téléphone, ainsi que d\'afficher les noms des contacts découvertes par le bluetooth.\n
                                     Accès à l\'emplacement, nécessaire pour une bonne découverte de dispositifs Bluetooth à proximité.</string>
     <string name="info_bluetooth_desactivado">Avec le Bluetooth désactivé, vous pouvez seulement voir les messages stockés. Si vous voulez envoyer ou recevoir il est nécessaire de l\'activer</string>
     <string name="info_bluetooth_visible">Le dispositif doit être visible pour établir une connexion Bluetooth</string>
