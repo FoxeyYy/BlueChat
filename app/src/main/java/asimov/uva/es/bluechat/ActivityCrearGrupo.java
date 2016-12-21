@@ -42,7 +42,6 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
 
         Contacto[] fuente = new Contacto[contactos.size()];
         fuente = contactos.toArray(fuente);
-        final int[] destino = {android.R.id.text1};
 
         ArrayAdapter<Contacto> adaptador = new ArrayAdapter(this,
                 android.R.layout.simple_list_item_multiple_choice,

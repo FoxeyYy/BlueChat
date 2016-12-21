@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class DBHelper extends SQLiteOpenHelper{
+class DBHelper extends SQLiteOpenHelper{
 
     /*Versión de la base de datos. Con cada nuevo cambio, el número se incrementa*/
     private static final int DATABASE_VERSION = 1;

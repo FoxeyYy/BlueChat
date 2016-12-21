@@ -74,7 +74,7 @@ public class Mensaje implements Parcelable, Serializable {
     }
 
 
-    protected Mensaje(Parcel in) {
+    Mensaje(Parcel in) {
         id = in.readString();
         contenido = in.readString();
         imagen = in.readString();

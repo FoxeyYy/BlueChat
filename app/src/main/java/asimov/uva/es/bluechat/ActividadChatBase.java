@@ -120,7 +120,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         }
     }
 
-    protected void enviar() {
+    void enviar() {
         String texto = String.valueOf(campo_texto.getText());
         Mensaje mensaje;
         if(texto.isEmpty() && uriImagen ==null)
@@ -146,7 +146,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
 
 
 
-    protected void scrollAlUltimo() {
+    void scrollAlUltimo() {
         final ScrollView scroll = (ScrollView) findViewById(R.id.scroll_chat);
         scroll.post(new Runnable() {
             @Override
@@ -165,7 +165,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
-    protected void mostrarMensajeRecibido(Mensaje mensaje) {
+    void mostrarMensajeRecibido(Mensaje mensaje) {
         View tarjetaMensaje;
 
         if (null == mensaje.getImagen()) {
@@ -180,7 +180,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
-    protected void mostrarMensajeEnviado(Mensaje mensaje) {
+    void mostrarMensajeEnviado(Mensaje mensaje) {
         View tarjetaMensaje;
         if (null == mensaje.getImagen()) {
             tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, null);
@@ -194,19 +194,19 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         lista_mensajes.addView(tarjetaMensaje, lista_mensajes.getChildCount());
     }
 
-    protected Chat getChat () {
+    Chat getChat() {
         return chat;
     }
 
-    protected void setChat (Chat chat) {
+    void setChat(Chat chat) {
         this.chat = chat;
     }
 
-    protected void setListaMensajes (LinearLayout lista) {
+    void setListaMensajes(LinearLayout lista) {
         lista_mensajes = lista;
     }
 
-    protected void setCampoTexto (TextView vista) {
+    void setCampoTexto(TextView vista) {
         campo_texto = vista;
     }
 

@@ -170,7 +170,7 @@ public class DBOperations {
         getDb().insert(DBContract.ParticipantesGrupo.TABLE_NAME, null, values);
     }
 
-    public int getNumGrupos() {
+    private int getNumGrupos() {
         int num = 0;
 
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_GRUPOS,null);
@@ -181,7 +181,7 @@ public class DBOperations {
         return num;
     }
 
-    public int getNumChats() {
+    private int getNumChats() {
         int num = 0;
 
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_CHATS,null);
@@ -192,7 +192,7 @@ public class DBOperations {
         return num;
     }
 
-    public int getNumMensajes() {
+    private int getNumMensajes() {
         int num = 0;
 
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_MSG,null);
@@ -315,7 +315,7 @@ public class DBOperations {
      * Actualiza un contacto con la nueva informacion
      * @param contacto a actualizar
      */
-    public void updateContacto(Contacto contacto){
+    private void updateContacto(Contacto contacto){
         String nombre = contacto.getNombre();
         String mac = contacto.getDireccionMac();
         String imagen = contacto.getImagen();

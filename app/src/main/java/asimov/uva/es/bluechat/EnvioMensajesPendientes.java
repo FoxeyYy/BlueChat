@@ -33,7 +33,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
     private boolean enEjecucion;
 
-    BluetoothAdapter adaptadorBluetooth;
+    private BluetoothAdapter adaptadorBluetooth;
 
     private final String SERVICIO = "SERVICIO";
 

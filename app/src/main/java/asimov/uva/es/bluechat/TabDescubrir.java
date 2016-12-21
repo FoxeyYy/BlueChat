@@ -144,7 +144,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * Añade dispositivos dentro de la vista
      * @param dispositivo a añadir a la vista
      */
-    public void anadirDispositivo(Contacto dispositivo, boolean restaurando){
+    private void anadirDispositivo(Contacto dispositivo, boolean restaurando){
         if (!restaurando) {
             dispositivos.add(dispositivo);
         }
@@ -195,7 +195,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * si no existe dicha barra la llamada quedara sin efecto
      * @param visibilidad La visibilidad a establecer
      */
-    public void setEstadoBarraProgreso(boolean visibilidad) {
+    private void setEstadoBarraProgreso(boolean visibilidad) {
 
         if (null == getActivity()) {
             return;

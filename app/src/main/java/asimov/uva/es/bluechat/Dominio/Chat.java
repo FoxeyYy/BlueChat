@@ -118,7 +118,7 @@ public class Chat implements Parcelable{
         idChat = id;
     }
 
-    protected Chat(Parcel in) {
+    private Chat(Parcel in) {
         participantes = in.readArrayList(Contacto.class.getClassLoader());
         nombre = in.readString();
         idChat = in.readString();
@@ -230,7 +230,7 @@ public class Chat implements Parcelable{
         return chats;
     }
 
-    public List<Mensaje> getMensajes(Context context) {
+    private List<Mensaje> getMensajes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajes(this);
         List<Mensaje> mensajes = new ArrayList();
 
@@ -241,8 +241,16 @@ public class Chat implements Parcelable{
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            Mensaje mensaje = new Mensaje(id, contenido, imagen, emisor, new Date());
-            mensajes.add(mensaje); //TODO Fecha de la bbdd
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy");
+            Mensaje mensaje;
+            try{
+                Date date = formatoFecha.parse(fecha);
+                mensaje = new Mensaje(id,contenido,imagen,emisor,date);
+                }catch (ParseException e){
+                e.printStackTrace();
+                mensaje = new Mensaje(id,contenido,imagen,emisor,new Date());
+                }
+            mensajes.add(mensaje);
         }
 
         cursor.close();
@@ -308,7 +316,6 @@ public class Chat implements Parcelable{
     public static Chat getChatById(Context context, String idChat) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getChat(idChat);
         if(cursor.moveToFirst()) {
-            String id = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
             String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
             Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
 
@@ -331,7 +338,7 @@ public class Chat implements Parcelable{
     /**
      * Establece el valor por defecto para el historial de mensajes
      */
-    public void setHistorial(List<Mensaje> historial) {
+    private void setHistorial(List<Mensaje> historial) {
         this.historial = historial;
     }
 
