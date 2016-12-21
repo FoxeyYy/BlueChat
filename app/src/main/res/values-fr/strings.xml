@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_actualizar">Ajouter à un contact</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="agradecimiento">Merci de faire confiance à Bluechat.\n C'est l'application parfaite pour parler avec des autres personnes prochènnes</string>
+    <string name="action_ajustes">Aide</string>
+    <string name="action_anadir">Créer un contact</string>
+    <string name="action_refrescar">Rafraîchir</string>
+    <string name="bienvenida_app">Bienvenue à BlueChat</string>
+    <string name="crear_grupo">Créer un groupe</string>
+    <string name="dispositivo_sin_bluetooth">Le Bluetooth du dispositif est necessaire pour le fonctionement l\'aplication</string>
+    <string name="error_apodo_primera_vez">Le nom d\'utilisateur est requis</string>
+    <string name="error_contactos_vacio">Au moins, vous devez sélectionner un contact</string>
+    <string name="error_nombre_grupo_vacio">Le nom de grupe est requis</string>
+    <string name="escribe_aqui">Ecrivez ici</string>
+    <string name="funciona_ayuda">Comment ça marche?</string>
+    <string name="hint_nombre_grupo">Nom du groupe</string>
+    <string name="info_ayuda">Information e aide</string>
+    <string name="introduce_apodo">Ecrivez votre surnom</string>
+    <string name="mac_personal">Votre adresse: %s</string>
+    <string name="next">SUIVANTE</string>
+    <string name="nombre_a_mostrar">" Nom d'affichage"</string>
+    <string name="search_image">IMAGE</string>
+    <string name="select_image">Choisisez l\'image profil (Optionnel)</string>
+    <string name="tab_chats">Chats</string>
+    <string name="tab_descubrir">Découvrir</string>
+    <string name="titulo_crear_grupo">Sélectioner les participants</string>
+    <string name="tu_direccion">Votre addresse:</string>
+    <string name="funcionamiento_ajustes">Dans les paramètres, vous pouvez modifier votre nom et votre photo de profil.</string>
+    <string name="funcionamiento_chats">Chats montre l\'histoire des coversations et les groupes auxquels vous appartenez</string>
+    <string name="funcionamiento_descubrir">Découvrez permet de voir les personnes à proximité qui ont l\'application, avec lesquels vous pouvez parler.</string>
+    <string name="funcionamiento_refrescar">Si vous voulez rechercher de nouveaux contacts, vous pouvez utiliser le bouton de rafraîchissement situé en haut à droite.
+    Vous pouvez également glisser vers le bas pour découvrir de nouveaux contacts.</string>
+    <string name="info_aplicacion">Pour un bon fonctionnement, il est nécessaire que l\'application dispose des différentes autorisations parmi lesquels:\n
+                                    Accès aux fichiers multimédias, nécessaires pour choisir une image de profil et envoyer et recevoir des images.\n
+                                    Accès à vos contacts, pour enregistrer les contacts sur votre téléphone, ainsi que d\'afficher les noms des contacts découvertes par le bluetooth.\n
+                                    Accès à l\'emplacement, nécessaire pour une bonne découverte de dispositifs Bluetooth à proximité.</string>
+    <string name="info_bluetooth_desactivado">Avec le Bluetooth désactivé, vous pouvez seulement voir les messages stockés. Si vous voulez envoyer ou recevoir il est nécessaire de l\'activer</string>
+    <string name="info_bluetooth_visible">Le dispositif doit être visible pour établir une connexion Bluetooth</string>
+    <string name="info_desc">BlueChat est une application de messagerie instantanée via Bluetooth. Vous pouvez parler à d\'autres personnes qui ont également BlueChat installée sur leurs appareils Android.</string>
+    <string name="permisos_denegados">Il est nécessaire d\'utiliser l\'emplacement pour découvrir autres personnes</string>
+    <string name="permisos_imagen_denegados">L\'accès à des fichiers multimédias pour le bon fonctionnement de l\'application est nécessaire</string>
+</resources>

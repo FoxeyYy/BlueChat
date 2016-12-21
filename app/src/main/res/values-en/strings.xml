@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_descubrir">Discover</string>
+    <string name="tab_chats">Chats</string>
+    <string name="info_aplicacion">In order for this App to work properly you must grant permissions for:\n
+        -Media files access, mandatory to establish an avatar and to send and recieve images.\n
+        -Contacts access, mandatory so we can show your linked agenda names.\n
+        -Location access, mandatory for a proper discover of near bluetooth devices.</string>
+    <string name="agradecimiento">Thanks for trusting Bluechat.\nIt\'s the perfect App to talk with other near people, already known or not.</string>
+    <string name="funciona_ayuda">How does it work?</string>
+    <string name="action_actualizar">Add to contact</string>
+    <string name="action_ajustes">Help</string>
+    <string name="action_anadir">Create contact</string>
+    <string name="action_refrescar">Refresh</string>
+    <string name="action_settings">Settings</string>
+    <string name="crear_grupo">Create group</string>
+    <string name="bienvenida_app">Welcome to BlueChat</string>
+    <string name="dispositivo_sin_bluetooth">This App needs Bluetooth on the device</string>
+    <string name="error_contactos_vacio">At least one contact must be selected</string>
+    <string name="error_nombre_grupo_vacio">A name must be given</string>
+    <string name="escribe_aqui">Write here</string>
+    <string name="funcionamiento_ajustes">At settings you will be able to change your name and avatar</string>
+    <string name="funcionamiento_chats">Chats shows the conversations historial and the groups you are in.</string>
+    <string name="hint_nombre_grupo">Group\'s name</string>
+    <string name="info_ayuda">Information and help</string>
+    <string name="next">NEXT</string>
+    <string name="nombre_a_mostrar">Name to show</string>
+    <string name="search_image">IMAGE</string>
+    <string name="select_image">Choose avatar (Optional)</string>
+    <string name="titulo_crear_grupo">Select participants</string>
+    <string name="permisos_denegados">Location is mandatory in order to discover near devices</string>
+    <string name="permisos_imagen_denegados">Media files access is mandatory for order App operation</string>
+    <string name="mac_personal">Your address: %s</string>
+    <string name="introduce_apodo">Write your nickname</string>
+    <string name="info_bluetooth_visible">Device must be visible in order to connect to other devices</string>
+    <string name="info_desc">BlueChat is an instant messaging application via Bluetooth. You will be able to talk to other near people that also have Bluechat installed on their Android devices.</string>
+    <string name="info_bluetooth_desactivado">When bluetooth is disabled you can only see chat\'s historial. If you want to send or recieve you must enable bluetooth</string>
+    <string name="funcionamiento_refrescar">If you want to discover near people use the refresh button at top-right, you can also swype down discover tab in order to discover new people.</string>
+    <string name="funcionamiento_descubrir">Discover allows you to see near people, with public and enabled bluetooth, with whom to talk.</string>
+    <string name="error_apodo_primera_vez">Nickname field is required</string>
+    <string name="tu_direccion">Your address:</string>
+</resources>
