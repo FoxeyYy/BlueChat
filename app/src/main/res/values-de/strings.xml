@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_actualizar">Hinzufügen einen neuen Kontakt erstellen</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="tab_chats">Chats</string>
+    <string name="crear_grupo">Neue Gruppe</string>
+    <string name="action_ajustes">Hilfe</string>
+    <string name="action_anadir">Kontakt erstellen</string>
+    <string name="action_refrescar">Erneuern</string>
+    <string name="agradecimiento">Vielen Dank für ihr Vertrauen in BlueChat. Sie ist die perfekte App um mit Personen in der Nähe zu sprechen, sei sie bekannt oder nicht</string>
+    <string name="dispositivo_sin_bluetooth">Die App braucht Bluetooth im Gerät</string>
+    <string name="error_contactos_vacio">Mindestens ein Kontakt muss augewählt werden</string>
+    <string name="error_nombre_grupo_vacio">Die Gruppe muss einen Name haben</string>
+    <string name="escribe_aqui">Schreiben hier</string>
+    <string name="funciona_ayuda">Wie funktioniert es?</string>
+    <string name="funcionamiento_ajustes">In Eintellungen können Sie Ihr Foto und Ihre Profilname ändern</string>
+    <string name="funcionamiento_chats">Chats zeigt die Konversationen und die gespeichert Kontakte</string>
+    <string name="funcionamiento_descubrir">Entdecken erlaubt die Geräte in der Nähe mit denen zu sprechen sehen</string>
+    <string name="funcionamiento_refrescar">Wenn Sie möchten neue Kontakte suchen benutzen Sie der Erneuern Button oben rechts</string>
+    <string name="hint_nombre_grupo">Gruppenname</string>
+    <string name="info_aplicacion">Für die korrekte Funktion braucht es, dass die App andere Berechtigungen habe:
+							Der Zugang zu Multimedia-Dateien um die Profilfoto zu etablieren und Fotos senden und erhalten.
+							Der Zugang zu Kontakte, um Kontakte zu speichern und um die Kontakt Name zu zeigen.
+                            Der Zugang zu Lokalisierung, um neuen Geräte mit Bluetooth zu suchen.</string>
+    <string name="info_bluetooth_desactivado">Mit Bluetooth deaktiviert,können Sie nur vorherigen Nachrichten sehen. Wenn Sie senden oder erhalten wollen, muss es aktiviert</string>
+    <string name="info_bluetooth_visible">Die Gerät muss sichtbar ist, um die Bluetooth Verbindung zu machen</string>
+    <string name="info_desc">BlueChat ist eine App vom Nachrichten bei Bluetooth. Sie können  mit Personen in der Nähe sprechen</string>
+    <string name="introduce_apodo">Schreiben Sie Ihren Nick</string>
+    <string name="mac_personal">Deine Adresse:%s</string>
+    <string name="next">NÄCHSTE</string>
+    <string name="nombre_a_mostrar">Anzeigename</string>
+    <string name="permisos_denegados">Es braucht der Standort, um Geräte zu entdecken</string>
+    <string name="permisos_imagen_denegados">Es braucht der Zugang zu Multimedia-Dateien um die App korrekte Funktion zu haben</string>
+    <string name="search_image">FOTO</string>
+    <string name="select_image">Wählen Sie Profilfoto (optional)</string>
+    <string name="tab_descubrir">Entdecken</string>
+    <string name="titulo_crear_grupo">Wählen Sie Teilnehmern</string>
+    <string name="tu_direccion">Deine Adresse:</string>
+    <string name="bienvenida_app">Wilkommen zu BlueChat</string>
+    <string name="info_ayuda">Über und Hilfe</string>
+    <string name="error_apodo_primera_vez">Der Benutzername ist obligatorisch</string>
+</resources>
