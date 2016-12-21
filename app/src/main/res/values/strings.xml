@@ -37,11 +37,10 @@
     <string name="nombre_a_mostrar">Name to show</string>
     <string name="search_image">IMAGE</string>
     <string name="select_image">Choose avatar (Optional)</string>
-    <string name="tu_direccion">Your address:</string>
     <string name="titulo_crear_grupo">Select participants</string>
     <string name="permisos_denegados">Location is mandatory in order to discover near devices</string>
     <string name="permisos_imagen_denegados">Media files access is mandatory for order App operation</string>
-    <string name="mac_personal">Your address:</string>
+    <string name="mac_personal">Your address: %s</string>
     <string name="introduce_apodo">Write your nickname</string>
     <string name="info_bluetooth_visible">Device must be visible in order to connect to other devices</string>
     <string name="info_desc">BlueChat is an instant messaging application via Bluetooth. You will be able to talk to other near people that also have Bluechat installed on their Android devices.</string>
