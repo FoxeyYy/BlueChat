@@ -37,11 +37,6 @@ public class ServidorBluetooth extends Service implements Runnable {
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     /**
-     * Mensaje predefinido de saludo que envía el servidor una vez se conecta un cliente
-     */
-    private final String MENSAJESERVIDOR = "Saludos desde el servidor";
-
-    /**
      * Nombre de la aplicación para ofrecer
      */
     private final String NOMBRE = "BlueChat";
