@@ -123,6 +123,8 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     protected void enviar() {
         String texto = String.valueOf(campo_texto.getText());
         Mensaje mensaje;
+        if(texto.isEmpty() && uriImagen ==null)
+            return;
 
         if (null == uriImagen) {
             mensaje = new Mensaje(texto);
