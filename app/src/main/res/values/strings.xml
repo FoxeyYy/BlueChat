@@ -4,7 +4,7 @@
     <string name="tab_descubrir">Descubrir</string>
     <string name="tab_chats">Chats</string>
     <string name="mac_personal">Tu dirección: %s</string>
-    <string name="acerca_de">Cluster #1 \n
+    <string name="acerca_de" translatable="false">Cluster #1 \n
         %1$s\n\n
         Version %2$s
     </string>
