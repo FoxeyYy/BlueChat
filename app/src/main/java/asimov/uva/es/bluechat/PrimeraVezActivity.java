@@ -56,7 +56,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.boton_siguiente:
                 if(apodoVacio()){
-                    Toast.makeText(this, "El campo de apodo es obligatorio", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.error_apodo_primera_vez, Toast.LENGTH_LONG).show();
                 }else {
                     comprobarPermisos();
                     guardarPreferencias();
