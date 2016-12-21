@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cluster01</string>
+    <string name="app_name" translatable="false">Cluster01</string>
     <string name="action_settings">Ajustes</string>
     <string name="tab_descubrir">Descubrir</string>
     <string name="tab_chats">Chats</string>
@@ -8,7 +8,7 @@
         %1$s\n\n
         Version %2$s
     </string>
-    <string name="autores">
+    <string name="autores" translatable="false">
         Silvia Arias Herguedas\n
         Héctor Del Campo Pando\n
         Alberto Gutiérrez Pérez\n
@@ -51,4 +51,5 @@
     <string name="funcionamiento_chats">Chats muestra el historial de las conversaciones que vayas teniendo y los grupos a los que pertenezcas.</string>
     <string name="funcionamiento_refrescar">Si quieres buscar nuevos contactos utiliza el botón de refrescar situado arriba a la derecha, aunque también podras deslizar hacia abajo en descubrir para buscar nuevos contactos.</string>
     <string name="funcionamiento_ajustes">En Ajustes podrás cambiar tu nombre y tu foto de perfil.</string>
+    <string name="error_apodo_primera_vez">El campo de nombre de usuario es obligatorio</string>
 </resources>
