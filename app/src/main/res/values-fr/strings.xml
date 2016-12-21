@@ -2,7 +2,7 @@
 <resources>
     <string name="action_actualizar">Ajouter à un contact</string>
     <string name="action_settings">Paramètres</string>
-    <string name="agradecimiento">Merci de faire confiance à Bluechat.\n C'est l'application parfaite pour parler avec des autres personnes prochènnes</string>
+    <string name="agradecimiento">Merci de faire confiance à Bluechat.\n C\"\'\"est l\"\'\"application parfaite pour parler avec des autres personnes prochènnes</string>
     <string name="action_ajustes">Aide</string>
     <string name="action_anadir">Créer un contact</string>
     <string name="action_refrescar">Rafraîchir</string>

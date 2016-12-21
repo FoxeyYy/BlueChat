@@ -130,11 +130,14 @@ public class TabChats extends Fragment implements View.OnClickListener {
      * @param chat a mostrar
      */
     private void mostrarImagen(View vista, Chat chat){
+        ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);
         if (chat.esGrupo()) {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            imagen.setImageBitmap(image);
             return;
         }
 
-        ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);
+
         String avatarContacto = chat.getPar().getImagen();
         if(avatarContacto !=null && !avatarContacto.isEmpty())
             imagen.setImageURI(Uri.parse(chat.getPar().getImagen()));
