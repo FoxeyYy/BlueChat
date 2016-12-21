@@ -48,4 +48,5 @@
     <string name="info_bluetooth_desactivado">When bluetooth is disabled you can only see chat\'s historial. If you want to send or recieve you must enable bluetooth</string>
     <string name="funcionamiento_refrescar">If you want to discover near people use the refresh button at top-right, you can also swype down discover tab in order to discover new people.</string>
     <string name="funcionamiento_descubrir">Discover allows you to see near people, with public and enabled bluetooth, with whom to talk.</string>
+    <string name="error_apodo_primera_vez">Nickname field is required</string>
 </resources>
