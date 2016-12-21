@@ -3,7 +3,9 @@
     <string name="action_anadir">Crear contacto</string>
     <string name="action_ajustes">Ayuda</string>
     <string name="action_actualizar">Añadir a contacto existente</string>
-    <string name="acerca_de">"Cluster #1           %1$s           Version %2$s "</string>
+    <string name="acerca_de">Cluster #1 \n
+        %1$s\n\n
+        Version %2$s</string>
     <string name="action_refrescar">Refrescar</string>
     <string name="action_settings">Ajustes</string>
     <string name="crear_grupo">Crear grupo</string>
@@ -34,6 +36,9 @@
     <string name="info_bluetooth_desactivado">Con Bluetooth desactivado solamente podrá ver mensajes previos. Si desea enviar o recibir es necesario que lo active</string>
     <string name="funcionamiento_refrescar">Si quieres buscar nuevos contactos utiliza el botón de refrescar situado arriba a la derecha, aunque también podras deslizar hacia abajo en descubrir para buscar nuevos contactos.</string>
     <string name="funcionamiento_descubrir">Descubrir permite ver las personas cercanas, que tengan el Bluetooth activado y público, con los que poder hablar.</string>
-    <string name="agradecimiento">Gracias por confiar en BlueChat.                                     Es la aplicacion perfecta para hablar con personas que se encuentren cerca de ti, sean conocidas o no.</string>
-    <string name="info_aplicacion">Para el correcto funcionamiento es necesario que la aplicacion tenga diferentes permisos                                     entre los que se encuentran:                                     Acceso a ficheros multimedia, necesarios para poder establecer una imagen de perfil asi como enviar y recibir imágenes.                                     Acceso a contactos, lo cual le permite guardar contactos en su telefono asi como mostrar los nombres de sus contactos en vez de los descubiertos por el bluetooth.                                     Acceso a localización: necesario para un correcto descubrimiento de los dispositivos bluetooth cercanos.</string>
+    <string name="agradecimiento">Gracias por confiar en BlueChat.\nEs la aplicacion perfecta para hablar con personas que se encuentren cerca de ti, sean conocidas o no.</string>
+    <string name="info_aplicacion">Para el correcto funcionamiento es necesario que la aplicacion tenga diferentes permisos entre los que se encuentran:\n
+        -Acceso a ficheros multimedia, necesarios para poder establecer una imagen de perfil asi como enviar y recibir imágenes.\n
+        -Acceso a contactos, lo cual le permite guardar contactos en su telefono asi como mostrar los nombres de sus contactos en vez de los descubiertos por el bluetooth.\n
+        -Acceso a localización: necesario para un correcto descubrimiento de los dispositivos bluetooth cercanos.</string>
 </resources>

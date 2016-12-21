@@ -12,9 +12,11 @@
         Alberto Gutiérrez Pérez\n
         David Robles Gallardo
     </string>
-    <string name="info_aplicacion">In order for this App to work properly you must grant permissions for:\n                                    Media files access, mandatory to establish an avatar and to send and recieve images.\n                                    Contacts access, mandatory so we can show your linked agenda names.\n                                    Location access, mandatory for a proper discover of near bluetooth devices.</string>
-    <string name="agradecimiento">Thanks for trusting Bluechat.\n                                    It\'s the perfect App to talk with other near people, already known or not.</string>
-
+    <string name="info_aplicacion">In order for this App to work properly you must grant permissions for:\n
+        -Media files access, mandatory to establish an avatar and to send and recieve images.\n
+        -Contacts access, mandatory so we can show your linked agenda names.\n
+        -Location access, mandatory for a proper discover of near bluetooth devices.</string>
+    <string name="agradecimiento">Thanks for trusting Bluechat.\nIt\'s the perfect App to talk with other near people, already known or not.</string>
     <string name="funciona_ayuda">How does it work?</string>
     <string name="action_actualizar">Add to contact</string>
     <string name="action_ajustes">Help</string>
@@ -28,7 +30,7 @@
     <string name="error_nombre_grupo_vacio">A name must be given</string>
     <string name="escribe_aqui">Write here</string>
     <string name="funcionamiento_ajustes">At settings you will be able to change your name and avatar</string>
-    <string name="funcionamiento_chats"></string>
+    <string name="funcionamiento_chats">Chats shows the conversations historial and the groups you are in.</string>
     <string name="hint_nombre_grupo">Group\'s name</string>
     <string name="info_ayuda">Information and help</string>
     <string name="next">NEXT</string>
