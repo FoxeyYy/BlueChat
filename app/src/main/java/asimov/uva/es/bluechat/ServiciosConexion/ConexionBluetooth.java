@@ -85,7 +85,7 @@ public class ConexionBluetooth extends Thread {
 
     private final String IMAGEN = "Imagen";
 
-    private Context contexto;
+    private final Context contexto;
 
     //TODO enviar idgrupo de forma correcta
     private String idGrupo;
@@ -567,7 +567,7 @@ public class ConexionBluetooth extends Thread {
      * Muestra una notificación con el mensaje recibido como parámetro
      * @param mensaje El mensaje a mostrar en la notificación
      */
-    public void notificar(String mensaje){
+    private void notificar(String mensaje){
         //Intent intent = new Intent(this, NotificationCompat.class);
         Intent intent = new Intent(contexto, ActivityPrincipal.class);
         intent.setAction(ActivityPrincipal.CHATS);
@@ -595,7 +595,7 @@ public class ConexionBluetooth extends Thread {
      * Muestra una notificación con el mensaje recibido como parámetro
      * @param mensaje El mensaje a mostrar en la notificación
      */
-    public void notificar(String mensaje, Bitmap imagen){
+    private void notificar(String mensaje, Bitmap imagen){
         Intent intent = new Intent(contexto, NotificationCompat.class);
         intent.setAction(ActivityPrincipal.CHATS);
         PendingIntent pIntent = PendingIntent.getActivity(contexto, (int) System.currentTimeMillis(), intent, 0);

@@ -174,7 +174,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     /**
      * Construye los mensajes a enviar y solicita que se muestren en pantalla
      */
-    protected void enviar() {
+    void enviar() {
         String texto = String.valueOf(campo_texto.getText());
         Mensaje mensaje;
         if(texto.isEmpty() && uriImagen ==null)

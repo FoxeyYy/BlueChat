@@ -367,6 +367,7 @@ public class Chat implements Parcelable{
      * Comprueba si el chat esta almacenado de forma persistente
      * @return true si es persistente, false en otro caso
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean esPersistente () {
         return esPersistente;
     }

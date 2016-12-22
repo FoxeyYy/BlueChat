@@ -86,7 +86,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
             conectar();
             try {
-                hilo.sleep(2000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
