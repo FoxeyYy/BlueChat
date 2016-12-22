@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.Dominio;
+package asimov.uva.es.bluechat.dominio;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,8 +8,8 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.Date;
 
-import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
-import asimov.uva.es.bluechat.Persistencia.DBOperations;
+import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
+import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
  * Mensaje enviado por la App,

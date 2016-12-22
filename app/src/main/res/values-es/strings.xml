@@ -3,9 +3,6 @@
     <string name="action_anadir">Crear contacto</string>
     <string name="action_ajustes">Ayuda</string>
     <string name="action_actualizar">Añadir a contacto existente</string>
-    <string name="acerca_de">Cluster #1 \n
-        %1$s\n\n
-        Version %2$s</string>
     <string name="action_refrescar">Refrescar</string>
     <string name="action_settings">Ajustes</string>
     <string name="crear_grupo">Crear grupo</string>

@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.Manifest;
 import android.app.Notification;
@@ -28,8 +28,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import asimov.uva.es.bluechat.R;
-import asimov.uva.es.bluechat.ServiciosConexion.EnvioMensajesPendientes;
-import asimov.uva.es.bluechat.ServiciosConexion.ServidorBluetooth;
+import asimov.uva.es.bluechat.serviciosConexion.EnvioMensajesPendientes;
+import asimov.uva.es.bluechat.serviciosConexion.ServidorBluetooth;
 import io.fabric.sdk.android.Fabric;
 
 import static asimov.uva.es.bluechat.R.id.container;

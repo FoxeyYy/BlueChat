@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ServiciosConexion;
+package asimov.uva.es.bluechat.serviciosConexion;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -12,10 +12,10 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 
 
 /**

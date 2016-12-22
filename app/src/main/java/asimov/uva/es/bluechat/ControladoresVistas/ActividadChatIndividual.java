@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 import asimov.uva.es.bluechat.R;
 
 /**

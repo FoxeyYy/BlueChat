@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -25,11 +25,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
 import asimov.uva.es.bluechat.R;
-import asimov.uva.es.bluechat.ServiciosConexion.EnvioMensajesPendientes;
-import asimov.uva.es.bluechat.ServiciosConexion.ServidorBluetooth;
+import asimov.uva.es.bluechat.serviciosConexion.EnvioMensajesPendientes;
+import asimov.uva.es.bluechat.serviciosConexion.ServidorBluetooth;
 
 /**
  * Tab que muestra los dispositivos encontrados
@@ -155,7 +155,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         if (!restaurando) {
             dispositivos.add(dispositivo);
         }
-        View tarjeta = inflater.inflate(R.layout.tarjeta_contacto,null);
+        View tarjeta = inflater.inflate(R.layout.tarjeta_contacto,lista, false);
 
         TextView nombre = (TextView) tarjeta.findViewById(R.id.nombre_contacto);
         nombre.setText(dispositivo.getNombre());

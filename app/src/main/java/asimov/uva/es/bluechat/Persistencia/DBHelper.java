@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.Persistencia;
+package asimov.uva.es.bluechat.persistencia;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

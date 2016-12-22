@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

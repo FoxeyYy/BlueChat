@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.Dominio;
+package asimov.uva.es.bluechat.dominio;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,10 +18,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.ControladoresVistas.ActivityAjustes;
-import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
-import asimov.uva.es.bluechat.Persistencia.DBContract;
-import asimov.uva.es.bluechat.Persistencia.DBOperations;
+import asimov.uva.es.bluechat.controladoresVistas.ActivityAjustes;
+import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
+import asimov.uva.es.bluechat.persistencia.DBContract;
+import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
  * Representa un contacto de la App,

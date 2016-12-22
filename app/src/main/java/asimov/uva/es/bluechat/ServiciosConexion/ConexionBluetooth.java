@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ServiciosConexion;
+package asimov.uva.es.bluechat.serviciosConexion;
 
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -24,12 +24,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
-import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.Peticion;
-import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.RespuestaPeticion;
+import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
+import asimov.uva.es.bluechat.dominio.Mensaje;
+import asimov.uva.es.bluechat.dominio.PaquetesBluetooth.Peticion;
+import asimov.uva.es.bluechat.dominio.PaquetesBluetooth.RespuestaPeticion;
 
 /**
  * Hilo encargado de la transmisión de los mensajes una vez se ha establecido la conexión

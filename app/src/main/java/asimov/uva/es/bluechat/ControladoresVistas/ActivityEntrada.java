@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

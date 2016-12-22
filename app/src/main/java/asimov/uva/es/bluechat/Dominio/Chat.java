@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.Dominio;
+package asimov.uva.es.bluechat.dominio;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,9 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import asimov.uva.es.bluechat.Persistencia.DBContract;
-import asimov.uva.es.bluechat.Persistencia.DBOperations;
+import asimov.uva.es.bluechat.persistencia.DBContract;
+import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
  * Clase representativa de un chat
@@ -69,7 +70,7 @@ public class Chat implements Parcelable{
             Contacto emisor = Contacto.getSelf();
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy");
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy", Locale.getDefault());
             Mensaje mensaje;
             try{
                 Date date = formatoFecha.parse(fecha);
@@ -264,7 +265,7 @@ public class Chat implements Parcelable{
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy");
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy", Locale.getDefault());
             Mensaje mensaje;
             try{
                 Date date = formatoFecha.parse(fecha);

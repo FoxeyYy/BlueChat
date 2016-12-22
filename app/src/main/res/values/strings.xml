@@ -2,7 +2,7 @@
     <string name="app_name" translatable="false">Cluster01</string>
     <string name="tab_descubrir">Discover</string>
     <string name="tab_chats">Chats</string>
-    <string name="acerca_de" translatable="false">Cluster #1 \n
+    <string name="acerca_de" translatable="false" >Cluster #1 \n
         %1$s\n\n
         Version %2$s
     </string>

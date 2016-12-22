@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.Manifest;
 import android.app.Activity;
@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 import asimov.uva.es.bluechat.R;
 
 /**
@@ -233,9 +233,9 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
         View tarjetaMensaje;
 
         if (null == mensaje.getImagen()) {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_recibir, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_recibir, lista_mensajes, false);
         } else {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_recibir, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_recibir, lista_mensajes, false);
             ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
             imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }
@@ -251,9 +251,9 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     void mostrarMensajeEnviado(Mensaje mensaje) {
         View tarjetaMensaje;
         if (null == mensaje.getImagen()) {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.msg_enviar, lista_mensajes,false);
         } else {
-            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_enviar, null);
+            tarjetaMensaje = getLayoutInflater().inflate(R.layout.mensaje_imagen_enviar, lista_mensajes, false);
             ImageView imageView = (ImageView) tarjetaMensaje.findViewById(R.id.imagen);
             imageView.setImageURI(Uri.parse(mensaje.getImagen()));
         }

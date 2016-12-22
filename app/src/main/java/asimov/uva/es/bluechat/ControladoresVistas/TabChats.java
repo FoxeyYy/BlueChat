@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.ControladoresVistas;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 import asimov.uva.es.bluechat.R;
 
 /**
@@ -50,7 +50,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
             }
 
             if (null == tarjeta) {
-                tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, null);
+                tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, lista, false);
                 mostrarNombreChat(tarjeta, chat);
                 mostrarImagen(tarjeta, chat);
                 tarjeta.setOnClickListener(TabChats.this);
@@ -93,7 +93,7 @@ public class TabChats extends Fragment implements View.OnClickListener {
     private void actualizar(){
         lista.removeAllViews();
         for(int i = 0; i < chats.size(); i++) {
-            View tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, null);
+            View tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, lista, false);
             Chat chat = chats.get(i);
 
             mostrarNombreChat(tarjeta, chat);
