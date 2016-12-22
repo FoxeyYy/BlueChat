@@ -2,6 +2,7 @@ package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -14,8 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.dominio.Contacto;
 import asimov.uva.es.bluechat.R;
+import asimov.uva.es.bluechat.dominio.Contacto;
 
 public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,7 +48,7 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
         Contacto[] fuente = new Contacto[contactos.size()];
         fuente = contactos.toArray(fuente);
 
-        ArrayAdapter<Contacto> adaptador = new ArrayAdapter(this,
+        ArrayAdapter<Contacto> adaptador = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice,
                 fuente);
 
@@ -86,7 +87,7 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
             toast.show();
         } else {
             Intent chat = new Intent(this, ActivityChatGrupal.class);
-            chat.putParcelableArrayListExtra(ActivityChatGrupal.CONTACTOS, (ArrayList) seleccionados);
+            chat.putParcelableArrayListExtra(ActivityChatGrupal.CONTACTOS, (ArrayList<? extends Parcelable>) seleccionados);
             chat.putExtra(ActivityChatGrupal.NOMBRE_GRUPO, nombreGrupo);
             startActivity(chat);
         }

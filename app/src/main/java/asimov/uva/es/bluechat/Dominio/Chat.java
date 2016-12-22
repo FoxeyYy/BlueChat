@@ -61,7 +61,7 @@ public class Chat implements Parcelable{
      */
     private List<Mensaje> getMensajesPendientes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajesPendientes(idChat);
-        List<Mensaje> mensajes = new ArrayList();
+        List<Mensaje> mensajes = new ArrayList<>();
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
@@ -92,7 +92,7 @@ public class Chat implements Parcelable{
      * @param contacto El contacto con el cual se establece el chat
      */
     public Chat(Contacto contacto) {
-        participantes = new ArrayList(1);
+        participantes = new ArrayList<>(1);
         participantes.add(contacto);
         nombre = contacto.getNombre();
         esPersistente = false;
@@ -106,7 +106,7 @@ public class Chat implements Parcelable{
      */
     public Chat(String nombre, List<Contacto> participantes) {
         this.nombre = nombre;
-        this.participantes = new ArrayList(participantes);
+        this.participantes = new ArrayList<>(participantes);
         esPersistente = false;
         esGrupo = true;
     }
@@ -129,6 +129,7 @@ public class Chat implements Parcelable{
      * @param in El objeto parcelable
      */
     private Chat(Parcel in) {
+        //noinspection unchecked
         participantes = in.readArrayList(Contacto.class.getClassLoader());
         nombre = in.readString();
         idChat = in.readString();
@@ -161,7 +162,7 @@ public class Chat implements Parcelable{
     private Chat(String id, String nombre, Contacto contacto) {
         this.idChat = id;
         this.nombre = nombre;
-        participantes = new ArrayList(1);
+        participantes = new ArrayList<>(1);
         participantes.add(contacto);
         esPersistente = true;
         esGrupo = false;
@@ -173,7 +174,7 @@ public class Chat implements Parcelable{
      */
     public static List<Chat> getChats(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getAllChats();
-        List<Chat> chats = new ArrayList();
+        List<Chat> chats = new ArrayList<>();
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
@@ -256,7 +257,7 @@ public class Chat implements Parcelable{
      */
     private List<Mensaje> getMensajes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajes(this);
-        List<Mensaje> mensajes = new ArrayList();
+        List<Mensaje> mensajes = new ArrayList<>();
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));

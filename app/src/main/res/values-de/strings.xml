@@ -22,7 +22,6 @@
 							Der Zugang zu Multimedia-Dateien um die Profilfoto zu etablieren und Fotos senden und erhalten.\n
 							Der Zugang zu Kontakte, um Kontakte zu speichern und um die Kontakt Name zu zeigen.\n
                             Der Zugang zu Lokalisierung, um neuen Geräte mit Bluetooth zu suchen.</string>
-    <string name="info_bluetooth_desactivado">Mit Bluetooth deaktiviert,können Sie nur vorherigen Nachrichten sehen. Wenn Sie senden oder erhalten wollen, muss es aktiviert</string>
     <string name="info_bluetooth_visible">Die Gerät muss sichtbar ist, um die Bluetooth Verbindung zu machen</string>
     <string name="info_desc">BlueChat ist eine App vom Nachrichten bei Bluetooth. Sie können  mit Personen in der Nähe sprechen.</string>
     <string name="introduce_apodo">Schreiben Sie Ihren Nick</string>
@@ -35,7 +34,6 @@
     <string name="select_image">Wählen Sie Profilfoto (optional)</string>
     <string name="tab_descubrir">Entdecken</string>
     <string name="titulo_crear_grupo">Wählen Sie Teilnehmern</string>
-    <string name="tu_direccion">Deine Adresse:</string>
     <string name="bienvenida_app">Wilkommen zu BlueChat</string>
     <string name="info_ayuda">Über und Hilfe</string>
     <string name="error_apodo_primera_vez">Der Benutzername ist obligatorisch</string>

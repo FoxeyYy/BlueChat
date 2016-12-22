@@ -12,13 +12,12 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/scroll_descubrir">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/lista_descubrir"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical" />
         </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>

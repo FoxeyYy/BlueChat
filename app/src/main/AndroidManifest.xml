@@ -53,19 +53,22 @@
 
         <activity
             android:name=".controladoresVistas.ActivityAjustes"
-            android:parentActivityName=".controladoresVistas.ActivityPrincipal" />
+            android:parentActivityName=".controladoresVistas.ActivityPrincipal"
+            tools:ignore="UnusedAttribute" />
 
         <activity
             android:name=".controladoresVistas.ActividadChatIndividual"
             android:parentActivityName=".controladoresVistas.ActivityPrincipal"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="UnusedAttribute" />
 
         <activity
             android:name=".controladoresVistas.ActivityChatGrupal"
             android:parentActivityName=".controladoresVistas.ActivityPrincipal"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="UnusedAttribute" />
 
         <activity
             android:name=".controladoresVistas.ActivityCrearGrupo"
@@ -74,7 +77,8 @@
 
         <activity
             android:name=".controladoresVistas.ActivityAyuda"
-            android:parentActivityName=".controladoresVistas.ActivityPrincipal"/>
+            android:parentActivityName=".controladoresVistas.ActivityPrincipal"
+            tools:ignore="UnusedAttribute" />
 
         <activity android:name=".controladoresVistas.ActividadChatBase"/>
 

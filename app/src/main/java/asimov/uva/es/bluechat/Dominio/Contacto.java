@@ -69,7 +69,7 @@ public class Contacto implements Parcelable, Serializable{
      * @return contactos La lista de contactos conocidos
      */
     public static List<Contacto> getContactos (Context contexto) {
-        List<Contacto> contactos = new ArrayList();
+        List<Contacto> contactos = new ArrayList<>();
 
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getAllContacts();
 
@@ -147,7 +147,7 @@ public class Contacto implements Parcelable, Serializable{
      * @return participantes La lista de participantes
      */
     public static List<Contacto> getParticipantesGrupo(Context contexto, String idGrupo) {
-        List<Contacto> participantes = new ArrayList();
+        List<Contacto> participantes = new ArrayList<>();
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesGrupo(idGrupo);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -166,7 +166,7 @@ public class Contacto implements Parcelable, Serializable{
      * @return participantes La lista de participantes
      */
     public static List<Contacto> getParticipantesConMensajesPendientes(Context contexto, String idGrupo){
-        List<Contacto> participantes = new ArrayList();
+        List<Contacto> participantes = new ArrayList<>();
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesConMensajesPendientes(idGrupo);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
