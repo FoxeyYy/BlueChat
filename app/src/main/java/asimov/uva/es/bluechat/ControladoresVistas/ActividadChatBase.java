@@ -45,6 +45,7 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     /**
      * Resultado de la solicitud del permiso de localización
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private final int PERMISO_ACCESO_DATOS = 1;
 
     /**

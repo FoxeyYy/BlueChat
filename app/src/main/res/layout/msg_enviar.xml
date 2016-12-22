@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"
-        android:layout_gravity="fill_vertical|right"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="fill_vertical|end"
         android:background="@drawable/msg_enviar"
         android:padding="16dp" />
 

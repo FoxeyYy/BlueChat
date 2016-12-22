@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -36,15 +35,10 @@ public class ServidorBluetooth extends Service implements Runnable {
      */
     public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
-    private final String CONEXION = "CONEXION";
-    private final String ERROR = "ERROR";
-
     /**
      * Inicializa el servidor, creando un socketServidor en modo escucha pasiva
      */
     public ServidorBluetooth() {
-
-        Log.d(CONEXION,"Creado Servidor");
 
         BluetoothServerSocket tmp = null;
 
@@ -57,7 +51,7 @@ public class ServidorBluetooth extends Service implements Runnable {
             String NOMBRE = "BlueChat";
             tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
         } catch (IOException e) {
-            Log.d(CONEXION, "Error creando el socket que va a escuchar");
+            e.printStackTrace();
         }
         socketServidor = tmp;
 
@@ -74,16 +68,13 @@ public class ServidorBluetooth extends Service implements Runnable {
         //Escuchamos esperando conexiones
         //Llamada bloqueante
         while (true) {
-            Log.d(CONEXION, "Servicio en ejecucion");
-
             try {
                 socket = socketServidor.accept();
-                Log.d(CONEXION,"Servidor Run " + socket.toString());
             } catch (IOException e) {
+                e.printStackTrace();
                 break;
             }
             //ConexionBluetooth aceptada
-            Log.d(CONEXION, "Aceptada la conexion bluetooth nueva en el servidor");
 
             //Manejo de la conexion Bluetooth en otro hilo diferente
             ConexionBluetooth conexionBluetooth = new ConexionBluetooth(getBaseContext(), socket, ConexionBluetooth.Modo.SERVIDOR);
@@ -100,7 +91,7 @@ public class ServidorBluetooth extends Service implements Runnable {
         try {
             socketServidor.close();
         } catch (IOException e) {
-            Log.d(ERROR,"El serverSocket se ha cerrado de manera erronea");
+            e.printStackTrace();
         }
     }
 
