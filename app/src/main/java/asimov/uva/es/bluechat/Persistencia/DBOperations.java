@@ -35,11 +35,11 @@ public class DBOperations {
             DBContract.Chat.TABLE_NAME, DBContract.Chat.COLUMN_NAME_ID_CHAT, DBContract.Chat.COLUMN_NAME_ID_CHAT, DBContract.Mensaje.TABLE_NAME, DBContract.MensajePendiente.TABLE_NAME, DBContract.Mensaje.COLUMN_NAME_ID, DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE, DBContract.Chat.COLUMN_NAME_ID_CHAT);
     private static final String SQL_READ_PENDING_GROUPS = String.format("SELECT * FROM %s WHERE %s IN (SELECT %s FROM %s m, %s mp WHERE m.%s = mp.%s) GROUP BY %s",
             DBContract.ChatGrupal.TABLE_NAME, DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT, DBContract.Mensaje.COLUMN_NAME_ID_CHAT, DBContract.Mensaje.TABLE_NAME, DBContract.MensajePendiente.TABLE_NAME, DBContract.Mensaje.COLUMN_NAME_ID, DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE, DBContract.ChatGrupal.COLUMN_NAME_ID_CHAT);
-    private static final String SQL_READ_PENDING_MESSAGES_CHAT = String.format("SELECT * FROM MensajePendiente JOIN Mensaje USING(idMensaje) WHERE idChat = ? GROUP BY idMensaje ",
+    private static final String SQL_READ_PENDING_MESSAGES_CHAT = String.format("SELECT * FROM %s JOIN %s USING(%s) WHERE %s = ? GROUP BY %s ",
             DBContract.MensajePendiente.TABLE_NAME, DBContract.Mensaje.TABLE_NAME,DBContract.MensajePendiente.COLUMN_NAME_ID_MENSAJE, DBContract.Mensaje.COLUMN_NAME_ID_CHAT, DBContract.Mensaje.COLUMN_NAME_ID);
     private static final String SQL_GET_NUM_CHATS = String.format("SELECT COUNT(*) FROM %s", DBContract.Chat.TABLE_NAME);
     private static final String SQL_GET_NUM_GRUPOS = String.format("SELECT COUNT(*) FROM %s", DBContract.ChatGrupal.TABLE_NAME);
-    private static final String SQL_GET_NUM_MSG = String.format("SELECT COUNT(*) FROM Mensaje", DBContract.Mensaje.TABLE_NAME);
+    private static final String SQL_GET_NUM_MSG = String.format("SELECT COUNT(*) FROM %s", DBContract.Mensaje.TABLE_NAME);
     private static final String SQL_READ_GROUP_CHAT = String.format("SELECT * FROM %s JOIN %s USING(%s) WHERE %s =? GROUP BY %S",
             DBContract.ChatGrupal.TABLE_NAME,
             DBContract.ParticipantesGrupo.TABLE_NAME,

@@ -19,8 +19,8 @@
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="16dp"
-        android:singleLine="true"
-        android:hint="@string/hint_nombre_grupo" />
+        android:hint="@string/hint_nombre_grupo"
+        android:maxLines="1" />
 
     <ListView
         android:layout_width="0dp"

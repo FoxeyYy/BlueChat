@@ -104,7 +104,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
         if(uriImagen != null)
             editor.putString(AVATAR, uriImagen.toString());
 
-        editor.commit();
+        editor.apply();
 
     }
 

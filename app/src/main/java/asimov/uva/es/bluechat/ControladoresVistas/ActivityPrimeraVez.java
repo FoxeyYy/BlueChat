@@ -98,7 +98,7 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
 
         editor.putString(ActivityAjustes.NOMBRE, nombre);
         editor.putString(ActivityAjustes.AVATAR, avatar);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -171,7 +171,7 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         SharedPreferences preferencias = getSharedPreferences(ActivityAjustes.PREFERENCIAS, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
         editor.putBoolean(ActivityEntrada.AJUSTE_PRIMERA_VEZ, false);
-        editor.commit();
+        editor.apply();
     }
 
     /**
