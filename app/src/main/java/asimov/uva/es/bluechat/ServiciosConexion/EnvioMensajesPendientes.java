@@ -19,7 +19,7 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
 
 
 /**
- * Servicio encargado de eniviar los mensajes pendientes
+ * Servicio encargado de enviar los mensajes pendientes
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -28,12 +28,18 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
 public class EnvioMensajesPendientes extends Service implements Runnable {
 
     /**
-     * Subproceso de ejecucion
+     * Subproceso de ejecución
      */
     private Thread hilo;
 
+    /**
+     * Indica si esta en ejecución
+     */
     private boolean enEjecucion;
 
+    /**
+     * Adaptador Bluetooth para realizar las tareas
+     */
     private BluetoothAdapter adaptadorBluetooth;
 
     private final String SERVICIO = "SERVICIO";
@@ -89,6 +95,9 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
     }
 
+    /**
+     * Conecta un dispositivo con otro
+     */
     private void conectar() {
 
         List<Chat> chats = Chat.getChatsPendientes(ActivityPrincipal.getActivityPrincipal());
@@ -110,6 +119,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
         }
     }
 
+    /**
+     * Establece la conexión de Bluetooth de un dispositivo con un chat
+     * @param device El dispositivo
+     * @param chat El chat
+     */
     private void conexion(BluetoothDevice device, Chat chat){
         BluetoothSocket socket;
         List<Mensaje> mensajes = chat.getHistorial();

@@ -135,6 +135,10 @@ public class ActivityPrincipal extends AppCompatActivity{
 
     }
 
+    /**
+     * Devuelve la actividad principal
+     * @return actividadPrincipal La actividad principal
+     */
     public static ActivityPrincipal getActivityPrincipal(){
         return activityPrincipal;
     }
@@ -341,19 +345,18 @@ public class ActivityPrincipal extends AppCompatActivity{
     }
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
+     * Un {@link FragmentPagerAdapter} que devuelve el fragment correspondiente a una de las tabs
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         /**
-         * Numero de tabs a mostrar
+         * Número de tabs a mostrar
          */
         private static final int NUM_TABS = 2;
 
         /**
          * Crea un nuevo {@link SectionsPagerAdapter}
-         * @param fm el fragment manager
+         * @param fm El fragment manager
          */
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

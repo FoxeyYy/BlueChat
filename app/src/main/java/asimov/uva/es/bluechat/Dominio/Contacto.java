@@ -24,7 +24,7 @@ import asimov.uva.es.bluechat.Persistencia.DBContract;
 import asimov.uva.es.bluechat.Persistencia.DBOperations;
 
 /**
- * Contacto de la App,
+ * Representa un contacto de la App,
  * contiene datos identificativos para una persona
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
@@ -53,6 +53,10 @@ public class Contacto implements Parcelable, Serializable{
      */
     private boolean esPersistente;
 
+    /**
+     * Devuelve el propio contacto
+     * @return contacto propio
+     */
     public static Contacto getSelf() {
         String nombre = ActivityPrincipal.getActivityPrincipal().getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.NOMBRE, "");
         String avatar = ActivityPrincipal.getActivityPrincipal().getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.AVATAR, "");
@@ -62,8 +66,8 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Devuelve una lista con todos los contactos conocidos
-     * @param contexto de acceso a persistencia
-     * @return la lista de contactos conocidos
+     * @param contexto El contexto de acceso a persistencia
+     * @return contactos La lista de contactos conocidos
      */
     public static List<Contacto> getContactos (Context contexto) {
         List<Contacto> contactos = new ArrayList();
@@ -83,9 +87,9 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Encuentra un contacto
-     * @param context
-     * @param device a encontrar
-     * @return el contacto o null si no existe
+     * @param context El contexto de acceso a persistencia
+     * @param device El dispositivo a encontrar
+     * @return contacto El contacto o null si no existe
      */
     public static Contacto getContacto(Context context, BluetoothDevice device) {
         Contacto contacto = getContacto(context, device.getAddress());
@@ -100,9 +104,9 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Encuentra un contacto
-     * @param context
-     * @param mac a encontrar
-     * @return el contacto o null si no existe
+     * @param context El contexto de acceso a persistencia
+     * @param mac La MAC a encontrar
+     * @return contacto El contacto o null si no existe
      */
     public static Contacto getContacto(Context context, String mac) {
 
@@ -139,9 +143,9 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Encuentra los participantes de un grupo
-     * @param contexto de acceso a persistencia
-     * @param idGrupo a buscar
-     * @return la lista de participantes
+     * @param contexto El contexto de acceso a persistencia
+     * @param idGrupo El identificador de grupo a buscar
+     * @return participantes La lista de participantes
      */
     public static List<Contacto> getParticipantesGrupo(Context contexto, String idGrupo) {
         List<Contacto> participantes = new ArrayList();
@@ -156,6 +160,12 @@ public class Contacto implements Parcelable, Serializable{
         return participantes;
     }
 
+    /**
+     * Devuelve los participantes de un chat que tengan mensajes pendientes
+     * @param contexto El contexto de acceso a persistencia
+     * @param idGrupo El identificador de grupo
+     * @return participantes La lista de participantes
+     */
     public static List<Contacto> getParticipantesConMensajesPendientes(Context contexto, String idGrupo){
         List<Contacto> participantes = new ArrayList();
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesConMensajesPendientes(idGrupo);
@@ -197,7 +207,7 @@ public class Contacto implements Parcelable, Serializable{
     }
     /**
      * Devuelve el chat de un contacto
-     * @return el chat
+     * @return chat El chat si existe y si no, null
      */
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
@@ -211,7 +221,7 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Guarda el contacto
-     * @param context de la actividad
+     * @param context El contexto de la actividad
      */
     public void guardar(Context context)  {
         DBOperations.obtenerInstancia(context).insertContact(this);
@@ -221,8 +231,8 @@ public class Contacto implements Parcelable, Serializable{
     /**
      * Inicializa a los parámetros que se indican
      * @param direccionMac La MAC del usuario
-     * @param nombre Nombre del usuario
-     * @param imagen Imagen del usuario
+     * @param nombre El nombre del usuario
+     * @param imagen La imagen del usuario
      */
     private Contacto (String nombre, String direccionMac, String imagen, boolean persistente) {
         this.direccionMac = direccionMac;
@@ -233,7 +243,7 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Constructor parceable
-     * @param in datos del parceable
+     * @param in Los datos del parcelable
      */
     private Contacto(Parcel in) {
         nombre = in.readString();
@@ -243,7 +253,7 @@ public class Contacto implements Parcelable, Serializable{
     }
 
     /**
-     * Constructor parceable
+     * Constructor del objeto parcelable
      */
     public static final Creator<Contacto> CREATOR = new Creator<Contacto>() {
         @Override
@@ -281,20 +291,24 @@ public class Contacto implements Parcelable, Serializable{
         return imagen;
     }
 
+    /**
+     * Indica si es persistente
+     * @return true si es persistente, false en otro caso
+     */
     public boolean esPersistente() {
         return esPersistente;
     }
 
     /**
-     *
-     * @param imagen
+     * Establece un valor para la imagen
+     * @param imagen La imagen
      */
     public void setImagen(String imagen) {
         this.imagen = imagen;
     }
 
     /**
-     * Método que permite a las clases que hereden de ésta identificar sus contenidos parcelables
+     * Permite a las clases que hereden de ésta identificar sus contenidos parcelables
      * @return 0 El valor para la clase original
      */
     @Override
@@ -302,11 +316,7 @@ public class Contacto implements Parcelable, Serializable{
         return 0;
     }
 
-    /**
-     * Parcela los atributos del contacto, almacenándolos en la estructura destino
-     * @param dest La estructura destino de almacenamiento
-     * @param flags El número de flag necesario para efectuar la operación
-     */
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);

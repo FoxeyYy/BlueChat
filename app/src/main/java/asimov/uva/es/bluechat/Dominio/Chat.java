@@ -53,6 +53,11 @@ public class Chat implements Parcelable{
      */
     private boolean esGrupo;
 
+    /**
+     * Devuelve los mensajes pendientes
+     * @param context Contexto de la aplicación
+     * @return mensajes La lista de mensajes pendientes
+     */
     private List<Mensaje> getMensajesPendientes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajesPendientes(idChat);
         List<Mensaje> mensajes = new ArrayList();
@@ -95,8 +100,8 @@ public class Chat implements Parcelable{
 
     /**
      * Inicializa un chat grupal
-     * @param nombre del grupo
-     * @param participantes del grupo
+     * @param nombre El nombre del grupo
+     * @param participantes Los contactos participantes en el grupo
      */
     public Chat(String nombre, List<Contacto> participantes) {
         this.nombre = nombre;
@@ -107,9 +112,9 @@ public class Chat implements Parcelable{
 
     /**
      * Inicializa un chat grupal
-     * @param id del chat
-     * @param nombre del grupo
-     * @param participantes del grupo
+     * @param id El identificador del chat
+     * @param nombre El nombre del grupo
+     * @param participantes Los contactos participantes en el grupo
      */
     public Chat(String id, String nombre, List<Contacto> participantes) {
         this(nombre, participantes);
@@ -118,6 +123,10 @@ public class Chat implements Parcelable{
         idChat = id;
     }
 
+    /**
+     * Inicializa un chat a partir de un objeto parcelable
+     * @param in El objeto parcelable
+     */
     private Chat(Parcel in) {
         participantes = in.readArrayList(Contacto.class.getClassLoader());
         nombre = in.readString();
@@ -127,6 +136,9 @@ public class Chat implements Parcelable{
         esGrupo = in.readByte() != 0;
     }
 
+    /**
+     * El constructor del objeto parcelable
+     */
     public static final Creator<Chat> CREATOR = new Creator<Chat>() {
         @Override
         public Chat createFromParcel(Parcel in) {
@@ -140,10 +152,10 @@ public class Chat implements Parcelable{
     };
 
     /**
-     * Construye un chat
-     * @param id del chat
-     * @param nombre del chat
-     * @param contacto del chat
+     * Inicializa un chat
+     * @param id El identificador del chat
+     * @param nombre El nombre del chat
+     * @param contacto El contacto del chat
      */
     private Chat(String id, String nombre, Contacto contacto) {
         this.idChat = id;
@@ -156,6 +168,7 @@ public class Chat implements Parcelable{
 
     /**
      * Devuelve todos los chats disponibles
+     * @param context El contexto de la actividad
      */
     public static List<Chat> getChats(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getAllChats();
@@ -194,6 +207,11 @@ public class Chat implements Parcelable{
         return chats;
     }
 
+    /**
+     * Devuelve los chats pendientes
+     * @param context El contexto de la actividad
+     * @return chats Lista de los chats pendientes
+     */
     public static List<Chat> getChatsPendientes(Context context){
         Cursor cursor = DBOperations.obtenerInstancia(context).getChatsPendientes();
         List<Chat> chats = new ArrayList<>();
@@ -230,6 +248,11 @@ public class Chat implements Parcelable{
         return chats;
     }
 
+    /**
+     * Devuelve los mensajes
+     * @param context El contexto de la actividad
+     * @return mensajes La lista de mensajes
+     */
     private List<Mensaje> getMensajes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajes(this);
         List<Mensaje> mensajes = new ArrayList();
@@ -259,9 +282,9 @@ public class Chat implements Parcelable{
     }
 
     /**
-     * Comprueba si el grupo se encuentra guardado en la db
-     * @param context
-     * @param id del grupo
+     * Comprueba si el grupo se encuentra guardado en la base de datos
+     * @param context El contexto de la actividad
+     * @param id El identificador del grupo
      * @return true si el grupo existe, false en cualquier otro caso
      */
     public static boolean existeGrupo(Context context, String id){
@@ -269,6 +292,12 @@ public class Chat implements Parcelable{
         return cursor.getCount() != 0;
     }
 
+    /**
+     * Devuelve un chat en grupo
+     * @param context El contexto de la actividad
+     * @param id El identificador del chat
+     * @return chat El chat si existe
+     */
     public static Chat getChatGrupal(Context context, String id){
         List<Chat> chats = new ArrayList<>();
         Cursor cursor = DBOperations.obtenerInstancia(context).getGrupos();
@@ -296,7 +325,7 @@ public class Chat implements Parcelable{
 
     /**
      * Guarda el chat
-     * @param context de la actividad
+     * @param context El contexto de la actividad
      */
     public void guardar(Context context) {
 
@@ -313,6 +342,12 @@ public class Chat implements Parcelable{
         esPersistente = true;
     }
 
+    /**
+     * Devuelve un chat según su identificador
+     * @param context El contexto de la actividad
+     * @param idChat El identificador del chat
+     * @return chat El chat si existe
+     */
     public static Chat getChatById(Context context, String idChat) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getChat(idChat);
         if(cursor.moveToFirst()) {
@@ -327,16 +362,25 @@ public class Chat implements Parcelable{
         return null;
     }
 
+    /**
+     * Comprueba si el chat esta almacenado de forma persistente
+     * @return true si es persistente, false en otro caso
+     */
     public boolean esPersistente () {
         return esPersistente;
     }
 
+    /**
+     * Comprueba si el chat es un grupo
+     * @return true si es un grupo, false en otro caso
+     */
     public boolean esGrupo() {
         return esGrupo;
     }
 
     /**
      * Establece el valor por defecto para el historial de mensajes
+     * @param historial El historial del mensajes
      */
     private void setHistorial(List<Mensaje> historial) {
         this.historial = historial;
@@ -360,7 +404,7 @@ public class Chat implements Parcelable{
 
     /**
      * Devuelve la lista de participantes del chat
-     * @return la lista de participantes
+     * @return participantes La lista de participantes
      */
     public List<Contacto> getParticipantes () {
         return participantes;
@@ -376,7 +420,7 @@ public class Chat implements Parcelable{
 
     /**
      * Devuelve el nombre del chat
-     * @return el nombre
+     * @return nombre: El nombre del chat
      */
     public String getNombre() { return nombre; }
 

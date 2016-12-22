@@ -25,8 +25,7 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
 import asimov.uva.es.bluechat.R;
 
 /**
- * Tab que muestra los chats con los que se ha establecido
- * una conversacion previa
+ * Tab que muestra los chats con los que se ha establecido una conversación previa
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -34,6 +33,10 @@ import asimov.uva.es.bluechat.R;
  */
 public class TabChats extends Fragment implements View.OnClickListener {
 
+    /**
+     * Muestra la lista de chats con los que se ha mantenido una conversación previa y el último
+     * mensaje intercambiado en cada uno de ellos
+     */
     private final BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -84,6 +87,9 @@ public class TabChats extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    /**
+     * Actualiza la vista para mostrar los chats actualizados
+     */
     private void actualizar(){
         lista.removeAllViews();
         for(int i = 0; i < chats.size(); i++) {
@@ -101,17 +107,17 @@ public class TabChats extends Fragment implements View.OnClickListener {
 
     /**
      * Muestra el nombre de un chat
-     * @param vista a modificar
-     * @param chat a mostrar
+     * @param vista La vista a modificar
+     * @param chat El chat del que mostrar la información
      */
     private void mostrarNombreChat(View vista, Chat chat) {
         ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getNombre());
     }
 
     /**
-     * Muestra el ultimo mensaje de un chat
-     * @param vista a modificar
-     * @param chat a mostrar
+     * Muestra el último mensaje de un chat
+     * @param vista La vista a modificar
+     * @param chat El chat del que mostrar la información
      */
     private void mostrarUltimoMensaje(View vista, Chat chat) {
         List<Mensaje> msgs = chat.getHistorial();
@@ -126,8 +132,8 @@ public class TabChats extends Fragment implements View.OnClickListener {
 
     /**
      * Muestra la imagen del contacto
-     * @param vista a modificar
-     * @param chat a mostrar
+     * @param vista La vista a modificar
+     * @param chat El chat del que mostrar la información
      */
     private void mostrarImagen(View vista, Chat chat){
         ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);

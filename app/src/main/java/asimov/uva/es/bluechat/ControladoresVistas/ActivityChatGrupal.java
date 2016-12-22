@@ -64,6 +64,10 @@ public class ActivityChatGrupal extends ActividadChatBase {
 
     }
 
+    /**
+     * Permite crear un chat grupal con un conjunto de participantes y un nombre de grupo
+     * @param params La lista de participantes del grupo y el nombre asignado al mismo
+     */
     private void nuevoChat (Bundle params) {
         List<Contacto> participantes = params.getParcelableArrayList(CONTACTOS);
         String nombreGrupo = params.getString(NOMBRE_GRUPO);

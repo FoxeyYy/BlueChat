@@ -20,7 +20,7 @@ import asimov.uva.es.bluechat.R;
 public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClickListener {
 
     /**
-     * Lista de contactos
+     * Lista de contactos del grupo
      */
     private List<Contacto> contactos;
 
@@ -37,6 +37,9 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
 
     }
 
+    /**
+     * Muestra los contactos almacenados en una lista para permitir al usuario añadirlos a un grupo
+     */
     private void mostrarContactos () {
         ListView itemsList = (ListView) findViewById(R.id.lista_contactos);
         itemsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -67,6 +70,11 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * Permite crear un grupo con una lista de participantes y un nombre para el mismo. Asimismo,
+     * comprueba que al menos una persona está siendo agregada al grupo y que se le está asignando
+     * un nombre al mismo
+     */
     private void crearGrupo() {
         List<Contacto> seleccionados = getSeleccionados();
         String nombreGrupo = getNombreGrupo();
@@ -84,6 +92,10 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * Devuelve una lista de contactos seleccionados para formar parte de un grupo
+     * @return la lista de contactos seleccionados
+     */
     private List<Contacto> getSeleccionados () {
         List<Contacto> seleccionados = new ArrayList<>();
         final ListView itemsList = (ListView) findViewById(R.id.lista_contactos);
@@ -99,6 +111,10 @@ public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClic
         return seleccionados;
     }
 
+    /**
+     * Devuelve el nombre asignado al grupo
+     * @return el nombre asignado al grupo
+     */
     private String getNombreGrupo () {
         return String.valueOf(((TextView) findViewById(R.id.nombre_grupo)).getText());
     }

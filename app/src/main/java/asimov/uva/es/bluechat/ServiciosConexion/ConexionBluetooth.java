@@ -40,6 +40,9 @@ import asimov.uva.es.bluechat.Dominio.PaquetesBluetooth.RespuestaPeticion;
  */
 public class ConexionBluetooth extends Thread {
 
+    /**
+     * Enumeración para indicar el modo de la conexión
+      */
     public enum Modo {
         SERVIDOR,
         CLIENTE_MENSAJES,
@@ -57,12 +60,22 @@ public class ConexionBluetooth extends Thread {
      */
     private ObjectOutputStream salida = null;
 
+    /**
+     * El chat de la conexion
+     */
     private Chat chatConexion;
 
     private final String ERROR = "ERROR";
     private final String CONEXION = "CONEXION";
 
+    /**
+     * El socket para el Bluetooth
+     */
     private final BluetoothSocket socket;
+
+    /**
+     * Lista de mensajes
+     */
     private List<Mensaje> mensajes = null;
 
     private final String IMAGEN = "Imagen";
@@ -73,16 +86,14 @@ public class ConexionBluetooth extends Thread {
     public void setIdGrupo(String idGrupo){this.idGrupo = idGrupo;}
 
     /**
-     * Modo de ejecucion
+     * Modo de ejecución
      */
     private final Modo modo;
 
     /**
-     * Inicaliza los streams de la conexión bluetooth
-     * a partir del socket de la misma
-     *
+     * Inicaliza los streams de la conexión bluetooth a partir del socket de la misma
      * @param socket El socket de la conexión
-     * @param modo   de ejecucion
+     * @param modo   El modo de ejecucion
      */
     public ConexionBluetooth(BluetoothSocket socket, Modo modo) {
         Log.d(CONEXION, "CONEXION BUENA");
@@ -90,7 +101,7 @@ public class ConexionBluetooth extends Thread {
         this.modo = modo;
 
         try {
-            /* Primero, crear siempre el output stream, sino se producira un bloqueo indefinido.
+            /* Primero, crear siempre el output stream, sino se producirá un bloqueo indefinido.
             A serialization stream header is read from the stream and verified.
             This constructor will block until the corresponding ObjectOutputStream has written and flushed the header. */
             OutputStream tmpOut = this.socket.getOutputStream();
@@ -107,21 +118,17 @@ public class ConexionBluetooth extends Thread {
     }
 
     /**
-     * Inicaliza los streams de la conexión bluetooth
-     * a partir del socket de la misma
-     *
+     * Inicaliza los streams de la conexión bluetooth a partir del socket de la misma
      * @param socket  El socket de la conexión
-     * @param modo    de ejecucion
-     * @param mensaje a enviar
+     * @param modo    El modo de ejecucion
+     * @param mensaje El mensaje a enviar
      */
     public ConexionBluetooth(BluetoothSocket socket, Modo modo, List<Mensaje> mensaje) {
         this(socket, modo);
         this.mensajes = mensaje;
     }
 
-    /**
-     * Recibe el mensaje
-     */
+
     @Override
     public void run() {
 
@@ -152,7 +159,7 @@ public class ConexionBluetooth extends Thread {
     }
 
     /**
-     * Envia mensajes a un servidor
+     * Envia mensaje de un chat
      */
     private void enviarMensajeChat() {
         Log.d(CONEXION, "Enviando mensajes...");
@@ -178,6 +185,9 @@ public class ConexionBluetooth extends Thread {
 
     }
 
+    /**
+     * Envia mensajes
+     */
     private void enviarMensajes(){
         for(Mensaje mensaje : mensajes) {
             enviar(mensaje);
@@ -190,7 +200,7 @@ public class ConexionBluetooth extends Thread {
     }
 
     /**
-     * Recibe peticiones y actua en consecuencia
+     * Recibe peticiones y actúa en consecuencia
      */
     private void servidor() {
 
@@ -229,6 +239,9 @@ public class ConexionBluetooth extends Thread {
 
     }
 
+    /**
+     * Envia los datos del usuario para ques sean visibles por otros usuarios
+     */
     private void enviarDescubrimiento() {
         Contacto yo = Contacto.getSelf();
         byte[] imagen = getBytesImagen(yo.getImagen());
@@ -240,6 +253,10 @@ public class ConexionBluetooth extends Thread {
             enviar(new byte[0]);
     }
 
+    /**
+     * Recibe los datos de otro usuario
+     * @return contacto El contacto del descubrimiento o null si no existe
+     */
     private Contacto recibirDescubrimiento() {
         try {
             Contacto contacto = (Contacto) entrada.readObject();
@@ -259,6 +276,10 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
+    /**
+     * Indica si la solicitud es aceptada
+     * @return true si es aceptada, false en caso contrario
+     */
     private boolean solicitudAceptada() {
         try {
             RespuestaPeticion respuesta = (RespuestaPeticion) entrada.readObject();
@@ -272,17 +293,28 @@ public class ConexionBluetooth extends Thread {
         return false;
     }
 
+    /**
+     * Solicita el envio de mensajes en un grupo
+     * @param idGrupo El identificador de grupo
+     */
     private void solicitarEnvioMensajesGrupo(String idGrupo){
         Peticion peticion = new Peticion(mensajes.size(),idGrupo);
         Log.e("ENVIO", String.valueOf(mensajes.size()));
         enviar(peticion);
     }
 
+    /**
+     * Solicita envio de mensajes
+     */
     private void solicitarEnvioMensajes() {
         Peticion peticion = new Peticion(mensajes.size());
         enviar(peticion);
     }
 
+    /**
+     * Envia un objeto a través del canal de comunicación
+     * @param objeto El objeto a enviar
+     */
     private void enviar(Serializable objeto) {
         try {
             salida.writeObject(objeto);
@@ -292,6 +324,11 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
+    /**
+     * Recibe mensajes y los almacena
+     * @param numeroMensajes El numero de mensajes recibidos
+     * @param esGrupo Indica si el chat es un grupo
+     */
     private void recibirMensajes(int numeroMensajes, boolean esGrupo) {
         try {
             Contacto contacto = recibirDescubrimiento();
@@ -321,6 +358,10 @@ public class ConexionBluetooth extends Thread {
         }
     }
 
+    /**
+     * Crea un nuevo chat
+     * @param contacto El contacto del chat
+     */
     private void nuevoChat(Contacto contacto){
         Context context = ActivityPrincipal.getActivityPrincipal();
         Chat chat = contacto.getChat(context);
@@ -331,11 +372,19 @@ public class ConexionBluetooth extends Thread {
         chatConexion = chat;
     }
 
+    /**
+     * Almacena un mensaje
+     * @param mensaje El mensaje a almacenar
+     */
     private void guardarMensaje(Mensaje mensaje){
         Context context = ActivityPrincipal.getActivityPrincipal();
             mensaje.registrar(context,chatConexion);
     }
 
+    /**
+     * Responde a una petición aceptada o rechazada
+     * @param aceptada El valor verdadero o falso de la petición
+     */
     private void responderPeticion(boolean aceptada) {
         RespuestaPeticion respuesta;
 
@@ -348,6 +397,11 @@ public class ConexionBluetooth extends Thread {
         enviar(respuesta);
     }
 
+    /**
+     * Devuelve los bytes de una imagen
+     * @param uri El bitmap de la imagen de perfil
+     * @return Los bytes de la imagen o null
+     */
     private byte[] getBytesImagen(String uri) {
         try {
             //Obtenemos el bitmap de la imagen de perfil
@@ -369,12 +423,21 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
+    /**
+     * Devuelve los bytes de una imagen a partir de su bitmap
+     * @param imagen Bitmpa de la imagen
+     * @return Los bytes de la imagen
+     */
     private byte[] getBytesImagen(Bitmap imagen){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         imagen.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
 
+    /**
+     * Recibe una imagen y la devuelve en Bitmpap
+     * @return El Bitmap de la imagen o null
+     */
     private Bitmap recibirImagen() {
         try {
             byte[] imagen = (byte[]) entrada.readObject();
@@ -386,16 +449,34 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
+    /**
+     * Almacena la imagen de un contacto
+     * @param contacto El contacto del que queremos guardar la imagen
+     * @param imagen La imagen a almacenar
+     * @return El path de la imagen
+     */
     private String guardarImagenContacto(Contacto contacto, Bitmap imagen) {
         File file = new File(ActivityPrincipal.getActivityPrincipal().getFilesDir(), contacto.getDireccionMac());
         return guardarImagen(file, imagen);
     }
 
+    /**
+     * Almacena la imagen de un mensaje
+     * @param mensaje El mensaje que contiene la imagen
+     * @param imagen La imagen a almacenar
+     * @return El path de la imagen
+     */
     private String guardarImagenMensaje(Mensaje mensaje, Bitmap imagen){
         File file = new File(ActivityPrincipal.getActivityPrincipal().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
         return guardarImagen(file,imagen);
     }
 
+    /**
+     * Almacena una imagen
+     * @param file El fichero en el que se va a guardar
+     * @param imagen La imagen a almacenar
+     * @return El path de la imagen o null
+     */
     private String guardarImagen(File file, Bitmap imagen){
         FileOutputStream outputStream;
         try {
@@ -410,21 +491,37 @@ public class ConexionBluetooth extends Thread {
         return null;
     }
 
+    /**
+     * Comprueba si existe un grupo
+     * @param id El identificador del grupo
+     * @return True si existe, false en caso contrario
+     */
     private boolean comprobarGrupo(String id){
         idGrupo = id;
         return Chat.existeGrupo(ActivityPrincipal.getActivityPrincipal(), id);
     }
 
+    /**
+     * Envia la información de un grupo
+     * @param id El identificador del grupo
+     */
     private void enviarInfoGrupo(String id){
         Chat grupo = Chat.getChatGrupal(ActivityPrincipal.getActivityPrincipal(), id);
         enviar(grupo.getNombre());
         enviar((ArrayList)grupo.getParticipantes());
     }
 
+    /**
+     * Obtiene la información de un grupo
+     */
     private void geetInfoGrupo(){
         chatConexion = Chat.getChatGrupal(ActivityPrincipal.getActivityPrincipal(),idGrupo);
     }
 
+    /**
+     * Recibe la información de un grupo
+     * @param id El identificador del grupo
+     */
     private void recibirInfoGrupo(String id){
         try{
             String nombre = (String)entrada.readObject();
@@ -442,6 +539,9 @@ public class ConexionBluetooth extends Thread {
 
     }
 
+    /**
+     * Notifica la recepción de un mensaje
+     */
     private void notificarMensaje(){
         Context context = ActivityPrincipal.getActivityPrincipal();
         Intent intent = new Intent("mensajeNuevo");

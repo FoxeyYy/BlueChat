@@ -75,6 +75,9 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     }
 
 
+    /**
+     * Permite al usuario navegar a la siguiente pantalla inicial
+     */
     private void siguientePantalla(){
         final Button siguiente = (Button) findViewById(R.id.boton_siguiente);
         Button seleccionImagen = (Button) findViewById(R.id.selecciona_imagen);
@@ -98,6 +101,10 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         editor.commit();
     }
 
+    /**
+     * Muestra al usuario las imágenes en el almacenamiento externo, y devuelve el resultado
+     * de la seleccionada
+     */
     private void buscarImagen(){
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -117,6 +124,9 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * Comprueba los permisos de acceso al almacenamiento externo para el empleo de imágenes
+     */
     private void comprobarPermisosImagen() {
             if(ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
@@ -143,12 +153,20 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     }
 
 
+    /**
+     * Comprueba si el campo de apodo en la vista está vacío
+     * @return la longitud del apodo
+     */
     private boolean apodoVacio(){
         TextView campoApodo = (TextView)findViewById(R.id.apodo);
         String apodo = String.valueOf(campoApodo.getText());
         return apodo.length() == 0;
     }
 
+    /**
+     * Una vez cumplimentados todos los pasos correctamente, se bloquea esta actividad para que no
+     * vuelva a ser mostrada
+     */
     private void finalizarPrimeraVez(){
         SharedPreferences preferencias = getSharedPreferences(ActivityAjustes.PREFERENCIAS, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
@@ -156,6 +174,11 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         editor.commit();
     }
 
+    /**
+     * Comprueba todos los permisos necesarios para el funcionamiento de la aplicación: permisos de
+     * acceso al almacenamiento externo, permisos de acceso a contactos y permiso de localización,
+     * necesario en últimas versiones de Android.
+     */
     private void comprobarPermisos(){
 
         ArrayList<String> permisosNecesarios = new ArrayList<>();

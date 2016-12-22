@@ -22,7 +22,7 @@ import java.util.UUID;
 public class ServidorBluetooth extends Service implements Runnable {
 
     /**
-     * Subproceso de ejecucion
+     * Subproceso de ejecución
      */
     private final Thread hilo;
 
@@ -57,8 +57,8 @@ public class ServidorBluetooth extends Service implements Runnable {
 
         try {
             /*
-      Nombre de la aplicación para ofrecer
-     */
+             Nombre de la aplicación para ofrecer
+            */
             String NOMBRE = "BlueChat";
             tmp = adaptadorBluetooth.listenUsingInsecureRfcommWithServiceRecord(NOMBRE, MY_UUID);
         } catch (IOException e) {

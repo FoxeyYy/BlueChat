@@ -103,6 +103,10 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
         }
     };
 
+    /**
+     * Implementa la funcionalidad de deslizamiento de la vista hacia abajo para comenzar a buscar
+     * dispositivos
+     */
     private final SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
@@ -145,7 +149,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
     /**
      * Añade dispositivos dentro de la vista
-     * @param dispositivo a añadir a la vista
+     * @param dispositivo El dispositivo a añadir a la vista
      */
     private void anadirDispositivo(Contacto dispositivo, boolean restaurando){
         if (!restaurando) {

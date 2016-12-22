@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -43,7 +42,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
     public static final String PREFERENCIAS = "Preferencias";
 
     /**
-     * Resultado de la solicitud de acceso a imagenes
+     * Resultado de la solicitud de acceso a imágenes
      */
     private final int READ_REQUEST_CODE = 1;
 
@@ -56,8 +55,6 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
      * Direccion de la imagen de perfil
      */
     private Uri uriImagen;
-
-    private final String IMAGEN = "Imagen";
 
 
     @Override
@@ -112,7 +109,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Muetra las preferencias previamente guardadas
+     * Muetra las preferencias previamente guardadas, con el nombre y la imagen de perfil
      */
     private void mostrarPreferenciasGuardadas() {
         TextView nombre = (TextView)findViewById(R.id.nombre_preferencias);
@@ -135,7 +132,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Devuelve el nombre guardado
+     * Devuelve el nombre de usuario guardado
      * @return el nombre a mostrar para el usuario
      */
     private String getNombreGuardado() {
@@ -143,7 +140,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Devuelve el path al avatar del usuario
+     * Devuelve el path al avatar(imagen de perfil) del usuario
      * @return el path del avatar a mostrar
      */
     private String getAvatar() {
@@ -152,7 +149,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
 
     /**
      * Devuelve la dirección MAC del dispositivo
-     * @return la direcció MAC del dispositivo
+     * @return la dirección MAC del dispositivo
      */
     private String getMacBluetooth() {
         return android.provider.Settings.Secure.getString(
@@ -169,6 +166,10 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * Muestra al usuario las imágenes en el almacenamiento externo, y devuelve el resultado
+     * de la seleccionada
+     */
     private void buscarImagen(){
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -184,14 +185,15 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
-            Log.d(IMAGEN, "Uri: " + uri.toString());
             ImageButton imagenPerfil = (ImageButton) findViewById(R.id.avatar_preferencias);
             uriImagen = uri;
             imagenPerfil.setImageURI(uri);
 
         }
     }
-
+    /**
+     * Comprueba los permisos de acceso al almacenamiento externo para el empleo de imágenes
+     */
     private void comprobarPermisos() {
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)

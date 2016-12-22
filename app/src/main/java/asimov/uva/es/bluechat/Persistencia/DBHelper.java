@@ -42,6 +42,7 @@ class DBHelper extends SQLiteOpenHelper{
             DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CHAT,
             DBContract.ParticipantesGrupo.COLUMN_NAME_ID_CONTACTO);
 
+    /*Sentencia de creación de la tabla mensajes pendientes*/
     private static final String SQL_CREATE_TABLE_MENSAJE_PENDIENTE = String.format("CREATE TABLE %s (%s TEXT, %s TEXT, " +
             "PRIMARY KEY (%s,%s), FOREIGN KEY (%s) REFERENCES Mensaje(%s), " +
             "FOREIGN KEY (%s) REFERENCES Contacto(%s))",
@@ -74,10 +75,6 @@ class DBHelper extends SQLiteOpenHelper{
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    /**
-     * Crea la base de datos
-     * @param db La base de datos que crea
-     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_TABLE_CONTACTO);
@@ -88,12 +85,6 @@ class DBHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_TABLE_MENSAJE_PENDIENTE);
     }
 
-    /**
-     * Actualiza la base de datos a una versión más reciente o la sobreescribe
-     * @param db base de datos a actualizar
-     * @param oldVersion de los datos
-     * @param newVersion de los datos
-     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + DBContract.Contacto.TABLE_NAME);

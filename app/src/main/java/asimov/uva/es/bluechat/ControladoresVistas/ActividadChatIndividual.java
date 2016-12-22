@@ -113,6 +113,9 @@ public class ActividadChatIndividual extends ActividadChatBase {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Inicializa la actividad para crear un contacto nuevo a partir de los datos del chat actual
+     */
     private void crearContacto() {
         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
@@ -121,6 +124,9 @@ public class ActividadChatIndividual extends ActividadChatBase {
         startActivity(intent);
     }
 
+    /**
+     * Inicializa la actividad para actualizar un contacto existente con los datos del chat actual
+     */
     private void actualizarContacto() {
         Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
         intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
