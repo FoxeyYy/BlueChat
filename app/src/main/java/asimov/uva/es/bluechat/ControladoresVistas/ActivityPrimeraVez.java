@@ -40,7 +40,6 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     private final int PERMISO_ACCESO_IMAGENES = 1;
     private final int PERMISO_ACCESOS = 2;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +83,6 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         startActivity(intent);
         finish();
     }
-
 
     /**
      * Permite al usuario navegar a la siguiente pantalla inicial
@@ -159,6 +157,7 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
                     //mostramos un mensaje indicando que son necesarios
                     Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
             case PERMISO_ACCESOS:
                 finalizar();
