@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import asimov.uva.es.bluechat.controladoresVistas.ActivityAjustes;
-import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
 import asimov.uva.es.bluechat.persistencia.DBContract;
 import asimov.uva.es.bluechat.persistencia.DBOperations;
 
@@ -57,10 +56,10 @@ public class Contacto implements Parcelable, Serializable{
      * Devuelve el propio contacto
      * @return contacto propio
      */
-    public static Contacto getSelf() {
-        String nombre = ActivityPrincipal.getActivityPrincipal().getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.NOMBRE, "");
-        String avatar = ActivityPrincipal.getActivityPrincipal().getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.AVATAR, "");
-        String mac = android.provider.Settings.Secure.getString(ActivityPrincipal.getActivityPrincipal().getContentResolver(),"bluetooth_address");
+    public static Contacto getSelf(Context contexto) {
+        String nombre = contexto.getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.NOMBRE, "");
+        String avatar = contexto.getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.AVATAR, "");
+        String mac = android.provider.Settings.Secure.getString(contexto.getContentResolver(),"bluetooth_address");
         return new Contacto (nombre, mac, avatar, true);
     }
 
@@ -115,7 +114,7 @@ public class Contacto implements Parcelable, Serializable{
         }
 
         if (mac.equals(android.provider.Settings.Secure.getString(context.getContentResolver(),"bluetooth_address"))) {
-            return getSelf();
+            return getSelf(context);
         }
 
         Cursor cursor = DBOperations.obtenerInstancia(context).getContact(mac);

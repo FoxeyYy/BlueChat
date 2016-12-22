@@ -148,10 +148,10 @@ public class DBOperations {
      * Inserta un nuevo chat grupal en la base de datos
      * @param chat El chat a insertar
      */
-    public void insertarGrupo (Chat chat) {
+    public void insertarGrupo (Context contexto, Chat chat) {
         int id;
         if(!chat.esPersistente()){
-            id = getNumGrupos() + Contacto.getSelf().getDireccionMac().hashCode();
+            id = getNumGrupos() + Contacto.getSelf(contexto).getDireccionMac().hashCode();
             chat.setIdChat(String.valueOf(id));
         }else
             id = Integer.valueOf(chat.getIdChat());

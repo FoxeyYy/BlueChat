@@ -23,9 +23,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import asimov.uva.es.bluechat.R;
 import asimov.uva.es.bluechat.dominio.Chat;
 import asimov.uva.es.bluechat.dominio.Mensaje;
-import asimov.uva.es.bluechat.R;
 
 /**
  * Actividad base para los chats interactivos. Muestra los mensajes enviados y recibidos, y maneja
@@ -174,23 +174,23 @@ public class ActividadChatBase extends AppCompatActivity implements View.OnClick
     /**
      * Construye los mensajes a enviar y solicita que se muestren en pantalla
      */
-    void enviar() {
+    protected void enviar() {
         String texto = String.valueOf(campo_texto.getText());
         Mensaje mensaje;
         if(texto.isEmpty() && uriImagen ==null)
             return;
 
         if (null == uriImagen) {
-            mensaje = new Mensaje(texto);
+            mensaje = new Mensaje(getBaseContext(), texto);
         } else {
-            mensaje = new Mensaje(texto, uriImagen);
+            mensaje = new Mensaje(getBaseContext(), texto, uriImagen);
         }
 
         mensaje.registrar(this, chat);
         if(uriImagen != null)
-            mostrarMensajeEnviado(new Mensaje(texto,uriImagen));
+            mostrarMensajeEnviado(new Mensaje(getBaseContext(), texto,uriImagen));
         else
-            mostrarMensajeEnviado(new Mensaje(texto));
+            mostrarMensajeEnviado(new Mensaje(getBaseContext(), texto));
 
         campo_texto.setText("");
         uriImagen = null;

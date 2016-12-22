@@ -1,13 +1,9 @@
 package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -15,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -58,7 +53,7 @@ public class ActivityPrincipal extends AppCompatActivity{
     /**
      * Constante para iniciar la actividad en un tab concreto
      */
-    private final String CHATS = "Chats";
+    public static final String CHATS = "Chats";
 
     /**
      * Adaptador bluetooth del dispositivo
@@ -95,11 +90,6 @@ public class ActivityPrincipal extends AppCompatActivity{
      */
     private TabDescubrir tab_descubrir;
 
-    /**
-     * Implementación para el patron Singleton
-     */
-    private static ActivityPrincipal activityPrincipal;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,8 +110,6 @@ public class ActivityPrincipal extends AppCompatActivity{
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        activityPrincipal = this;
-
         comprobarBluetooth();
         if( esCompatibleBluetooth ) {
             comprobarPermisos();
@@ -132,68 +120,6 @@ public class ActivityPrincipal extends AppCompatActivity{
             mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
         }
 
-
-    }
-
-    /**
-     * Devuelve la actividad principal
-     * @return actividadPrincipal La actividad principal
-     */
-    public static ActivityPrincipal getActivityPrincipal(){
-        return activityPrincipal;
-    }
-
-    /**
-     * Muestra una notificación con el mensaje recibido como parámetro
-     * @param mensaje El mensaje a mostrar en la notificación
-     */
-    public void notificar(String mensaje){
-        //Intent intent = new Intent(this, NotificationCompat.class);
-        Intent intent = new Intent(this, ActivityPrincipal.class);
-        intent.setAction(CHATS);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notificacion =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("BlueChat")
-                        .setSmallIcon(R.drawable.notificacion_icon)
-                        .setCategory(Notification.CATEGORY_MESSAGE)
-                        .setAutoCancel(true)
-                        .setContentText(mensaje)
-                        .setDefaults(Notification.DEFAULT_SOUND)
-                        .setDefaults(Notification.DEFAULT_VIBRATE)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setContentIntent(pIntent).build();
-
-        manager.notify(0, notificacion);
-
-
-    }
-
-    /**
-     * Muestra una notificación con el mensaje recibido como parámetro
-     * @param mensaje El mensaje a mostrar en la notificación
-     */
-    public void notificar(String mensaje, Bitmap imagen){
-        Intent intent = new Intent(this, NotificationCompat.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notificacion =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("BlueChat")
-                        .setSmallIcon(R.drawable.notificacion_icon)
-                        .setCategory(Notification.CATEGORY_MESSAGE)
-                        .setAutoCancel(true)
-                        .setLargeIcon(imagen)
-                        .setFullScreenIntent(pIntent,true)
-                        .setDefaults(Notification.DEFAULT_SOUND)
-                        .setDefaults(Notification.DEFAULT_VIBRATE)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setContentText(mensaje).build();
-
-        manager.notify(0,notificacion);
 
     }
 

@@ -12,7 +12,6 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
 import asimov.uva.es.bluechat.dominio.Chat;
 import asimov.uva.es.bluechat.dominio.Contacto;
 import asimov.uva.es.bluechat.dominio.Mensaje;
@@ -100,7 +99,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
      */
     private void conectar() {
 
-        List<Chat> chats = Chat.getChatsPendientes(ActivityPrincipal.getActivityPrincipal());
+        List<Chat> chats = Chat.getChatsPendientes(getBaseContext());
 
         Log.d(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
         for (Chat chat : chats) {
@@ -132,11 +131,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
                 socket.connect();
 
                 if(chat.esGrupo()){
-                    ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES_GRUPO, mensajes);
+                    ConexionBluetooth conexion = new ConexionBluetooth(getBaseContext(), socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES_GRUPO, mensajes);
                     conexion.setIdGrupo(chat.getIdChat());
                     conexion.start();
                 }else{
-                    ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
+                    ConexionBluetooth conexion = new ConexionBluetooth(getBaseContext(), socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
                     conexion.start();
                 }
 

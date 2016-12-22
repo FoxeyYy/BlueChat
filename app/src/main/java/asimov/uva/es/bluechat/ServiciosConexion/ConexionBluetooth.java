@@ -1,5 +1,9 @@
 package asimov.uva.es.bluechat.serviciosConexion;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -24,12 +29,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import asimov.uva.es.bluechat.R;
 import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
 import asimov.uva.es.bluechat.dominio.Chat;
 import asimov.uva.es.bluechat.dominio.Contacto;
 import asimov.uva.es.bluechat.dominio.Mensaje;
-import asimov.uva.es.bluechat.dominio.PaquetesBluetooth.Peticion;
-import asimov.uva.es.bluechat.dominio.PaquetesBluetooth.RespuestaPeticion;
+import asimov.uva.es.bluechat.dominio.paquetesBluetooth.Peticion;
+import asimov.uva.es.bluechat.dominio.paquetesBluetooth.RespuestaPeticion;
 
 /**
  * Hilo encargado de la transmisión de los mensajes una vez se ha establecido la conexión
@@ -47,7 +53,6 @@ public class ConexionBluetooth extends Thread {
         SERVIDOR,
         CLIENTE_MENSAJES,
         CLIENTE_MENSAJES_GRUPO
-
     }
 
     /**
@@ -80,6 +85,7 @@ public class ConexionBluetooth extends Thread {
 
     private final String IMAGEN = "Imagen";
 
+    private Context contexto;
 
     //TODO enviar idgrupo de forma correcta
     private String idGrupo;
@@ -95,8 +101,9 @@ public class ConexionBluetooth extends Thread {
      * @param socket El socket de la conexión
      * @param modo   El modo de ejecucion
      */
-    public ConexionBluetooth(BluetoothSocket socket, Modo modo) {
+    public ConexionBluetooth(Context context, BluetoothSocket socket, Modo modo) {
         Log.d(CONEXION, "CONEXION BUENA");
+        this.contexto = context;
         this.socket = socket;
         this.modo = modo;
 
@@ -123,8 +130,8 @@ public class ConexionBluetooth extends Thread {
      * @param modo    El modo de ejecucion
      * @param mensaje El mensaje a enviar
      */
-    public ConexionBluetooth(BluetoothSocket socket, Modo modo, List<Mensaje> mensaje) {
-        this(socket, modo);
+    public ConexionBluetooth(Context context,BluetoothSocket socket, Modo modo, List<Mensaje> mensaje) {
+        this(context, socket, modo);
         this.mensajes = mensaje;
     }
 
@@ -195,7 +202,7 @@ public class ConexionBluetooth extends Thread {
                 byte[] imagen = getBytesImagen(mensaje.getImagen());
                 enviar(imagen);
             }
-            mensaje.marcarEnviado(socket.getRemoteDevice().getAddress());
+            mensaje.marcarEnviado(contexto, socket.getRemoteDevice().getAddress());
         }
     }
 
@@ -243,7 +250,7 @@ public class ConexionBluetooth extends Thread {
      * Envia los datos del usuario para ques sean visibles por otros usuarios
      */
     private void enviarDescubrimiento() {
-        Contacto yo = Contacto.getSelf();
+        Contacto yo = Contacto.getSelf(contexto);
         byte[] imagen = getBytesImagen(yo.getImagen());
         enviar(yo);
         if (imagen != null) {
@@ -265,7 +272,7 @@ public class ConexionBluetooth extends Thread {
                 String path = guardarImagenContacto(contacto, imagen);
                 contacto.setImagen(path);
             }
-            contacto.guardar(ActivityPrincipal.getActivityPrincipal());
+            contacto.guardar(contexto);
             return contacto;
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");
@@ -339,13 +346,13 @@ public class ConexionBluetooth extends Thread {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
                 if (null == mensaje.getImagen()) {
                     guardarMensaje(mensaje);
-                    ActivityPrincipal.getActivityPrincipal().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+                    notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
                 } else {
                     Bitmap imagen = recibirImagen();
                     String path = guardarImagenMensaje(mensaje, imagen);
                     mensaje.setImagen(path);
                     guardarMensaje(mensaje);
-                    ActivityPrincipal.getActivityPrincipal().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
+                    notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
 
                 notificarMensaje();
@@ -363,7 +370,7 @@ public class ConexionBluetooth extends Thread {
      * @param contacto El contacto del chat
      */
     private void nuevoChat(Contacto contacto){
-        Context context = ActivityPrincipal.getActivityPrincipal();
+        Context context = contexto;
         Chat chat = contacto.getChat(context);
         if(null == chat) {
             chat = new Chat(contacto);
@@ -377,7 +384,7 @@ public class ConexionBluetooth extends Thread {
      * @param mensaje El mensaje a almacenar
      */
     private void guardarMensaje(Mensaje mensaje){
-        Context context = ActivityPrincipal.getActivityPrincipal();
+        Context context = contexto;
             mensaje.registrar(context,chatConexion);
     }
 
@@ -408,7 +415,7 @@ public class ConexionBluetooth extends Thread {
             Uri uriManual = Uri.parse(uri);
             Log.d(IMAGEN, "La uri es:" + uri);
 
-            ParcelFileDescriptor parcelFileDescriptor = ActivityPrincipal.getActivityPrincipal().getContentResolver().openFileDescriptor(uriManual, "r");
+            ParcelFileDescriptor parcelFileDescriptor = contexto.getContentResolver().openFileDescriptor(uriManual, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             Bitmap imagen = BitmapFactory.decodeFileDescriptor(fileDescriptor);
             parcelFileDescriptor.close();
@@ -456,7 +463,7 @@ public class ConexionBluetooth extends Thread {
      * @return El path de la imagen
      */
     private String guardarImagenContacto(Contacto contacto, Bitmap imagen) {
-        File file = new File(ActivityPrincipal.getActivityPrincipal().getFilesDir(), contacto.getDireccionMac());
+        File file = new File(contexto.getFilesDir(), contacto.getDireccionMac());
         return guardarImagen(file, imagen);
     }
 
@@ -467,7 +474,7 @@ public class ConexionBluetooth extends Thread {
      * @return El path de la imagen
      */
     private String guardarImagenMensaje(Mensaje mensaje, Bitmap imagen){
-        File file = new File(ActivityPrincipal.getActivityPrincipal().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
+        File file = new File(contexto.getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
         return guardarImagen(file,imagen);
     }
 
@@ -498,7 +505,7 @@ public class ConexionBluetooth extends Thread {
      */
     private boolean comprobarGrupo(String id){
         idGrupo = id;
-        return Chat.existeGrupo(ActivityPrincipal.getActivityPrincipal(), id);
+        return Chat.existeGrupo(contexto, id);
     }
 
     /**
@@ -506,7 +513,7 @@ public class ConexionBluetooth extends Thread {
      * @param id El identificador del grupo
      */
     private void enviarInfoGrupo(String id){
-        Chat grupo = Chat.getChatGrupal(ActivityPrincipal.getActivityPrincipal(), id);
+        Chat grupo = Chat.getChatGrupal(contexto, id);
         enviar(grupo.getNombre());
         enviar((ArrayList)grupo.getParticipantes());
     }
@@ -515,7 +522,7 @@ public class ConexionBluetooth extends Thread {
      * Obtiene la información de un grupo
      */
     private void geetInfoGrupo(){
-        chatConexion = Chat.getChatGrupal(ActivityPrincipal.getActivityPrincipal(),idGrupo);
+        chatConexion = Chat.getChatGrupal(contexto, idGrupo);
     }
 
     /**
@@ -526,10 +533,10 @@ public class ConexionBluetooth extends Thread {
         try{
             String nombre = (String)entrada.readObject();
             List<Contacto> participantes = (ArrayList)entrada.readObject();
-            participantes.remove(Contacto.getSelf());
-            participantes.add(Contacto.getContacto(ActivityPrincipal.getActivityPrincipal(), socket.getRemoteDevice()));
+            participantes.remove(Contacto.getSelf(contexto));
+            participantes.add(Contacto.getContacto(contexto, socket.getRemoteDevice()));
             Chat chat = new Chat(id,nombre,participantes);
-            chat.guardar(ActivityPrincipal.getActivityPrincipal());
+            chat.guardar(contexto);
             chatConexion = chat;
         }catch (IOException e){
             Log.e(ERROR, "No se han podido recibir los participantes del grupo");
@@ -543,15 +550,69 @@ public class ConexionBluetooth extends Thread {
      * Notifica la recepción de un mensaje
      */
     private void notificarMensaje(){
-        Context context = ActivityPrincipal.getActivityPrincipal();
         Intent intent = new Intent("mensajeNuevo");
         Chat chatActualizado;
         if(chatConexion.esGrupo())
-            chatActualizado = Chat.getChatGrupal(context,chatConexion.getIdChat());
+            chatActualizado = Chat.getChatGrupal(contexto,chatConexion.getIdChat());
         else
-            chatActualizado = Chat.getChatById(context, chatConexion.getIdChat());
+            chatActualizado = Chat.getChatById(contexto, chatConexion.getIdChat());
         intent.putExtra("chat", chatActualizado);
-        LocalBroadcastManager.getInstance(ActivityPrincipal.getActivityPrincipal()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(contexto).sendBroadcast(intent);
+    }
+
+    /**
+     * Muestra una notificación con el mensaje recibido como parámetro
+     * @param mensaje El mensaje a mostrar en la notificación
+     */
+    public void notificar(String mensaje){
+        //Intent intent = new Intent(this, NotificationCompat.class);
+        Intent intent = new Intent(contexto, ActivityPrincipal.class);
+        intent.setAction(ActivityPrincipal.CHATS);
+        PendingIntent pIntent = PendingIntent.getActivity(contexto, 0, intent, 0);
+
+        NotificationManager manager = (NotificationManager) contexto.getSystemService(Activity.NOTIFICATION_SERVICE);
+        Notification notificacion =
+                new NotificationCompat.Builder(contexto)
+                        .setContentTitle("BlueChat")
+                        .setSmallIcon(R.drawable.notificacion_icon)
+                        .setCategory(Notification.CATEGORY_MESSAGE)
+                        .setAutoCancel(true)
+                        .setContentText(mensaje)
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setDefaults(Notification.DEFAULT_VIBRATE)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setContentIntent(pIntent).build();
+
+        manager.notify(0, notificacion);
+
+
+    }
+
+    /**
+     * Muestra una notificación con el mensaje recibido como parámetro
+     * @param mensaje El mensaje a mostrar en la notificación
+     */
+    public void notificar(String mensaje, Bitmap imagen){
+        Intent intent = new Intent(contexto, NotificationCompat.class);
+        intent.setAction(ActivityPrincipal.CHATS);
+        PendingIntent pIntent = PendingIntent.getActivity(contexto, (int) System.currentTimeMillis(), intent, 0);
+
+        NotificationManager manager = (NotificationManager) contexto.getSystemService(Activity.NOTIFICATION_SERVICE);
+        Notification notificacion =
+                new NotificationCompat.Builder(contexto)
+                        .setContentTitle("BlueChat")
+                        .setSmallIcon(R.drawable.notificacion_icon)
+                        .setCategory(Notification.CATEGORY_MESSAGE)
+                        .setAutoCancel(true)
+                        .setLargeIcon(imagen)
+                        .setFullScreenIntent(pIntent,true)
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setDefaults(Notification.DEFAULT_VIBRATE)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setContentText(mensaje).build();
+
+        manager.notify(0,notificacion);
+
     }
 
 }

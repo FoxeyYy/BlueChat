@@ -67,7 +67,7 @@ public class Chat implements Parcelable{
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
             String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
-            Contacto emisor = Contacto.getSelf();
+            Contacto emisor = Contacto.getSelf(context);
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
             SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy", Locale.getDefault());
@@ -333,7 +333,7 @@ public class Chat implements Parcelable{
         if (!esGrupo()) {
             DBOperations.obtenerInstancia(context).insertChat(this);
         } else {
-            DBOperations.obtenerInstancia(context).insertarGrupo(this);
+            DBOperations.obtenerInstancia(context).insertarGrupo(context, this);
             for (Contacto participante: participantes) {
                 DBOperations.obtenerInstancia(context).insertContact(participante);
                 DBOperations.obtenerInstancia(context).insertarContactoEnGrupo(this, participante);

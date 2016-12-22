@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.dominio.PaquetesBluetooth;
+package asimov.uva.es.bluechat.dominio.paquetesBluetooth;
 
 import java.io.Serializable;
 

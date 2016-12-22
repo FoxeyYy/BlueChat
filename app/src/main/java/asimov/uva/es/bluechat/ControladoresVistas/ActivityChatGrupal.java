@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import asimov.uva.es.bluechat.R;
 import asimov.uva.es.bluechat.dominio.Chat;
 import asimov.uva.es.bluechat.dominio.Contacto;
 import asimov.uva.es.bluechat.dominio.Mensaje;
-import asimov.uva.es.bluechat.R;
 
 public class ActivityChatGrupal extends ActividadChatBase {
 
@@ -52,7 +52,7 @@ public class ActivityChatGrupal extends ActividadChatBase {
 
         List<Mensaje> historial = getChat().getHistorial();
 
-        Contacto myself = Contacto.getSelf();
+        Contacto myself = Contacto.getSelf(getBaseContext());
         for(Mensaje msg: historial) {
             if(msg.getEmisor().equals(myself))
                 mostrarMensajeEnviado(msg);

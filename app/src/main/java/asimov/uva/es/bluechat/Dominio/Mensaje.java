@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.Date;
 
-import asimov.uva.es.bluechat.controladoresVistas.ActivityPrincipal;
 import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
@@ -33,8 +32,8 @@ public class Mensaje implements Parcelable, Serializable {
      * @param contenido Contenido del mensaje
      * @param imagen del mensaje
      */
-    public Mensaje(String contenido, Uri imagen) {
-        this(contenido, Contacto.getSelf(), new Date());
+    public Mensaje(Context contexto, String contenido, Uri imagen) {
+        this(contenido, Contacto.getSelf(contexto), new Date());
         this.imagen = imagen.toString();
     }
 
@@ -69,8 +68,8 @@ public class Mensaje implements Parcelable, Serializable {
      * Inicializa un Mensaje a los valores pasados por parámetro
      * @param contenido Contenido del mensaje
      */
-    public Mensaje(String contenido) {
-        this(contenido, Contacto.getSelf(), new Date());
+    public Mensaje(Context contexto, String contenido) {
+        this(contenido, Contacto.getSelf(contexto), new Date());
     }
 
 
@@ -94,12 +93,12 @@ public class Mensaje implements Parcelable, Serializable {
         }
     };
 
-    public void marcarEnviado(String idContacto) {
-        DBOperations.obtenerInstancia(ActivityPrincipal.getActivityPrincipal()).marcarEnviado(id, idContacto);
+    public void marcarEnviado(Context contexto, String idContacto) {
+        DBOperations.obtenerInstancia(contexto).marcarEnviado(id, idContacto);
     }
 
     public void registrar(Context contexto, Chat chat){
-        Boolean pendiente = getEmisor().equals(Contacto.getSelf());
+        Boolean pendiente = getEmisor().equals(Contacto.getSelf(contexto));
         DBOperations.obtenerInstancia(contexto).insertMessage(this,chat,pendiente);
     }
 
