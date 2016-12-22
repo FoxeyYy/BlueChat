@@ -40,11 +40,6 @@ public class ServidorBluetooth extends Service implements Runnable {
     private final String ERROR = "ERROR";
 
     /**
-     * Adaptador bluetooth del dispositivo
-     */
-    private final BluetoothAdapter adaptadorBluetooth;
-
-    /**
      * Inicializa el servidor, creando un socketServidor en modo escucha pasiva
      */
     public ServidorBluetooth() {
@@ -53,7 +48,7 @@ public class ServidorBluetooth extends Service implements Runnable {
 
         BluetoothServerSocket tmp = null;
 
-        adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter adaptadorBluetooth = BluetoothAdapter.getDefaultAdapter();
 
         try {
             /*

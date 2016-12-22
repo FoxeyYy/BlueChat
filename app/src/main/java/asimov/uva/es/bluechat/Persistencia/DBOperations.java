@@ -186,6 +186,7 @@ public class DBOperations {
         if(null != cursor && cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
+        cursor.close();
 
         return num;
     }
@@ -201,6 +202,7 @@ public class DBOperations {
         if(null != cursor && cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
+        cursor.close();
 
         return num;
     }
@@ -216,6 +218,7 @@ public class DBOperations {
         if(null != cursor && cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
+        cursor.close();
 
         return num;
     }
