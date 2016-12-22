@@ -37,7 +37,8 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     /**
      * Resultado de la solicitud del permiso de acceso a datos
      */
-    private final int PERMISO_ACCESO_DATOS = 1;
+    private final int PERMISO_ACCESO_IMAGENES = 1;
+    private final int PERMISO_ACCESOS = 2;
 
 
     @Override
@@ -60,18 +61,28 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
                 if(apodoVacio()){
                     Toast.makeText(this, R.string.error_apodo_primera_vez, Toast.LENGTH_LONG).show();
                 }else {
-                    comprobarPermisos();
-                    guardarPreferencias();
-                    finalizarPrimeraVez();
-                    Intent intent = new Intent(this, ActivityPrincipal.class);
-                    startActivity(intent);
-                    finish();
+                    if(comprobarPermisos()) {
+                        finalizar();
+                    } else {
+                        solicitarPermisos();
+                    }
                 }
                 break;
             case R.id.selecciona_imagen:
                 comprobarPermisosImagen();
                 break;
         }
+    }
+
+    /**
+     * Gestiona la finalizacion de la actividad por parte del usuario
+     */
+    private void finalizar() {
+        guardarPreferencias();
+        finalizarPrimeraVez();
+        Intent intent = new Intent(this, ActivityPrincipal.class);
+        startActivity(intent);
+        finish();
     }
 
 
@@ -111,12 +122,12 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         intent.setType("image/*");
-        startActivityForResult(intent, PERMISO_ACCESO_DATOS);
+        startActivityForResult(intent, PERMISO_ACCESO_IMAGENES);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PERMISO_ACCESO_DATOS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PERMISO_ACCESO_IMAGENES && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             ImageView imagenPerfil = (ImageView) findViewById(R.id.imagen_perfil);
             avatar = uri.toString();
@@ -131,7 +142,7 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
             if(ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
                 ActivityCompat.requestPermissions(ActivityPrimeraVez.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISO_ACCESO_DATOS);
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISO_ACCESO_IMAGENES);
 
     }
 
@@ -139,7 +150,7 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISO_ACCESO_DATOS: {
+            case PERMISO_ACCESO_IMAGENES: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     buscarImagen();
@@ -149,6 +160,8 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, R.string.permisos_imagen_denegados, Toast.LENGTH_SHORT).show();
                 }
             }
+            case PERMISO_ACCESOS:
+                finalizar();
         }
     }
 
@@ -179,7 +192,7 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
      * acceso al almacenamiento externo, permisos de acceso a contactos y permiso de localización,
      * necesario en últimas versiones de Android.
      */
-    private void comprobarPermisos(){
+    private void solicitarPermisos(){
 
         ArrayList<String> permisosNecesarios = new ArrayList<>();
 
@@ -202,8 +215,22 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
             String[] arraySolicitudes = new String[permisosNecesarios.size()];
             arraySolicitudes = permisosNecesarios.toArray(arraySolicitudes);
             ActivityCompat.requestPermissions(ActivityPrimeraVez.this,
-                    arraySolicitudes, PERMISO_ACCESO_DATOS);
+                    arraySolicitudes, PERMISO_ACCESOS);
         }
 
+    }
+
+    /**
+     * Comprueba que la app tiene los permisos necesarios
+     * @return true si hay permisos, false en caso contrario
+     */
+    private boolean comprobarPermisos() {
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) &
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
