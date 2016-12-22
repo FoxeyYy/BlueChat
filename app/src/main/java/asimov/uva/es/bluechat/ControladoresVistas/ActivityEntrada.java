@@ -36,6 +36,7 @@ public class ActivityEntrada extends AppCompatActivity {
         }
 
         startActivity(intent);
+        finish();
 
     }
 }
