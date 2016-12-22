@@ -35,10 +35,20 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     private String avatar;
 
     /**
+     * Indicador de si el usuario se encuentra en info o no
+     */
+    private boolean segundaPantalla = false;
+
+    /**
      * Resultado de la solicitud del permiso de acceso a datos
      */
     private final int PERMISO_ACCESO_IMAGENES = 1;
     private final int PERMISO_ACCESOS = 2;
+
+    /**
+     * Claves para restaurar la pantalla
+     */
+    private final String CLAVE_POSICION = "SegundaPantalla";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +63,6 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.boton_info_siguiente:
-                setContentView(R.layout.activity_primera_vez);
                 siguientePantalla();
                 break;
             case R.id.boton_siguiente:
@@ -73,6 +82,21 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(CLAVE_POSICION, segundaPantalla);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        segundaPantalla = savedInstanceState.getBoolean(CLAVE_POSICION);
+        if (segundaPantalla) {
+            siguientePantalla();
+        }
+    }
+
     /**
      * Gestiona la finalizacion de la actividad por parte del usuario
      */
@@ -87,7 +111,9 @@ public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClic
     /**
      * Permite al usuario navegar a la siguiente pantalla inicial
      */
-    private void siguientePantalla(){
+    private void siguientePantalla() {
+        setContentView(R.layout.activity_primera_vez);
+        segundaPantalla = true;
         final Button siguiente = (Button) findViewById(R.id.boton_siguiente);
         Button seleccionImagen = (Button) findViewById(R.id.selecciona_imagen);
         siguiente.setOnClickListener(this);
