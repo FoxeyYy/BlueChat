@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -39,7 +40,11 @@ public class ActividadChatIndividual extends ActividadChatBase {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         Bundle params = getIntent().getExtras();
 
@@ -50,7 +55,7 @@ public class ActividadChatIndividual extends ActividadChatBase {
         //No sabemos si es persistente o no.
         if(idChat ==null){
             chat = params.getParcelable("chat");
-            Chat chatActualizado = chat.getPar().getChat(this);
+            Chat chatActualizado = chat != null ? chat.getPar().getChat(this) : null;
             if(chatActualizado != null)
                 chat = chatActualizado;
         }else {

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -70,7 +71,10 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
         mostrarPreferenciasGuardadas();
         mostrarAcercaDe();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
     }
 
@@ -121,7 +125,7 @@ public class ActivityAjustes extends AppCompatActivity implements View.OnClickLi
 
         ImageButton avatar = (ImageButton) findViewById(R.id.avatar_preferencias);
         String avatarContacto = getAvatar();
-        if(avatarContacto != null && !avatarContacto.isEmpty()) {
+        if(!avatarContacto.isEmpty()) {
             Uri uri = Uri.parse(avatarContacto);
             avatar.setImageURI(uri);
         }else{

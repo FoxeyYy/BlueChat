@@ -1,6 +1,7 @@
 package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,7 +25,10 @@ public class ActivityChatGrupal extends ActividadChatBase {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         Bundle params = getIntent().getExtras();
         Chat chat = Chat.getChatGrupal(this, params.getString("idChat"));

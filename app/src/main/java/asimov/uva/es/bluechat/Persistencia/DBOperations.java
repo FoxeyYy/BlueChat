@@ -183,7 +183,11 @@ public class DBOperations {
         int num = 0;
 
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_GRUPOS,null);
-        if(null != cursor && cursor.moveToFirst()){
+        if (cursor == null) {
+            return 0;
+        }
+
+        if(cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
         cursor.close();
@@ -199,7 +203,10 @@ public class DBOperations {
         int num = 0;
 
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_CHATS,null);
-        if(null != cursor && cursor.moveToFirst()){
+        if (cursor == null) {
+            return 0;
+        }
+        if(cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
         cursor.close();
@@ -215,7 +222,10 @@ public class DBOperations {
         int num = 0;
 
         Cursor cursor = getDb().rawQuery(SQL_GET_NUM_MSG,null);
-        if(null != cursor && cursor.moveToFirst()){
+        if (cursor == null) {
+            return 0;
+        }
+        if(cursor.moveToFirst()){
             num = cursor.getInt(0);
         }
         cursor.close();

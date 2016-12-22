@@ -416,7 +416,10 @@ public class ConexionBluetooth extends Thread {
             Log.d(IMAGEN, "La uri es:" + uri);
 
             ParcelFileDescriptor parcelFileDescriptor = contexto.getContentResolver().openFileDescriptor(uriManual, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            FileDescriptor fileDescriptor = parcelFileDescriptor != null ? parcelFileDescriptor.getFileDescriptor() : null;
+            if (fileDescriptor == null) {
+                return null;
+            }
             Bitmap imagen = BitmapFactory.decodeFileDescriptor(fileDescriptor);
             parcelFileDescriptor.close();
 
@@ -514,8 +517,8 @@ public class ConexionBluetooth extends Thread {
      */
     private void enviarInfoGrupo(String id){
         Chat grupo = Chat.getChatGrupal(contexto, id);
-        enviar(grupo.getNombre());
-        enviar((ArrayList)grupo.getParticipantes());
+        enviar(grupo != null ? grupo.getNombre() : null);
+        enviar((ArrayList) (grupo != null ? grupo.getParticipantes() : null));
     }
 
     /**

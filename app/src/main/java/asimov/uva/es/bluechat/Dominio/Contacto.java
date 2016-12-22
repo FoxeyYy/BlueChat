@@ -195,6 +195,10 @@ public class Contacto implements Parcelable, Serializable{
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(mac));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
 
+        if (cursor == null) {
+            return null;
+        }
+
         if (cursor.moveToFirst()) {
             String nombre = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             cursor.close();
