@@ -1,7 +1,9 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import asimov.uva.es.bluechat.R;
 
 /**
  * @author David Robles Gallardo
@@ -11,7 +13,7 @@ import android.support.v7.app.AppCompatActivity;
  */
 
 
-public class AyudaActivity extends AppCompatActivity {
+public class ActivityAyuda extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

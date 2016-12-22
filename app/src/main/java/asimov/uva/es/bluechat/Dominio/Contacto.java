@@ -18,10 +18,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.AjustesActivity;
-import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
+import asimov.uva.es.bluechat.ControladoresVistas.ActivityAjustes;
+import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
+import asimov.uva.es.bluechat.Persistencia.DBContract;
+import asimov.uva.es.bluechat.Persistencia.DBOperations;
 
 /**
  * Contacto de la App,
@@ -54,9 +54,9 @@ public class Contacto implements Parcelable, Serializable{
     private boolean esPersistente;
 
     public static Contacto getSelf() {
-        String nombre = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.NOMBRE, "");
-        String avatar = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.AVATAR, "");
-        String mac = android.provider.Settings.Secure.getString(MainActivity.getMainActivity().getContentResolver(),"bluetooth_address");
+        String nombre = ActivityPrincipal.getActivityPrincipal().getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.NOMBRE, "");
+        String avatar = ActivityPrincipal.getActivityPrincipal().getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.AVATAR, "");
+        String mac = android.provider.Settings.Secure.getString(ActivityPrincipal.getActivityPrincipal().getContentResolver(),"bluetooth_address");
         return new Contacto (nombre, mac, avatar, true);
     }
 

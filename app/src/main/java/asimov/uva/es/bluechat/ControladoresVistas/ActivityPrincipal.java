@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.Manifest;
 import android.app.Notification;
@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -28,6 +27,9 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+import asimov.uva.es.bluechat.R;
+import asimov.uva.es.bluechat.ServiciosConexion.EnvioMensajesPendientes;
+import asimov.uva.es.bluechat.ServiciosConexion.ServidorBluetooth;
 import io.fabric.sdk.android.Fabric;
 
 import static asimov.uva.es.bluechat.R.id.container;
@@ -41,13 +43,12 @@ import static asimov.uva.es.bluechat.R.id.container;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class MainActivity extends AppCompatActivity{
+public class ActivityPrincipal extends AppCompatActivity{
 
     /**
      * Resultado de la solicitud del permiso de localización
      */
     private final int PERMISO_LOCALIZACION = 2;
-
 
     /**
      * Resultado de la solicitud de visibilidad del bluetooth
@@ -97,11 +98,10 @@ public class MainActivity extends AppCompatActivity{
     /**
      * Implementación para el patron Singleton
      */
-    private static MainActivity mainActivity;
+    private static ActivityPrincipal activityPrincipal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "EMPEZANDO MAIN");
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
@@ -120,31 +120,23 @@ public class MainActivity extends AppCompatActivity{
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        mainActivity = this;
+        activityPrincipal = this;
 
-        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
-        boolean primeraVez = preferencias.getBoolean("primeraVez", true);
-        if(primeraVez){
-            Intent intent = new Intent(this, PrimeraVezActivity.class);
-            startActivity(intent);
-            comprobarBluetooth();
-        }else{
-            comprobarBluetooth();
-            if( esCompatibleBluetooth ) {
-                comprobarPermisos();
-            }
+        comprobarBluetooth();
+        if( esCompatibleBluetooth ) {
+            comprobarPermisos();
         }
 
-            // Abre la tab del historial si se accede por notificacion
-            if (getIntent().getAction().equals(CHATS)) {
-                mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
-            }
+        // Abre la tab del historial si se accede por notificacion
+        if (null != getIntent().getAction() && getIntent().getAction().equals(CHATS)) {
+            mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
+        }
 
 
     }
 
-    public static MainActivity getMainActivity(){
-        return mainActivity;
+    public static ActivityPrincipal getActivityPrincipal(){
+        return activityPrincipal;
     }
 
     /**
@@ -153,7 +145,7 @@ public class MainActivity extends AppCompatActivity{
      */
     public void notificar(String mensaje){
         //Intent intent = new Intent(this, NotificationCompat.class);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, ActivityPrincipal.class);
         intent.setAction(CHATS);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -241,12 +233,11 @@ public class MainActivity extends AppCompatActivity{
     private void comprobarPermisos() {
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(MainActivity.this,
+            ActivityCompat.requestPermissions(ActivityPrincipal.this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISO_LOCALIZACION);
         else
             activarBluetooth();
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -299,7 +290,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(MainActivity.this, EnvioMensajesPendientes.class));
+        stopService(new Intent(ActivityPrincipal.this, EnvioMensajesPendientes.class));
         super.onDestroy();
     }
 
@@ -322,7 +313,7 @@ public class MainActivity extends AppCompatActivity{
                 break;
 
             case (R.id.action_settings):
-                Intent intentAjustes= new Intent(this, AjustesActivity.class);
+                Intent intentAjustes= new Intent(this, ActivityAjustes.class);
                 startActivity(intentAjustes);
                 break;
 
@@ -337,7 +328,7 @@ public class MainActivity extends AppCompatActivity{
                                     Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_ayuda:
-                Intent intentAyuda = new Intent(this, AyudaActivity.class);
+                Intent intentAyuda = new Intent(this, ActivityAyuda.class);
                 startActivity(intentAyuda);
                 break;
             default:

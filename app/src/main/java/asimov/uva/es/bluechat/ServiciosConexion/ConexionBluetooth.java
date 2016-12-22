@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ServiciosConexion;
 
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
@@ -247,7 +248,7 @@ public class ConexionBluetooth extends Thread {
                 String path = guardarImagenContacto(contacto, imagen);
                 contacto.setImagen(path);
             }
-            contacto.guardar(MainActivity.getMainActivity());
+            contacto.guardar(ActivityPrincipal.getActivityPrincipal());
             return contacto;
         } catch (IOException e) {
             Log.e(ERROR, "No se puede recibir la respuesta de descubrimiento");
@@ -301,13 +302,13 @@ public class ConexionBluetooth extends Thread {
                 Mensaje mensaje = (Mensaje) entrada.readObject();
                 if (null == mensaje.getImagen()) {
                     guardarMensaje(mensaje);
-                    MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
+                    ActivityPrincipal.getActivityPrincipal().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido());
                 } else {
                     Bitmap imagen = recibirImagen();
                     String path = guardarImagenMensaje(mensaje, imagen);
                     mensaje.setImagen(path);
                     guardarMensaje(mensaje);
-                    MainActivity.getMainActivity().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
+                    ActivityPrincipal.getActivityPrincipal().notificar(mensaje.getEmisor().getNombre() + ": " + mensaje.getContenido(), imagen);
                 }
 
                 notificarMensaje();
@@ -321,7 +322,7 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void nuevoChat(Contacto contacto){
-        Context context = MainActivity.getMainActivity();
+        Context context = ActivityPrincipal.getActivityPrincipal();
         Chat chat = contacto.getChat(context);
         if(null == chat) {
             chat = new Chat(contacto);
@@ -331,7 +332,7 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void guardarMensaje(Mensaje mensaje){
-        Context context = MainActivity.getMainActivity();
+        Context context = ActivityPrincipal.getActivityPrincipal();
             mensaje.registrar(context,chatConexion);
     }
 
@@ -353,7 +354,7 @@ public class ConexionBluetooth extends Thread {
             Uri uriManual = Uri.parse(uri);
             Log.d(IMAGEN, "La uri es:" + uri);
 
-            ParcelFileDescriptor parcelFileDescriptor = MainActivity.getMainActivity().getContentResolver().openFileDescriptor(uriManual, "r");
+            ParcelFileDescriptor parcelFileDescriptor = ActivityPrincipal.getActivityPrincipal().getContentResolver().openFileDescriptor(uriManual, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             Bitmap imagen = BitmapFactory.decodeFileDescriptor(fileDescriptor);
             parcelFileDescriptor.close();
@@ -386,12 +387,12 @@ public class ConexionBluetooth extends Thread {
     }
 
     private String guardarImagenContacto(Contacto contacto, Bitmap imagen) {
-        File file = new File(MainActivity.getMainActivity().getFilesDir(), contacto.getDireccionMac());
+        File file = new File(ActivityPrincipal.getActivityPrincipal().getFilesDir(), contacto.getDireccionMac());
         return guardarImagen(file, imagen);
     }
 
     private String guardarImagenMensaje(Mensaje mensaje, Bitmap imagen){
-        File file = new File(MainActivity.getMainActivity().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
+        File file = new File(ActivityPrincipal.getActivityPrincipal().getFilesDir(), mensaje.getEmisor().getDireccionMac() + mensaje.getId());
         return guardarImagen(file,imagen);
     }
 
@@ -411,17 +412,17 @@ public class ConexionBluetooth extends Thread {
 
     private boolean comprobarGrupo(String id){
         idGrupo = id;
-        return Chat.existeGrupo(MainActivity.getMainActivity(), id);
+        return Chat.existeGrupo(ActivityPrincipal.getActivityPrincipal(), id);
     }
 
     private void enviarInfoGrupo(String id){
-        Chat grupo = Chat.getChatGrupal(MainActivity.getMainActivity(), id);
+        Chat grupo = Chat.getChatGrupal(ActivityPrincipal.getActivityPrincipal(), id);
         enviar(grupo.getNombre());
         enviar((ArrayList)grupo.getParticipantes());
     }
 
     private void geetInfoGrupo(){
-        chatConexion = Chat.getChatGrupal(MainActivity.getMainActivity(),idGrupo);
+        chatConexion = Chat.getChatGrupal(ActivityPrincipal.getActivityPrincipal(),idGrupo);
     }
 
     private void recibirInfoGrupo(String id){
@@ -429,9 +430,9 @@ public class ConexionBluetooth extends Thread {
             String nombre = (String)entrada.readObject();
             List<Contacto> participantes = (ArrayList)entrada.readObject();
             participantes.remove(Contacto.getSelf());
-            participantes.add(Contacto.getContacto(MainActivity.getMainActivity(), socket.getRemoteDevice()));
+            participantes.add(Contacto.getContacto(ActivityPrincipal.getActivityPrincipal(), socket.getRemoteDevice()));
             Chat chat = new Chat(id,nombre,participantes);
-            chat.guardar(MainActivity.getMainActivity());
+            chat.guardar(ActivityPrincipal.getActivityPrincipal());
             chatConexion = chat;
         }catch (IOException e){
             Log.e(ERROR, "No se han podido recibir los participantes del grupo");
@@ -442,7 +443,7 @@ public class ConexionBluetooth extends Thread {
     }
 
     private void notificarMensaje(){
-        Context context = MainActivity.getMainActivity();
+        Context context = ActivityPrincipal.getActivityPrincipal();
         Intent intent = new Intent("mensajeNuevo");
         Chat chatActualizado;
         if(chatConexion.esGrupo())
@@ -450,7 +451,7 @@ public class ConexionBluetooth extends Thread {
         else
             chatActualizado = Chat.getChatById(context, chatConexion.getIdChat());
         intent.putExtra("chat", chatActualizado);
-        LocalBroadcastManager.getInstance(MainActivity.getMainActivity()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(ActivityPrincipal.getActivityPrincipal()).sendBroadcast(intent);
     }
 
 }

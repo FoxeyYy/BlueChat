@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Contacto;
+import asimov.uva.es.bluechat.R;
 
 public class ActivityCrearGrupo extends AppCompatActivity implements View.OnClickListener {
 

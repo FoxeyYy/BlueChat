@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ServiciosConexion;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;

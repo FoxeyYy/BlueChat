@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,13 +20,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import asimov.uva.es.bluechat.R;
+
 /**
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class AjustesActivity extends AppCompatActivity implements View.OnClickListener {
+public class ActivityAjustes extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * Resultado de la solicitud del permiso de localización
@@ -193,7 +195,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     private void comprobarPermisos() {
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(AjustesActivity.this,
+            ActivityCompat.requestPermissions(ActivityAjustes.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISO_ACCESO_DATOS);
     }
 

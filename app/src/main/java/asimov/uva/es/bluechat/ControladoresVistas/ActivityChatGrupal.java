@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +10,7 @@ import java.util.List;
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.R;
 
 public class ActivityChatGrupal extends ActividadChatBase {
 

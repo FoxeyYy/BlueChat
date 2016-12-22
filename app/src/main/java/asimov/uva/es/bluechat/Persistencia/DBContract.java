@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.sqllite;
+package asimov.uva.es.bluechat.Persistencia;
 
 import android.provider.BaseColumns;
 

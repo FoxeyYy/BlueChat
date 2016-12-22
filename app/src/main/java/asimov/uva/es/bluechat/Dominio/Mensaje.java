@@ -8,8 +8,8 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.Date;
 
-import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
+import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
+import asimov.uva.es.bluechat.Persistencia.DBOperations;
 
 /**
  * Mensaje enviado por la App,
@@ -95,7 +95,7 @@ public class Mensaje implements Parcelable, Serializable {
     };
 
     public void marcarEnviado(String idContacto) {
-        DBOperations.obtenerInstancia(MainActivity.getMainActivity()).marcarEnviado(id, idContacto);
+        DBOperations.obtenerInstancia(ActivityPrincipal.getActivityPrincipal()).marcarEnviado(id, idContacto);
     }
 
     public void registrar(Context contexto, Chat chat){

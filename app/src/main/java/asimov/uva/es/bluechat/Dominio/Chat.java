@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
+import asimov.uva.es.bluechat.Persistencia.DBContract;
+import asimov.uva.es.bluechat.Persistencia.DBOperations;
 
 /**
  * Clase representativa de un chat

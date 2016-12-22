@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,6 +25,7 @@ import java.util.List;
 
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.R;
 
 /**
  * Actividad base para los chats interactivos

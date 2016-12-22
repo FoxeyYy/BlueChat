@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ControladoresVistas;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,13 +19,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import asimov.uva.es.bluechat.R;
+
 /**
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class PrimeraVezActivity extends AppCompatActivity implements View.OnClickListener {
+public class ActivityPrimeraVez extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * Direccion de la imagen de perfil
@@ -61,6 +63,8 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
                     comprobarPermisos();
                     guardarPreferencias();
                     finalizarPrimeraVez();
+                    Intent intent = new Intent(this, ActivityPrincipal.class);
+                    startActivity(intent);
                     finish();
                 }
                 break;
@@ -83,14 +87,14 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
      * Guarda los valores en las preferencias
      */
     private void guardarPreferencias(){
-        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE);
+        SharedPreferences preferencias = getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
 
         TextView textNombre = (TextView) findViewById(R.id.apodo);
         String nombre = String.valueOf(textNombre.getText());
 
-        editor.putString(AjustesActivity.NOMBRE, nombre);
-        editor.putString(AjustesActivity.AVATAR, avatar);
+        editor.putString(ActivityAjustes.NOMBRE, nombre);
+        editor.putString(ActivityAjustes.AVATAR, avatar);
         editor.commit();
     }
 
@@ -116,7 +120,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
     private void comprobarPermisosImagen() {
             if(ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-                ActivityCompat.requestPermissions(PrimeraVezActivity.this,
+                ActivityCompat.requestPermissions(ActivityPrimeraVez.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISO_ACCESO_DATOS);
 
     }
@@ -146,9 +150,9 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void finalizarPrimeraVez(){
-        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
+        SharedPreferences preferencias = getSharedPreferences(ActivityAjustes.PREFERENCIAS, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
-        editor.putBoolean("primeraVez", false);
+        editor.putBoolean(ActivityEntrada.AJUSTE_PRIMERA_VEZ, false);
         editor.commit();
     }
 
@@ -174,7 +178,7 @@ public class PrimeraVezActivity extends AppCompatActivity implements View.OnClic
         if (!permisosNecesarios.isEmpty()) {
             String[] arraySolicitudes = new String[permisosNecesarios.size()];
             arraySolicitudes = permisosNecesarios.toArray(arraySolicitudes);
-            ActivityCompat.requestPermissions(PrimeraVezActivity.this,
+            ActivityCompat.requestPermissions(ActivityPrimeraVez.this,
                     arraySolicitudes, PERMISO_ACCESO_DATOS);
         }
 

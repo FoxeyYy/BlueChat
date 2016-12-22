@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.ServiciosConexion;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -12,6 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
+import asimov.uva.es.bluechat.ControladoresVistas.ActivityPrincipal;
 import asimov.uva.es.bluechat.Dominio.Chat;
 import asimov.uva.es.bluechat.Dominio.Contacto;
 import asimov.uva.es.bluechat.Dominio.Mensaje;
@@ -90,7 +91,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
     private void conectar() {
 
-        List<Chat> chats = Chat.getChatsPendientes(MainActivity.getMainActivity());
+        List<Chat> chats = Chat.getChatsPendientes(ActivityPrincipal.getActivityPrincipal());
 
         Log.d(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
         for (Chat chat : chats) {
