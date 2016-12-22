@@ -535,7 +535,7 @@ public class ConexionBluetooth extends Thread {
     private void recibirInfoGrupo(String id){
         try{
             String nombre = (String)entrada.readObject();
-            List<Contacto> participantes = (ArrayList)entrada.readObject();
+            @SuppressWarnings("unchecked") List<Contacto> participantes = (ArrayList)entrada.readObject();
             participantes.remove(Contacto.getSelf(contexto));
             participantes.add(Contacto.getContacto(contexto, socket.getRemoteDevice()));
             Chat chat = new Chat(id,nombre,participantes);
