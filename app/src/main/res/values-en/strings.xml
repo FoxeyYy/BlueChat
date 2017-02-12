@@ -1,17 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Cluster01</string>
     <string name="tab_descubrir">Discover</string>
     <string name="tab_chats">Chats</string>
-    <string name="acerca_de" translatable="false" >Cluster #1 \n
-        %1$s\n\n
-        Version %2$s
-    </string>
-    <string name="autores" translatable="false">
-        Silvia Arias Herguedas\n
-        Héctor Del Campo Pando\n
-        Alberto Gutiérrez Pérez\n
-        David Robles Gallardo
-    </string>
     <string name="info_aplicacion">In order for this App to work properly you must grant permissions for:\n
         -Media files access, mandatory to establish an avatar and to send and receive images.\n
         -Contacts access, mandatory so we can show your linked agenda names.\n

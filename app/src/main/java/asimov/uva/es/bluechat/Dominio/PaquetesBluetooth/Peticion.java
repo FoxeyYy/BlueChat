@@ -1,8 +1,9 @@
-package asimov.uva.es.bluechat.Dominio.PaquetesBluetooth;
+package asimov.uva.es.bluechat.dominio.paquetesBluetooth;
 
 import java.io.Serializable;
 
 /**
+ * Implementa una Peticion
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -14,46 +15,64 @@ public class Peticion implements Serializable {
      * Constantes identificativas de los tipos de paquete
      */
     public enum TipoPeticion {
-        ERROR,
-        DESCUBRIMIENTO,
         MENSAJE,
         MENSAJEGRUPO
     }
 
     /**
-     * Numero de mensajes a enviar tras recibir la peticion
+     * Numero de mensajes a enviar tras recibir la petición
      */
-    private int numeroMensajes;
+    private final int numeroMensajes;
 
-    private TipoPeticion tipo;
+    /**
+     * Tipo de petición
+     */
+    private final TipoPeticion tipo;
+
+    /**
+     * Identificador de un grupo
+     */
     private String idGrupo;
 
-    public Peticion (TipoPeticion tipo, int numeroMensajes ) {
+    /**
+     * Inicializa una petición con un número de mensajes indicado
+     * @param numeroMensajes El número de mensajes de la petición
+     */
+    public Peticion(int numeroMensajes) {
         this.numeroMensajes = numeroMensajes;
-        this.tipo = tipo;
+        this.tipo = TipoPeticion.MENSAJE;
     }
 
-    public Peticion(TipoPeticion tipo, int numeroMensajes, String idGrupo){
+    /**
+     * Inicializa una petición con un número de mensajes indicado, y un identificador de grupo
+     * @param numeroMensajes El número de mensajes de la petición
+     * @param idGrupo El identificador de grupo
+     */
+    public Peticion(int numeroMensajes, String idGrupo){
         this.idGrupo = idGrupo;
-        this.tipo = tipo;
+        this.tipo = TipoPeticion.MENSAJEGRUPO;
         this.numeroMensajes = numeroMensajes;
     }
 
-    public Peticion(TipoPeticion tipo){
-        this.tipo = tipo;
-    }
-
+    /**
+     * Devuelve un identificador de grupo
+     * @return idGrupo El identificador del grupo
+     */
     public String getIdGrupo(){
         return idGrupo;
     }
 
+    /**
+     * Devuelve el número de mensajes
+     * @return numeroMensajes El número de mensajes
+     */
     public int getNumeroMensajes(){
         return numeroMensajes;
     }
 
     /**
      * Devuelve el tipoPeticion del paquete recibido, en forma de una constante definida en esta clase
-     * @return el tipoPeticion del paquete
+     * @return tipo El tipoPeticion del paquete
      **/
     public TipoPeticion getTipoPeticion() {
         return tipo;

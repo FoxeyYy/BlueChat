@@ -1,17 +1,19 @@
-package asimov.uva.es.bluechat.Dominio;
+package asimov.uva.es.bluechat.dominio;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
+import asimov.uva.es.bluechat.persistencia.DBContract;
+import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
  * Clase representativa de un chat
@@ -25,7 +27,7 @@ public class Chat implements Parcelable{
     /**
      * {@link Contacto} con los que se establece el chat
      */
-    private List<Contacto> participantes;
+    private final List<Contacto> participantes;
 
     /**
      * Identifica al chat
@@ -35,7 +37,7 @@ public class Chat implements Parcelable{
     /**
      * Nombre del chat
      */
-    private String nombre;
+    private final String nombre;
 
     /**
      * Historial de mensajes del chat
@@ -52,18 +54,32 @@ public class Chat implements Parcelable{
      */
     private boolean esGrupo;
 
+    /**
+     * Devuelve los mensajes pendientes
+     * @param context Contexto de la aplicación
+     * @return mensajes La lista de mensajes pendientes
+     */
     private List<Mensaje> getMensajesPendientes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajesPendientes(idChat);
-        List<Mensaje> mensajes = new ArrayList();
+        List<Mensaje> mensajes = new ArrayList<>();
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
             String contenido = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_CONTENT));
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
-            Contacto emisor = Contacto.getSelf(); //TODO nosotros mismos en la base? o siempre self
+            Contacto emisor = Contacto.getSelf(context);
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
 
-            mensajes.add(new Mensaje(id, contenido, imagen, emisor, new Date())); //TODO Fecha de la bbdd
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy", Locale.getDefault());
+            Mensaje mensaje;
+            try{
+                Date date = formatoFecha.parse(fecha);
+                mensaje = new Mensaje(id,contenido,imagen,emisor,date);
+            }catch (ParseException e){
+                e.printStackTrace();
+                mensaje = new Mensaje(id,contenido,imagen,emisor,new Date());
+            }
+            mensajes.add(mensaje);
         }
 
         cursor.close();
@@ -76,7 +92,7 @@ public class Chat implements Parcelable{
      * @param contacto El contacto con el cual se establece el chat
      */
     public Chat(Contacto contacto) {
-        participantes = new ArrayList(1);
+        participantes = new ArrayList<>(1);
         participantes.add(contacto);
         nombre = contacto.getNombre();
         esPersistente = false;
@@ -85,21 +101,21 @@ public class Chat implements Parcelable{
 
     /**
      * Inicializa un chat grupal
-     * @param nombre del grupo
-     * @param participantes del grupo
+     * @param nombre El nombre del grupo
+     * @param participantes Los contactos participantes en el grupo
      */
     public Chat(String nombre, List<Contacto> participantes) {
         this.nombre = nombre;
-        this.participantes = new ArrayList(participantes);
+        this.participantes = new ArrayList<>(participantes);
         esPersistente = false;
         esGrupo = true;
     }
 
     /**
      * Inicializa un chat grupal
-     * @param id del chat
-     * @param nombre del grupo
-     * @param participantes del grupo
+     * @param id El identificador del chat
+     * @param nombre El nombre del grupo
+     * @param participantes Los contactos participantes en el grupo
      */
     public Chat(String id, String nombre, List<Contacto> participantes) {
         this(nombre, participantes);
@@ -108,7 +124,12 @@ public class Chat implements Parcelable{
         idChat = id;
     }
 
-    protected Chat(Parcel in) {
+    /**
+     * Inicializa un chat a partir de un objeto parcelable
+     * @param in El objeto parcelable
+     */
+    private Chat(Parcel in) {
+        //noinspection unchecked
         participantes = in.readArrayList(Contacto.class.getClassLoader());
         nombre = in.readString();
         idChat = in.readString();
@@ -117,6 +138,9 @@ public class Chat implements Parcelable{
         esGrupo = in.readByte() != 0;
     }
 
+    /**
+     * El constructor del objeto parcelable
+     */
     public static final Creator<Chat> CREATOR = new Creator<Chat>() {
         @Override
         public Chat createFromParcel(Parcel in) {
@@ -130,15 +154,15 @@ public class Chat implements Parcelable{
     };
 
     /**
-     * Construye un chat
-     * @param id del chat
-     * @param nombre del chat
-     * @param contacto del chat
+     * Inicializa un chat
+     * @param id El identificador del chat
+     * @param nombre El nombre del chat
+     * @param contacto El contacto del chat
      */
     private Chat(String id, String nombre, Contacto contacto) {
         this.idChat = id;
         this.nombre = nombre;
-        participantes = new ArrayList(1);
+        participantes = new ArrayList<>(1);
         participantes.add(contacto);
         esPersistente = true;
         esGrupo = false;
@@ -146,10 +170,11 @@ public class Chat implements Parcelable{
 
     /**
      * Devuelve todos los chats disponibles
+     * @param context El contexto de la actividad
      */
     public static List<Chat> getChats(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getAllChats();
-        List<Chat> chats = new ArrayList();
+        List<Chat> chats = new ArrayList<>();
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String idChat = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CHAT));
@@ -184,6 +209,11 @@ public class Chat implements Parcelable{
         return chats;
     }
 
+    /**
+     * Devuelve los chats pendientes
+     * @param context El contexto de la actividad
+     * @return chats Lista de los chats pendientes
+     */
     public static List<Chat> getChatsPendientes(Context context){
         Cursor cursor = DBOperations.obtenerInstancia(context).getChatsPendientes();
         List<Chat> chats = new ArrayList<>();
@@ -220,9 +250,14 @@ public class Chat implements Parcelable{
         return chats;
     }
 
-    public List<Mensaje> getMensajes(Context context) {
+    /**
+     * Devuelve los mensajes
+     * @param context El contexto de la actividad
+     * @return mensajes La lista de mensajes
+     */
+    private List<Mensaje> getMensajes(Context context) {
         Cursor cursor = DBOperations.obtenerInstancia(context).getMensajes(this);
-        List<Mensaje> mensajes = new ArrayList();
+        List<Mensaje> mensajes = new ArrayList<>();
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_ID));
@@ -230,16 +265,16 @@ public class Chat implements Parcelable{
             Contacto emisor = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_EMISOR)));
             String imagen = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_IMAGEN));
             String fecha = cursor.getString(cursor.getColumnIndex(DBContract.Mensaje.COLUMN_NAME_FECHA));
-            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
-            Date date;
-            try {
-                date = formatoFecha.parse(fecha);
-                Mensaje mensaje = new Mensaje(id, contenido, imagen, emisor, date);
-                mensajes.add(mensaje); //TODO Fecha de la bbdd
-            }
-            catch(Exception e){
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("hh:mm MMM dd yyyy", Locale.getDefault());
+            Mensaje mensaje;
+            try{
+                Date date = formatoFecha.parse(fecha);
+                mensaje = new Mensaje(id,contenido,imagen,emisor,date);
+                }catch (ParseException e){
                 e.printStackTrace();
-            }
+                mensaje = new Mensaje(id,contenido,imagen,emisor,new Date());
+                }
+            mensajes.add(mensaje);
         }
 
         cursor.close();
@@ -248,9 +283,9 @@ public class Chat implements Parcelable{
     }
 
     /**
-     * Comprueba si el grupo se encuentra guardado en la db
-     * @param context
-     * @param id del grupo
+     * Comprueba si el grupo se encuentra guardado en la base de datos
+     * @param context El contexto de la actividad
+     * @param id El identificador del grupo
      * @return true si el grupo existe, false en cualquier otro caso
      */
     public static boolean existeGrupo(Context context, String id){
@@ -258,6 +293,12 @@ public class Chat implements Parcelable{
         return cursor.getCount() != 0;
     }
 
+    /**
+     * Devuelve un chat en grupo
+     * @param context El contexto de la actividad
+     * @param id El identificador del chat
+     * @return chat El chat si existe
+     */
     public static Chat getChatGrupal(Context context, String id){
         List<Chat> chats = new ArrayList<>();
         Cursor cursor = DBOperations.obtenerInstancia(context).getGrupos();
@@ -285,14 +326,14 @@ public class Chat implements Parcelable{
 
     /**
      * Guarda el chat
-     * @param context de la actividad
+     * @param context El contexto de la actividad
      */
     public void guardar(Context context) {
 
         if (!esGrupo()) {
             DBOperations.obtenerInstancia(context).insertChat(this);
         } else {
-            DBOperations.obtenerInstancia(context).insertarGrupo(this);
+            DBOperations.obtenerInstancia(context).insertarGrupo(context, this);
             for (Contacto participante: participantes) {
                 DBOperations.obtenerInstancia(context).insertContact(participante);
                 DBOperations.obtenerInstancia(context).insertarContactoEnGrupo(this, participante);
@@ -302,18 +343,48 @@ public class Chat implements Parcelable{
         esPersistente = true;
     }
 
+    /**
+     * Devuelve un chat según su identificador
+     * @param context El contexto de la actividad
+     * @param idChat El identificador del chat
+     * @return chat El chat si existe
+     */
+    public static Chat getChatById(Context context, String idChat) {
+        Cursor cursor = DBOperations.obtenerInstancia(context).getChat(idChat);
+        if(cursor.moveToFirst()) {
+            String nombre = cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_NOMBRE));
+            Contacto contacto = Contacto.getContacto(context, cursor.getString(cursor.getColumnIndex(DBContract.Chat.COLUMN_NAME_ID_CONTACTO)));
+
+            Chat chat = new Chat(idChat, nombre, contacto);
+            List<Mensaje> historial = chat.getMensajes(context);
+            chat.setHistorial(historial);
+            return chat;
+        }
+        return null;
+    }
+
+    /**
+     * Comprueba si el chat esta almacenado de forma persistente
+     * @return true si es persistente, false en otro caso
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean esPersistente () {
         return esPersistente;
     }
 
+    /**
+     * Comprueba si el chat es un grupo
+     * @return true si es un grupo, false en otro caso
+     */
     public boolean esGrupo() {
         return esGrupo;
     }
 
     /**
      * Establece el valor por defecto para el historial de mensajes
+     * @param historial El historial del mensajes
      */
-    public void setHistorial(List<Mensaje> historial) {
+    private void setHistorial(List<Mensaje> historial) {
         this.historial = historial;
     }
 
@@ -335,7 +406,7 @@ public class Chat implements Parcelable{
 
     /**
      * Devuelve la lista de participantes del chat
-     * @return la lista de participantes
+     * @return participantes La lista de participantes
      */
     public List<Contacto> getParticipantes () {
         return participantes;
@@ -351,7 +422,7 @@ public class Chat implements Parcelable{
 
     /**
      * Devuelve el nombre del chat
-     * @return el nombre
+     * @return nombre: El nombre del chat
      */
     public String getNombre() { return nombre; }
 
@@ -361,9 +432,6 @@ public class Chat implements Parcelable{
      */
     public void setIdChat(String idChat) {
         this.idChat = idChat;
-    }
-
-    public void setParticipantes(List<Contacto> participantes){this.participantes = participantes;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,12 +13,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import asimov.uva.es.bluechat.R;
 
 /**
  * @author David Robles Gallardo
@@ -26,7 +28,7 @@ import android.widget.Toast;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class AjustesActivity extends AppCompatActivity implements View.OnClickListener {
+public class ActivityAjustes extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * Resultado de la solicitud del permiso de localización
@@ -41,7 +43,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     public static final String PREFERENCIAS = "Preferencias";
 
     /**
-     * Resultado de la solicitud de acceso a imagenes
+     * Resultado de la solicitud de acceso a imágenes
      */
     private final int READ_REQUEST_CODE = 1;
 
@@ -54,8 +56,6 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
      * Direccion de la imagen de perfil
      */
     private Uri uriImagen;
-
-    private final String IMAGEN = "Imagen";
 
 
     @Override
@@ -71,7 +71,10 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         mostrarPreferenciasGuardadas();
         mostrarAcercaDe();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
     }
 
@@ -105,12 +108,12 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         if(uriImagen != null)
             editor.putString(AVATAR, uriImagen.toString());
 
-        editor.commit();
+        editor.apply();
 
     }
 
     /**
-     * Muetra las preferencias previamente guardadas
+     * Muetra las preferencias previamente guardadas, con el nombre y la imagen de perfil
      */
     private void mostrarPreferenciasGuardadas() {
         TextView nombre = (TextView)findViewById(R.id.nombre_preferencias);
@@ -122,7 +125,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
 
         ImageButton avatar = (ImageButton) findViewById(R.id.avatar_preferencias);
         String avatarContacto = getAvatar();
-        if(avatarContacto != null && !avatarContacto.isEmpty()) {
+        if(!avatarContacto.isEmpty()) {
             Uri uri = Uri.parse(avatarContacto);
             avatar.setImageURI(uri);
         }else{
@@ -133,7 +136,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Devuelve el nombre guardado
+     * Devuelve el nombre de usuario guardado
      * @return el nombre a mostrar para el usuario
      */
     private String getNombreGuardado() {
@@ -141,7 +144,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     * Devuelve el path al avatar del usuario
+     * Devuelve el path al avatar(imagen de perfil) del usuario
      * @return el path del avatar a mostrar
      */
     private String getAvatar() {
@@ -150,7 +153,7 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * Devuelve la dirección MAC del dispositivo
-     * @return la direcció MAC del dispositivo
+     * @return la dirección MAC del dispositivo
      */
     private String getMacBluetooth() {
         return android.provider.Settings.Secure.getString(
@@ -167,6 +170,10 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * Muestra al usuario las imágenes en el almacenamiento externo, y devuelve el resultado
+     * de la seleccionada
+     */
     private void buscarImagen(){
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -182,19 +189,20 @@ public class AjustesActivity extends AppCompatActivity implements View.OnClickLi
 
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
-            Log.d(IMAGEN, "Uri: " + uri.toString());
             ImageButton imagenPerfil = (ImageButton) findViewById(R.id.avatar_preferencias);
             uriImagen = uri;
             imagenPerfil.setImageURI(uri);
 
         }
     }
-
+    /**
+     * Comprueba los permisos de acceso al almacenamiento externo para el empleo de imágenes
+     */
     private void comprobarPermisos() {
         if(ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(AjustesActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(ActivityAjustes.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISO_ACCESO_DATOS);
     }
 
     @Override

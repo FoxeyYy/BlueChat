@@ -1,14 +1,9 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -16,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +22,9 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+import asimov.uva.es.bluechat.R;
+import asimov.uva.es.bluechat.serviciosConexion.EnvioMensajesPendientes;
+import asimov.uva.es.bluechat.serviciosConexion.ServidorBluetooth;
 import io.fabric.sdk.android.Fabric;
 
 import static asimov.uva.es.bluechat.R.id.container;
@@ -41,28 +38,22 @@ import static asimov.uva.es.bluechat.R.id.container;
  * @author Hector Del Campo Pando
  * @author Alberto Gutierrez Perez
  */
-public class MainActivity extends AppCompatActivity{
+public class ActivityPrincipal extends AppCompatActivity{
 
     /**
      * Resultado de la solicitud del permiso de localización
      */
-    private final int PERMISO_LOCALIZACION = 1;
-
-
-    /**
-     * Resultado de la solicitud de la activación del bluetooth
-     */
-    private final int BLUETOOTH_ACTIVADO = 1;
+    private final int PERMISO_LOCALIZACION = 2;
 
     /**
      * Resultado de la solicitud de visibilidad del bluetooth
      */
-    private final int BLUETOOTH_VISIBLE = 1;
+    private final int BLUETOOTH_VISIBLE = 2;
 
     /**
      * Constante para iniciar la actividad en un tab concreto
      */
-    private final String CHATS = "Chats";
+    public static final String CHATS = "Chats";
 
     /**
      * Adaptador bluetooth del dispositivo
@@ -80,33 +71,12 @@ public class MainActivity extends AppCompatActivity{
     private static final String TAG = "BLUETOOTH";
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
-
-    /**
      * Tab que muestra los dispositivos encontrados mediante bluetooth
      */
     private TabDescubrir tab_descubrir;
 
-    /**
-     * Implementación para el patron Singleton
-     */
-    private static MainActivity mainActivity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "EMPEZANDO MAIN");
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
@@ -116,123 +86,37 @@ public class MainActivity extends AppCompatActivity{
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        /*
+      The {@link android.support.v4.view.PagerAdapter} that will provide
+      fragments for each of the sections. We use a
+      {@link FragmentPagerAdapter} derivative, which will keep every
+      loaded fragment in memory. If this becomes too memory intensive, it
+      may be best to switch to a
+      {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(container);
+        /*
+      The {@link ViewPager} that will host the section contents.
+     */
+        ViewPager mViewPager = (ViewPager) findViewById(container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        mainActivity = this;
-
-        SharedPreferences preferencias = getSharedPreferences(AjustesActivity.PREFERENCIAS, MODE_PRIVATE);
-        boolean primeraVez = preferencias.getBoolean("primeraVez", true);
-        if(primeraVez){
-            SharedPreferences.Editor editor = preferencias.edit();
-            editor.putBoolean("primeraVez", false);
-            editor.commit();
-            Intent intent = new Intent(this, PrimeraVezActivity.class);
-            startActivity(intent);
-        }
-
-
-
         comprobarBluetooth();
-        comprobarPermisos();
-
         if( esCompatibleBluetooth ) {
-            startService(new Intent(MainActivity.this, ServidorBluetooth.class));
-            startService(new Intent(MainActivity.this, EnvioMensajesPendientes.class));
+            comprobarPermisos();
         }
 
         // Abre la tab del historial si se accede por notificacion
-        if (getIntent().getAction().equals(CHATS)) {
+        if (null != getIntent().getAction() && getIntent().getAction().equals(CHATS)) {
             mViewPager.setCurrentItem(mViewPager.getAdapter().getCount() - 1);
         }
 
-    }
 
-    public static MainActivity getMainActivity(){
-        return mainActivity;
-    }
-
-    /**
-     * Muestra una notificación con el mensaje recibido como parámetro
-     * @param mensaje El mensaje a mostrar en la notificación
-     */
-    public void notificar(String mensaje){
-        //Intent intent = new Intent(this, NotificationCompat.class);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setAction(CHATS);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notificacion =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("BlueChat")
-                        .setSmallIcon(R.drawable.notificacion_icon)
-                        .setCategory(Notification.CATEGORY_MESSAGE)
-                        .setAutoCancel(true)
-                        .setContentText(mensaje)
-                        .setContentIntent(pIntent).build();
-
-        manager.notify(0, notificacion);
-
-    }
-
-    /**
-     * Muestra una notificación con el mensaje recibido como parámetro
-     * @param mensaje El mensaje a mostrar en la notificación
-     */
-    public void notificar(String mensaje, Bitmap imagen){
-        Intent intent = new Intent(this, NotificationCompat.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notificacion =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("BlueChat")
-                        .setLargeIcon(imagen)
-                        .setSmallIcon(R.drawable.notificacion_icon)
-                        .setCategory(Notification.CATEGORY_MESSAGE)
-                        .setAutoCancel(true)
-                        .setFullScreenIntent(pIntent,true)
-                        .setContentText(mensaje).build();
-
-        manager.notify(0,notificacion);
-
-    }
-
-    /**
-     * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
-     * De no ser así le pide dichos permisos al usuario
-     */
-    private void comprobarPermisos() {
-        if(ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISO_LOCALIZACION: {
-
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //El usuario nos proporciona permisos
-
-                } else {
-                    //El usuario no proporciona permisos
-                    //mostramos un mensaje indicando que son necesarios
-                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
     }
 
     /**
@@ -245,7 +129,11 @@ public class MainActivity extends AppCompatActivity{
             Log.d(TAG, "BLUETOOTH NO DISPONIBLE");
             esCompatibleBluetooth = false;
             Toast.makeText(this, R.string.dispositivo_sin_bluetooth, Toast.LENGTH_SHORT).show();
-        }
+        }else
+            if(adaptadorBluetooth.isEnabled()){
+                startService(new Intent(this, ServidorBluetooth.class));
+                startService(new Intent(this, EnvioMensajesPendientes.class));
+            }
 
     }
 
@@ -265,6 +153,34 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
+     * Comprueba si la aplicación posee los permisos necesarios para poder funcionar
+     * De no ser así le pide dichos permisos al usuario
+     */
+    private void comprobarPermisos() {
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(ActivityPrincipal.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISO_LOCALIZACION);
+        else
+            activarBluetooth();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISO_LOCALIZACION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    activarBluetooth();
+                else
+                    //El usuario no proporciona permisos
+                    //mostramos un mensaje indicando que son necesarios
+                    Toast.makeText(this, R.string.permisos_denegados, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
      * Pide permiso al usuario para activar el Bluetooth del dispositivo
      */
     private void activarBluetooth(){
@@ -272,38 +188,35 @@ public class MainActivity extends AppCompatActivity{
         if( BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE != adaptadorBluetooth.getScanMode()) {
             Intent discoverableIntent = new
                     Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivityForResult(discoverableIntent, BLUETOOTH_VISIBLE);
-        }
-
-        if (!adaptadorBluetooth.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, BLUETOOTH_ACTIVADO);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BLUETOOTH_ACTIVADO) {
-            if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, R.string.info_bluetooth_desactivado, Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == BLUETOOTH_VISIBLE){
-            if(resultCode == RESULT_CANCELED)
-                Toast.makeText(this, R.string.info_bluetooth_visible, Toast.LENGTH_SHORT).show();
+        switch (requestCode){
+            case BLUETOOTH_VISIBLE :
+                if(resultCode == RESULT_CANCELED)
+                    Toast.makeText(this, R.string.info_bluetooth_visible, Toast.LENGTH_SHORT).show();
+                else {
+                    adaptadorBluetooth.startDiscovery();
+                    startService(new Intent(this, ServidorBluetooth.class));
+                    startService(new Intent(this, EnvioMensajesPendientes.class));
+                }
+                break;
         }
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        adaptadorBluetooth.cancelDiscovery();
+        if(adaptadorBluetooth != null)
+            adaptadorBluetooth.cancelDiscovery();
     }
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(MainActivity.this, EnvioMensajesPendientes.class));
+        stopService(new Intent(ActivityPrincipal.this, EnvioMensajesPendientes.class));
         super.onDestroy();
     }
 
@@ -326,7 +239,7 @@ public class MainActivity extends AppCompatActivity{
                 break;
 
             case (R.id.action_settings):
-                Intent intentAjustes= new Intent(this, AjustesActivity.class);
+                Intent intentAjustes= new Intent(this, ActivityAjustes.class);
                 startActivity(intentAjustes);
                 break;
 
@@ -334,15 +247,16 @@ public class MainActivity extends AppCompatActivity{
                 Log.d(TAG,"Refrescar");
                 if(esCompatibleBluetooth) {
                     comprobarPermisos();
-                    activarBluetooth();
                     adaptadorBluetooth.startDiscovery();
-
                 }else
                     Toast.makeText(this,
                                     R.string.dispositivo_sin_bluetooth,
                                     Toast.LENGTH_SHORT).show();
                 break;
-
+            case R.id.action_ayuda:
+                Intent intentAyuda = new Intent(this, ActivityAyuda.class);
+                startActivity(intentAyuda);
+                break;
             default:
                 Log.e(TAG, "Elemento de menu desconocido");
                 break;
@@ -353,19 +267,18 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
+     * Un {@link FragmentPagerAdapter} que devuelve el fragment correspondiente a una de las tabs
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         /**
-         * Numero de tabs a mostrar
+         * Número de tabs a mostrar
          */
         private static final int NUM_TABS = 2;
 
         /**
          * Crea un nuevo {@link SectionsPagerAdapter}
-         * @param fm el fragment manager
+         * @param fm El fragment manager
          */
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

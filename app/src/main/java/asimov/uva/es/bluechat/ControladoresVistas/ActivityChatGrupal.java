@@ -1,18 +1,30 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.R;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 
+/**
+ * Actividad para los chats grupales.
+ * @author David Robles Gallardo
+ * @author Silvia Arias Herguedas
+ * @author Hector Del Campo Pando
+ * @author Alberto Gutierrez Perez
+ */
 public class ActivityChatGrupal extends ActividadChatBase {
 
+    /**
+     * Constantes para la creacion de un grupo
+     */
     public static final String CONTACTOS = "Participantes";
     public static final String NOMBRE_GRUPO = "Nombre";
 
@@ -23,13 +35,21 @@ public class ActivityChatGrupal extends ActividadChatBase {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        Bundle params = getIntent().getExtras();
-        setChat((Chat) params.getParcelable("chat"));
+        if (savedInstanceState != null) {
+            setChat(Chat.getChatGrupal(getBaseContext(), savedInstanceState.getString("chat")));
+        } else {
+            Bundle params = getIntent().getExtras();
+            Chat chat = Chat.getChatGrupal(this, params.getString("idChat"));
+            setChat(chat);
 
-        if (null == getChat()) {
-            nuevoChat(params);
+            if (null == getChat()) {
+                nuevoChat(params);
+            }
         }
 
         findViewById(R.id.boton_enviar).setOnClickListener(this);
@@ -50,7 +70,7 @@ public class ActivityChatGrupal extends ActividadChatBase {
 
         List<Mensaje> historial = getChat().getHistorial();
 
-        Contacto myself = Contacto.getSelf();
+        Contacto myself = Contacto.getSelf(getBaseContext());
         for(Mensaje msg: historial) {
             if(msg.getEmisor().equals(myself))
                 mostrarMensajeEnviado(msg);
@@ -58,8 +78,14 @@ public class ActivityChatGrupal extends ActividadChatBase {
                 mostrarMensajeRecibido(msg);
         }
 
+        scrollAlUltimo();
+
     }
 
+    /**
+     * Permite crear un chat grupal con un conjunto de participantes y un nombre de grupo
+     * @param params La lista de participantes del grupo y el nombre asignado al mismo
+     */
     private void nuevoChat (Bundle params) {
         List<Contacto> participantes = params.getParcelableArrayList(CONTACTOS);
         String nombreGrupo = params.getString(NOMBRE_GRUPO);

@@ -1,8 +1,7 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.serviciosConexion;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
@@ -13,13 +12,13 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 
 
 /**
- * Servicio encargado de eniviar los mensajes pendientes
+ * Servicio encargado de enviar los mensajes pendientes
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -28,13 +27,19 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
 public class EnvioMensajesPendientes extends Service implements Runnable {
 
     /**
-     * Subproceso de ejecucion
+     * Subproceso de ejecución
      */
     private Thread hilo;
 
+    /**
+     * Indica si esta en ejecución
+     */
     private boolean enEjecucion;
 
-    BluetoothAdapter adaptadorBluetooth;
+    /**
+     * Adaptador Bluetooth para realizar las tareas
+     */
+    private BluetoothAdapter adaptadorBluetooth;
 
     private final String SERVICIO = "SERVICIO";
 
@@ -81,7 +86,7 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
             conectar();
             try {
-                hilo.sleep(5000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -89,9 +94,12 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
 
     }
 
+    /**
+     * Conecta un dispositivo con otro
+     */
     private void conectar() {
 
-        List<Chat> chats = Chat.getChatsPendientes(MainActivity.getMainActivity());
+        List<Chat> chats = Chat.getChatsPendientes(getBaseContext());
 
         Log.d(SERVICIO, "El numero de chats con mensajes pendientes es: " + chats.size());
         for (Chat chat : chats) {
@@ -110,6 +118,11 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
         }
     }
 
+    /**
+     * Establece la conexión de Bluetooth de un dispositivo con un chat
+     * @param device El dispositivo
+     * @param chat El chat
+     */
     private void conexion(BluetoothDevice device, Chat chat){
         BluetoothSocket socket;
         List<Mensaje> mensajes = chat.getHistorial();
@@ -117,15 +130,12 @@ public class EnvioMensajesPendientes extends Service implements Runnable {
                 socket = device.createInsecureRfcommSocketToServiceRecord(ServidorBluetooth.MY_UUID);
                 socket.connect();
 
-                //TODO cuando se lanza el descubrimiento
-                //ConexionBluetooth descubrir = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_DESCUBRIMIENTO);
-                //descubrir.start();
                 if(chat.esGrupo()){
-                    ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES_GRUPO, mensajes);
+                    ConexionBluetooth conexion = new ConexionBluetooth(getBaseContext(), socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES_GRUPO, mensajes);
                     conexion.setIdGrupo(chat.getIdChat());
                     conexion.start();
                 }else{
-                    ConexionBluetooth conexion = new ConexionBluetooth(socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
+                    ConexionBluetooth conexion = new ConexionBluetooth(getBaseContext(), socket, ConexionBluetooth.Modo.CLIENTE_MENSAJES, mensajes);
                     conexion.start();
                 }
 

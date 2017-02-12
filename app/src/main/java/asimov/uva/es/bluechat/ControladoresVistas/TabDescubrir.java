@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -25,8 +25,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Contacto;
+import asimov.uva.es.bluechat.R;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Contacto;
+import asimov.uva.es.bluechat.serviciosConexion.EnvioMensajesPendientes;
+import asimov.uva.es.bluechat.serviciosConexion.ServidorBluetooth;
 
 /**
  * Tab que muestra los dispositivos encontrados
@@ -57,7 +60,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
     /**
      * Receptor de información de los dispositivos descubiertos
      */
-    private BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
+    private final BroadcastReceiver receptorBluetooth = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -74,28 +77,37 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
                         Log.d(TAG, "Descubierto dispositivo " + device.getAddress());
                         anadirDispositivo(contacto, false);
                     }
-
                     break;
-
-                //
                 case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                     Log.d(TAG, "EMPEZANDO A DESCUBRIR");
                     getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
                     eliminarDispositivosDescubiertos();
                     setEstadoBarraProgreso(true);
                     break;
-
                 //Finaliza el descubrimiento, oculta la barra de progreso
                 case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                     Log.d(TAG, "TERMINANDO DESCUBRIMIENTO");
                     setEstadoBarraProgreso(false);
                     getActivity().startService(new Intent(getContext(), EnvioMensajesPendientes.class));
                     break;
+                case BluetoothAdapter.ACTION_STATE_CHANGED:
+                    final int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                    switch (bluetoothState) {
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                            getActivity().stopService(new Intent(getContext(), ServidorBluetooth.class));
+                            getActivity().stopService(new Intent(getContext(), EnvioMensajesPendientes.class));
+                            break;
+                    }
+
             }
         }
     };
 
-    private SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
+    /**
+     * Implementa la funcionalidad de deslizamiento de la vista hacia abajo para comenzar a buscar
+     * dispositivos
+     */
+    private final SwipeRefreshLayout.OnRefreshListener receptorGestoActualizar = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             BluetoothAdapter.getDefaultAdapter().startDiscovery();
@@ -137,13 +149,13 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
 
     /**
      * Añade dispositivos dentro de la vista
-     * @param dispositivo a añadir a la vista
+     * @param dispositivo El dispositivo a añadir a la vista
      */
-    public void anadirDispositivo(Contacto dispositivo, boolean restaurando){
+    private void anadirDispositivo(Contacto dispositivo, boolean restaurando){
         if (!restaurando) {
             dispositivos.add(dispositivo);
         }
-        View tarjeta = inflater.inflate(R.layout.tarjeta_contacto,null);
+        View tarjeta = inflater.inflate(R.layout.tarjeta_contacto,lista, false);
 
         TextView nombre = (TextView) tarjeta.findViewById(R.id.nombre_contacto);
         nombre.setText(dispositivo.getNombre());
@@ -181,7 +193,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * Elimina todas las tarjetas de los dispositivos que se encuentran en la vista
      */
     private void eliminarDispositivosDescubiertos() {
-        dispositivos.removeAll(dispositivos);
+        dispositivos.clear();
         lista.removeAllViews();
     }
 
@@ -190,7 +202,7 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
      * si no existe dicha barra la llamada quedara sin efecto
      * @param visibilidad La visibilidad a establecer
      */
-    public void setEstadoBarraProgreso(boolean visibilidad) {
+    private void setEstadoBarraProgreso(boolean visibilidad) {
 
         if (null == getActivity()) {
             return;
@@ -225,6 +237,8 @@ public class TabDescubrir extends Fragment implements View.OnClickListener{
             anadirDispositivo(dispositivo, true);
         }
     }
+
+
 
 
 }

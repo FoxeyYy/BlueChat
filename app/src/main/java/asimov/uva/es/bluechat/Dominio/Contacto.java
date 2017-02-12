@@ -1,27 +1,29 @@
-package asimov.uva.es.bluechat.Dominio;
+package asimov.uva.es.bluechat.dominio;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import asimov.uva.es.bluechat.AjustesActivity;
-import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
+import asimov.uva.es.bluechat.controladoresVistas.ActivityAjustes;
+import asimov.uva.es.bluechat.persistencia.DBContract;
+import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
- * Contacto de la App,
+ * Representa un contacto de la App,
  * contiene datos identificativos para una persona
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
@@ -50,20 +52,24 @@ public class Contacto implements Parcelable, Serializable{
      */
     private boolean esPersistente;
 
-    public static Contacto getSelf() {
-        String nombre = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.NOMBRE, "");
-        String avatar = MainActivity.getMainActivity().getSharedPreferences(AjustesActivity.PREFERENCIAS, Activity.MODE_PRIVATE).getString(AjustesActivity.AVATAR, "");
-        String mac = android.provider.Settings.Secure.getString(MainActivity.getMainActivity().getContentResolver(),"bluetooth_address");
+    /**
+     * Devuelve el propio contacto
+     * @return contacto propio
+     */
+    public static Contacto getSelf(Context contexto) {
+        String nombre = contexto.getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.NOMBRE, "");
+        String avatar = contexto.getSharedPreferences(ActivityAjustes.PREFERENCIAS, Activity.MODE_PRIVATE).getString(ActivityAjustes.AVATAR, "");
+        String mac = android.provider.Settings.Secure.getString(contexto.getContentResolver(),"bluetooth_address");
         return new Contacto (nombre, mac, avatar, true);
     }
 
     /**
      * Devuelve una lista con todos los contactos conocidos
-     * @param contexto de acceso a persistencia
-     * @return la lista de contactos conocidos
+     * @param contexto El contexto de acceso a persistencia
+     * @return contactos La lista de contactos conocidos
      */
     public static List<Contacto> getContactos (Context contexto) {
-        List<Contacto> contactos = new ArrayList();
+        List<Contacto> contactos = new ArrayList<>();
 
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getAllContacts();
 
@@ -80,9 +86,9 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Encuentra un contacto
-     * @param context
-     * @param device a encontrar
-     * @return el contacto o null si no existe
+     * @param context El contexto de acceso a persistencia
+     * @param device El dispositivo a encontrar
+     * @return contacto El contacto o null si no existe
      */
     public static Contacto getContacto(Context context, BluetoothDevice device) {
         Contacto contacto = getContacto(context, device.getAddress());
@@ -97,9 +103,9 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Encuentra un contacto
-     * @param context
-     * @param mac a encontrar
-     * @return el contacto o null si no existe
+     * @param context El contexto de acceso a persistencia
+     * @param mac La MAC a encontrar
+     * @return contacto El contacto o null si no existe
      */
     public static Contacto getContacto(Context context, String mac) {
 
@@ -108,7 +114,7 @@ public class Contacto implements Parcelable, Serializable{
         }
 
         if (mac.equals(android.provider.Settings.Secure.getString(context.getContentResolver(),"bluetooth_address"))) {
-            return getSelf();
+            return getSelf(context);
         }
 
         Cursor cursor = DBOperations.obtenerInstancia(context).getContact(mac);
@@ -136,12 +142,12 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Encuentra los participantes de un grupo
-     * @param contexto de acceso a persistencia
-     * @param idGrupo a buscar
-     * @return la lista de participantes
+     * @param contexto El contexto de acceso a persistencia
+     * @param idGrupo El identificador de grupo a buscar
+     * @return participantes La lista de participantes
      */
     public static List<Contacto> getParticipantesGrupo(Context contexto, String idGrupo) {
-        List<Contacto> participantes = new ArrayList();
+        List<Contacto> participantes = new ArrayList<>();
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesGrupo(idGrupo);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -153,8 +159,14 @@ public class Contacto implements Parcelable, Serializable{
         return participantes;
     }
 
+    /**
+     * Devuelve los participantes de un chat que tengan mensajes pendientes
+     * @param contexto El contexto de acceso a persistencia
+     * @param idGrupo El identificador de grupo
+     * @return participantes La lista de participantes
+     */
     public static List<Contacto> getParticipantesConMensajesPendientes(Context contexto, String idGrupo){
-        List<Contacto> participantes = new ArrayList();
+        List<Contacto> participantes = new ArrayList<>();
         Cursor cursor = DBOperations.obtenerInstancia(contexto).getParticipantesConMensajesPendientes(idGrupo);
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -173,9 +185,19 @@ public class Contacto implements Parcelable, Serializable{
      * @return nombre de la agenda del contacto, null si no esta asociado.
      */
     private static String getNombreContacto(Context context, String mac) {
+
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            return null;
+        }
+
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(mac));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        }
 
         if (cursor.moveToFirst()) {
             String nombre = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
@@ -188,7 +210,7 @@ public class Contacto implements Parcelable, Serializable{
     }
     /**
      * Devuelve el chat de un contacto
-     * @return el chat
+     * @return chat El chat si existe y si no, null
      */
     public Chat getChat(Context contexto) {
         List<Chat> chats = Chat.getChats(contexto);
@@ -202,7 +224,7 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Guarda el contacto
-     * @param context de la actividad
+     * @param context El contexto de la actividad
      */
     public void guardar(Context context)  {
         DBOperations.obtenerInstancia(context).insertContact(this);
@@ -212,8 +234,8 @@ public class Contacto implements Parcelable, Serializable{
     /**
      * Inicializa a los parámetros que se indican
      * @param direccionMac La MAC del usuario
-     * @param nombre Nombre del usuario
-     * @param imagen Imagen del usuario
+     * @param nombre El nombre del usuario
+     * @param imagen La imagen del usuario
      */
     private Contacto (String nombre, String direccionMac, String imagen, boolean persistente) {
         this.direccionMac = direccionMac;
@@ -224,7 +246,7 @@ public class Contacto implements Parcelable, Serializable{
 
     /**
      * Constructor parceable
-     * @param in datos del parceable
+     * @param in Los datos del parcelable
      */
     private Contacto(Parcel in) {
         nombre = in.readString();
@@ -234,7 +256,7 @@ public class Contacto implements Parcelable, Serializable{
     }
 
     /**
-     * Constructor parceable
+     * Constructor del objeto parcelable
      */
     public static final Creator<Contacto> CREATOR = new Creator<Contacto>() {
         @Override
@@ -272,20 +294,24 @@ public class Contacto implements Parcelable, Serializable{
         return imagen;
     }
 
+    /**
+     * Indica si es persistente
+     * @return true si es persistente, false en otro caso
+     */
     public boolean esPersistente() {
         return esPersistente;
     }
 
     /**
-     *
-     * @param imagen
+     * Establece un valor para la imagen
+     * @param imagen La imagen
      */
     public void setImagen(String imagen) {
         this.imagen = imagen;
     }
 
     /**
-     * Método que permite a las clases que hereden de ésta identificar sus contenidos parcelables
+     * Permite a las clases que hereden de ésta identificar sus contenidos parcelables
      * @return 0 El valor para la clase original
      */
     @Override
@@ -293,11 +319,7 @@ public class Contacto implements Parcelable, Serializable{
         return 0;
     }
 
-    /**
-     * Parcela los atributos del contacto, almacenándolos en la estructura destino
-     * @param dest La estructura destino de almacenamiento
-     * @param flags El número de flag necesario para efectuar la operación
-     */
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nombre);

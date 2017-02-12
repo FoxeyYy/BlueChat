@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat.Dominio;
+package asimov.uva.es.bluechat.dominio;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,9 +8,7 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.Date;
 
-import asimov.uva.es.bluechat.MainActivity;
-import asimov.uva.es.bluechat.sqllite.DBContract;
-import asimov.uva.es.bluechat.sqllite.DBOperations;
+import asimov.uva.es.bluechat.persistencia.DBOperations;
 
 /**
  * Mensaje enviado por la App,
@@ -23,22 +21,19 @@ import asimov.uva.es.bluechat.sqllite.DBOperations;
 
 public class Mensaje implements Parcelable, Serializable {
 
-    public static int ENVIADO = 1;
-    public static int PENDIENTE = 0;
-
     private String id;
-    private String contenido;
+    private final String contenido;
     private String imagen;
-    private Contacto emisor;
-    private Date fecha;
+    private final Contacto emisor;
+    private final Date fecha;
 
     /**
      * Inicializa un Mensaje a los valores pasados por parámetro
      * @param contenido Contenido del mensaje
      * @param imagen del mensaje
      */
-    public Mensaje(String contenido, Uri imagen) {
-        this(contenido, Contacto.getSelf(), new Date());
+    public Mensaje(Context contexto, String contenido, Uri imagen) {
+        this(contenido, Contacto.getSelf(contexto), new Date());
         this.imagen = imagen.toString();
     }
 
@@ -73,12 +68,12 @@ public class Mensaje implements Parcelable, Serializable {
      * Inicializa un Mensaje a los valores pasados por parámetro
      * @param contenido Contenido del mensaje
      */
-    public Mensaje(String contenido) {
-        this(contenido, Contacto.getSelf(), new Date());
+    public Mensaje(Context contexto, String contenido) {
+        this(contenido, Contacto.getSelf(contexto), new Date());
     }
 
 
-    protected Mensaje(Parcel in) {
+    Mensaje(Parcel in) {
         id = in.readString();
         contenido = in.readString();
         imagen = in.readString();
@@ -98,12 +93,12 @@ public class Mensaje implements Parcelable, Serializable {
         }
     };
 
-    public void marcarEnviado(String idContacto) {
-        DBOperations.obtenerInstancia(MainActivity.getMainActivity()).marcarEnviado(id, idContacto);
+    public void marcarEnviado(Context contexto, String idContacto) {
+        DBOperations.obtenerInstancia(contexto).marcarEnviado(id, idContacto);
     }
 
     public void registrar(Context contexto, Chat chat){
-        Boolean pendiente = getEmisor().equals(Contacto.getSelf());
+        Boolean pendiente = getEmisor().equals(Contacto.getSelf(contexto));
         DBOperations.obtenerInstancia(contexto).insertMessage(this,chat,pendiente);
     }
 

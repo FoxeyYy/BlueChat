@@ -1,4 +1,4 @@
-package asimov.uva.es.bluechat;
+package asimov.uva.es.bluechat.controladoresVistas;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -19,12 +20,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import asimov.uva.es.bluechat.Dominio.Chat;
-import asimov.uva.es.bluechat.Dominio.Mensaje;
+import asimov.uva.es.bluechat.R;
+import asimov.uva.es.bluechat.dominio.Chat;
+import asimov.uva.es.bluechat.dominio.Mensaje;
 
 /**
- * Tab que muestra los chats con los que se ha establecido
- * una conversacion previa
+ * Tab que muestra los chats con los que se ha establecido una conversación previa
  * @author David Robles Gallardo
  * @author Silvia Arias Herguedas
  * @author Hector Del Campo Pando
@@ -32,15 +33,32 @@ import asimov.uva.es.bluechat.Dominio.Mensaje;
  */
 public class TabChats extends Fragment implements View.OnClickListener {
 
-    private BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
+    /**
+     * Muestra la lista de chats con los que se ha mantenido una conversación previa y el último
+     * mensaje intercambiado en cada uno de ellos
+     */
+    private final BroadcastReceiver receptorMensajes = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Mensaje mensaje = intent.getParcelableExtra("mensaje");
             Chat chat = intent.getParcelableExtra("chat");
 
             int posicion = chats.indexOf(chat);
             View tarjeta = lista.getChildAt(posicion);
-            ((TextView)tarjeta.findViewById(R.id.ultimo_mensaje)).setText(mensaje.getContenido());
+
+            if (chats.contains(chat)) {
+                chats.set(posicion, chat);
+            }
+
+            if (null == tarjeta) {
+                tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, lista, false);
+                mostrarNombreChat(tarjeta, chat);
+                mostrarImagen(tarjeta, chat);
+                tarjeta.setOnClickListener(TabChats.this);
+                chats.add(chat);
+                lista.addView(tarjeta);
+            }
+
+            mostrarUltimoMensaje(tarjeta,chat);
 
         }
     };
@@ -55,16 +73,27 @@ public class TabChats extends Fragment implements View.OnClickListener {
      */
     private List<Chat> chats;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chats, container, false);
 
         lista = (LinearLayout) rootView.findViewById(R.id.lista_chats);
-        chats = Chat.getChats(getContext()); //TODO comprobar si al introducir uno nuevo se genera en la vista, o hay que refrescar
+        chats = Chat.getChats(getContext());
+        actualizar();
 
+
+        return rootView;
+    }
+
+    /**
+     * Actualiza la vista para mostrar los chats actualizados
+     */
+    private void actualizar(){
+        lista.removeAllViews();
         for(int i = 0; i < chats.size(); i++) {
-            View tarjeta = inflater.inflate(R.layout.tarjeta_contacto, null);
+            View tarjeta = getActivity().getLayoutInflater().inflate(R.layout.tarjeta_contacto, lista, false);
             Chat chat = chats.get(i);
 
             mostrarNombreChat(tarjeta, chat);
@@ -74,23 +103,21 @@ public class TabChats extends Fragment implements View.OnClickListener {
             lista.addView(tarjeta);
             tarjeta.setOnClickListener(this);
         }
-
-        return rootView;
     }
 
     /**
      * Muestra el nombre de un chat
-     * @param vista a modificar
-     * @param chat a mostrar
+     * @param vista La vista a modificar
+     * @param chat El chat del que mostrar la información
      */
     private void mostrarNombreChat(View vista, Chat chat) {
-        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getPar().getNombre());
+        ((TextView)vista.findViewById(R.id.nombre_contacto)).setText(chat.getNombre());
     }
 
     /**
-     * Muestra el ultimo mensaje de un chat
-     * @param vista a modificar
-     * @param chat a mostrar
+     * Muestra el último mensaje de un chat
+     * @param vista La vista a modificar
+     * @param chat El chat del que mostrar la información
      */
     private void mostrarUltimoMensaje(View vista, Chat chat) {
         List<Mensaje> msgs = chat.getHistorial();
@@ -105,15 +132,18 @@ public class TabChats extends Fragment implements View.OnClickListener {
 
     /**
      * Muestra la imagen del contacto
-     * @param vista a modificar
-     * @param chat a mostrar
+     * @param vista La vista a modificar
+     * @param chat El chat del que mostrar la información
      */
     private void mostrarImagen(View vista, Chat chat){
+        ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);
         if (chat.esGrupo()) {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            imagen.setImageBitmap(image);
             return;
         }
 
-        ImageView imagen = (ImageView)vista.findViewById(R.id.foto_contacto);
+
         String avatarContacto = chat.getPar().getImagen();
         if(avatarContacto !=null && !avatarContacto.isEmpty())
             imagen.setImageURI(Uri.parse(chat.getPar().getImagen()));
@@ -132,22 +162,28 @@ public class TabChats extends Fragment implements View.OnClickListener {
         } else {
             intentChat = new Intent(getContext(), ActivityChatGrupal.class);
         }
-        intentChat.putExtra("chat", chat);
+        intentChat.putExtra("idChat", chat.getIdChat());
         startActivity(intentChat);
     }
 
     @Override
-    public void onPause() {
+    public void onDestroy() {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorMensajes);
-        super.onPause();
+        super.onDestroy();
     }
 
     @Override
     public void onResume() {
-        IntentFilter filter = new IntentFilter("mensajeNuevo");
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorMensajes,filter);
+        chats = Chat.getChats(getContext());
+        actualizar();
         super.onResume();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        IntentFilter filter = new IntentFilter("mensajeNuevo");
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorMensajes,filter);
+        super.onCreate(savedInstanceState);
+    }
 
 }
